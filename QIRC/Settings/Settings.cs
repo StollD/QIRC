@@ -72,7 +72,6 @@ namespace QIRC.Configuration
                 throw new ArgumentNullException(nameof(name));
             if (!values.ContainsKey(name))
                 throw new ArgumentException(String.Format("\"{0}\" is not a valid key!", name), nameof(name));
-            Console.WriteLine(typeof(T) + " - " + values[name] + " - " + values[name].GetType());
             return (T)Convert.ChangeType(values[name], typeof(T));
         }
 
