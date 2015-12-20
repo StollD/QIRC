@@ -144,6 +144,30 @@ namespace QIRC.Configuration
         }
 
         /// <summary>
+        /// Adds a <see cref="SettingsFile"/> to <see cref="files"/>
+        /// </summary>
+        public static void AddFile(SettingsFile file)
+        {
+            files.Add(file);
+        }
+
+        /// <summary>
+        /// Removes a <see cref="SettingsFile"/> from <see cref="files"/>
+        /// </summary>
+        public static void RemoveFile(SettingsFile file)
+        {
+            files.Remove(file);
+        }
+
+        /// <summary>
+        /// Removes a <see cref="SettingsFile"/> from <see cref="files"/>
+        /// </summary>
+        public static void RemoveFile(String file)
+        {
+            files.RemoveWhere(f => f.ToString() == file);
+        }
+
+        /// <summary>
         /// Static Constructor for initialization.
         /// </summary>
         static Settings()
