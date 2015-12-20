@@ -33,7 +33,16 @@ namespace QIRC
         /// <param name="args">Commandline arguments</param>
         public static void Main(String[] args)
         {
-            
+            /// -- Plugins here --
+
+            /// Load the Texts
+            Text.Create();
+
+            /// Load the settings
+            Settings.Load();
+
+            /// Initial Logging
+            Logging.Log(Settings.Read<String>("logging__sayHello"), Logging.Level.SPECIAL);
         }
     }
 }
