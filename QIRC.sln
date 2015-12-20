@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC", "QIRC\QIRC.csproj", "{3C25C49A-7FF1-43B9-B4DA-BC9F81623D0B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{8222DBE5-CB42-43D3-8872-72B6127C2697}"
+	ProjectSection(SolutionItems) = preProject
+		Dependencies\IrcDotNet.dll = Dependencies\IrcDotNet.dll
+		Dependencies\Newtonsoft.Json.dll = Dependencies\Newtonsoft.Json.dll
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F098011A-3833-4028-B67D-3DE38391810C}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3C25C49A-7FF1-43B9-B4DA-BC9F81623D0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C25C49A-7FF1-43B9-B4DA-BC9F81623D0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C25C49A-7FF1-43B9-B4DA-BC9F81623D0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C25C49A-7FF1-43B9-B4DA-BC9F81623D0B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
