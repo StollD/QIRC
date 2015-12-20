@@ -14,6 +14,7 @@ using QIRC.Constants;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Timers;
 
@@ -164,6 +165,19 @@ namespace QIRC.Configuration
         public static void RemoveFile(String file)
         {
             files.RemoveWhere(f => f.ToString() == file);
+        }
+
+        /// <summary>
+        /// Grabs a <see cref="SettingsFile"/> based on it's name
+        /// </summary>
+        public SettingsFile this[String name]
+        {
+            get
+            {
+                if (files.Count(f => f.ToString() == name) == 0)
+                    throw new IndexOutOfRangeException();
+                return files.FirstOrDefault(f => f.ToString() == name);
+            }
         }
 
         /// <summary>
