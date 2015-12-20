@@ -45,7 +45,6 @@ namespace QIRC.Configuration
             {
                 String key = defaults[i] as String;
                 Object value = defaults[i + 1];
-                Console.WriteLine(key + " - " + value);
                 values.Add(key, value);
             }
         }
@@ -62,7 +61,7 @@ namespace QIRC.Configuration
                 throw new ArgumentNullException(nameof(name));
             if (values.ContainsKey(name))
                 throw new ArgumentException(String.Format("A key named \"{0}\" does already exist!", name), nameof(name));
-            values.Add(name, values);
+            values.Add(name, value);
         }
 
         /// <summary>
@@ -77,7 +76,7 @@ namespace QIRC.Configuration
                 throw new ArgumentNullException(nameof(name));
             if (!values.ContainsKey(name))
                 throw new ArgumentException(String.Format("\"{0}\" is not a valid key!", name), nameof(name));
-            return (T)values[name];
+            return (T)Convert.ChangeType(values[name], typeof(T));
         }
 
         /// <summary>
