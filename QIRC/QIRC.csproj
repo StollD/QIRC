@@ -68,6 +68,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants\Paths.cs" />
+    <Compile Include="Formatter.cs" />
+    <Compile Include="Logging.cs" />
+    <Compile Include="Text.cs" />
     <Compile Include="QIRC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\Settings.cs" />
