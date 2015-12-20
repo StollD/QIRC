@@ -1,12 +1,15 @@
-﻿/**
- * .NET Bot for Internet Relay Chat (IRC)
- * Copyright (c) 2015 @ThomasKerman (GitLab|GitHub) / Thomas (EsperNet IRC)
- * License: MIT License
- */
+﻿/// --------------------------------------
+/// .NET Bot for Internet Relay Chat (IRC)
+/// Copyright (c) ThomasKerman 2015
+/// QIRC is licensed under the MIT License
+/// --------------------------------------
 
+/// System
 using System;
-using System.IO;
 
+/// <summary>
+/// The main namespace. Here's everything that executes actively.
+/// </summary>
 namespace QIRC
 {
     /// <summary>
@@ -19,13 +22,13 @@ namespace QIRC
         /// </summary>
         public static class ControlCode
         {
-            public const string Bold = "\x02";
-            public const string Color = "\x03";
-            public const string Italic = "\x09";
-            public const string StrikeThrough = "\x13";
-            public const string Reset = "\x0f";
-            public const string Underline = "\x15";
-            public const string Reverse = "\x16";
+            public const String Bold = "\x02";
+            public const String Color = "\x03";
+            public const String Italic = "\x09";
+            public const String StrikeThrough = "\x13";
+            public const String Reset = "\x0f";
+            public const String Underline = "\x15";
+            public const String Reverse = "\x16";
         }
 
         /// <summary>
@@ -33,31 +36,31 @@ namespace QIRC
         /// </summary>
         public static class ColorCode
         {
-            public const int White = 0;
-            public const int Black = 1;
-            public const int DarkBlue = 2;
-            public const int DarkGreen = 3;
-            public const int Red = 4;
-            public const int DarkRed = 5;
-            public const int DarkViolet = 6;
-            public const int Orange = 7;
-            public const int Yellow = 8;
-            public const int LightGreen = 9;
-            public const int Cyan = 10;
-            public const int LightCyan = 11;
-            public const int Blue = 12;
-            public const int Violet = 13;
-            public const int DarkGray = 14;
-            public const int LightGray = 15;
+            public const Int32 White = 0;
+            public const Int32 Black = 1;
+            public const Int32 DarkBlue = 2;
+            public const Int32 DarkGreen = 3;
+            public const Int32 Red = 4;
+            public const Int32 DarkRed = 5;
+            public const Int32 DarkViolet = 6;
+            public const Int32 Orange = 7;
+            public const Int32 Yellow = 8;
+            public const Int32 LightGreen = 9;
+            public const Int32 Cyan = 10;
+            public const Int32 LightCyan = 11;
+            public const Int32 Blue = 12;
+            public const Int32 Violet = 13;
+            public const Int32 DarkGray = 14;
+            public const Int32 LightGray = 15;
 
             /// <summary>
             /// Parses a string into a color code
             /// </summary>
-            public static bool TryParse(string input, out int color)
+            public static Boolean TryParse(String input, out Int32 color)
             {
                 try
                 {
-                    color = (int)typeof(ColorCode).GetField(input).GetValue(null);
+                    color = (Int32)typeof(ColorCode).GetField(input).GetValue(null);
                     return true;
                 }
                 catch
@@ -71,7 +74,7 @@ namespace QIRC
         /// <summary>
         /// Formats a message to make color codes easier to write
         /// </summary>
-        public static string Format(string input)
+        public static String Format(String input)
         {
             /// Bold
             input = input.Replace("[b]", ControlCode.Bold.ToString()).Replace("[/b]", ControlCode.Bold.ToString());
@@ -91,19 +94,19 @@ namespace QIRC
             /// Color
             while (input.Contains("[color="))
             {
-                string color = input.Split("[color=", 2)[1];
-                string code = color.Split("]", 2)[0];
+                String color = input.Split(new[] { "[color=" }, 2, StringSplitOptions.RemoveEmptyEntries)[1];
+                String code = color.Split(new[] { "]" }, 2, StringSplitOptions.RemoveEmptyEntries)[0];
                 if (code.Contains(","))
                 {
-                    string[] colors = code.Split(",");
-                    int foreground, background = 0;
+                    String[] colors = code.Split(',');
+                    Int32 foreground, background = 0;
                     ColorCode.TryParse(colors[0], out foreground);
                     ColorCode.TryParse(colors[1], out background);
                     input = input.Replace("[color=" + code + "]", ControlCode.Color + foreground.ToString("00") + "," + background.ToString("00"));
                 }
                 else
                 {
-                    int foreground = 0;
+                    Int32 foreground = 0;
                     ColorCode.TryParse(code, out foreground);
                     input = input.Replace("[color=" + code + "]", ControlCode.Color + foreground.ToString("00"));
                 }

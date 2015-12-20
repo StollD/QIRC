@@ -1,12 +1,19 @@
-﻿/**
- * .NET Bot for Internet Relay Chat (IRC)
- * Copyright (c) 2015 @ThomasKerman (GitLab|GitHub) / Thomas (EsperNet IRC)
- * License: MIT License
- */
+﻿/// --------------------------------------
+/// .NET Bot for Internet Relay Chat (IRC)
+/// Copyright (c) ThomasKerman 2015
+/// QIRC is licensed under the MIT License
+/// --------------------------------------
 
+/// QIRC
+using QIRC.Constants;
+
+/// System
 using System;
 using System.IO;
 
+/// <summary>
+/// The main namespace. Here's everything that executes actively.
+/// </summary>
 namespace QIRC
 {
     /// <summary>
@@ -37,10 +44,10 @@ namespace QIRC
         /// </summary>
         /// <param name="level">The current logging level.</param>
         /// <returns>A string, that shows the logging level and the current time</returns>
-        protected static string GetPrefix(Level level)
+        protected static String GetPrefix(Level level)
         {
-            string levelName = Enum.GetName(typeof(Level), level);
-            string date = DateTime.UtcNow.ToLongTimeString();
+            String levelName = Enum.GetName(typeof(Level), level);
+            String date = DateTime.UtcNow.ToLongTimeString();
             return "[" + levelName + " " + date + "] ";
         }
 
@@ -62,10 +69,10 @@ namespace QIRC
         /// </summary>
         /// <param name="message">The message that should be logged.</param>
         /// <param name="level">The logging level.</param>
-        public static void Log(object message, Level level)
+        public static void Log(Object message, Level level)
         {
             /// Get the logging prefix
-            string prefix = GetPrefix(level);
+            String prefix = GetPrefix(level);
 
             /// Write to disk
             writer.WriteLine(prefix + message);
@@ -84,11 +91,10 @@ namespace QIRC
         static Logging()
         {
             /// Get the logging path
-            string path = Path.Combine(Directory.GetCurrentDirectory(), QIRC.logDirectory);
-            Directory.CreateDirectory(path);
+            Directory.CreateDirectory(Paths.logs);
 
             /// Create the writer
-            writer = new StreamWriter(path + "latest.log");
+            writer = new StreamWriter(Paths.logs + "latest.log");
         }
     }
 }
