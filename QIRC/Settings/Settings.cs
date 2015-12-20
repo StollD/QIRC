@@ -21,7 +21,7 @@ using System.Timers;
 /// Here's everything stored that is related to the bot configuration.
 /// Nothing is hardcoded here, except the path where the files are stored.
 /// </summary>
-namespace QIRC.Settings
+namespace QIRC.Configuration
 {
     /// <summary>
     /// Here are the settings for the bot stored. They are loaded dynamically,
@@ -145,8 +145,6 @@ namespace QIRC.Settings
 
         /// <summary>
         /// Static Constructor for initialization.
-        /// Here we load the settings and create a 
-        /// timer for saving them regulary.
         /// </summary>
         static Settings()
         {

@@ -15,7 +15,7 @@ using System.Reflection.Emit;
 /// Here's everything stored that is related to the bot configuration.
 /// Nothing is hardcoded here, except the path where the files are stored.
 /// </summary>
-namespace QIRC.Settings
+namespace QIRC.Configuration
 {
     /// <summary>
     /// This bundles values from <see cref="Settings.values"/> into a file representation.

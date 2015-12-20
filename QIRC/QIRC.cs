@@ -7,6 +7,9 @@
 /// IRC
 using IrcDotNet;
 
+/// QIRC
+using QIRC.Configuration;
+
 /// System
 using System;
 using System.Threading;
@@ -30,6 +33,7 @@ namespace QIRC
         /// <param name="args">Commandline arguments</param>
         public static void Main(String[] args)
         {
+            
         }
     }
 }
