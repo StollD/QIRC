@@ -150,6 +150,7 @@ namespace QIRC.Settings
         /// </summary>
         static Settings()
         {
+            Directory.CreateDirectory(Paths.settings);
             values = new Dictionary<String, Object>();
             files = new HashSet<SettingsFile>()
             {
