@@ -10,6 +10,8 @@ using QIRC.Constants;
 /// System
 using System;
 using System.IO;
+using System.IO.Compression;
+using System.Timers;
 
 /// <summary>
 /// The main namespace. Here's everything that executes actively.
@@ -38,6 +40,11 @@ namespace QIRC
         /// StreamWriter that writes into the log file
         /// </summary>
         protected static StreamWriter writer { get; set; }
+
+        /// <summary>
+        /// A Timer that archives logs after one day.
+        /// </summary>
+        protected static Timer newDay { get; set; }
 
         /// <summary>
         /// Gets the logging prefix based on the current time and the logging level
@@ -94,7 +101,30 @@ namespace QIRC
             Directory.CreateDirectory(Paths.logs);
 
             /// Create the writer
-            writer = new StreamWriter(Paths.logs + "latest.log");
+            writer = new StreamWriter(Paths.logs + "latest.log", true);
+
+            /// Create the Timer
+            DateTime tomorrow = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day) + new TimeSpan(1, 0, 0, 0);
+            Double millisecs = (tomorrow - DateTime.UtcNow).TotalMilliseconds + 1000;
+            newDay = new Timer(millisecs);
+            newDay.Elapsed += delegate (Object sender, ElapsedEventArgs e)
+            {
+                writer.Flush();
+                writer.Close();
+                Directory.CreateDirectory(Paths.logs + "archive/");
+                String name = (DateTime.UtcNow - new TimeSpan(1, 0, 0, 0)).ToString("yyyy-MM-dd");
+                GZipStream gzip = new GZipStream(File.Create(Paths.logs + "archive/" + name + ".log.gz"), CompressionMode.Compress);
+                Stream temp = File.Open(Paths.logs + "latest.log", FileMode.Open);
+                temp.CopyTo(gzip);
+                temp.Close();
+                gzip.Flush();
+                gzip.Close();
+                writer = new StreamWriter(Paths.logs + "latest.log");
+                newDay.Interval = 24 * 60 * 60 * 1000;
+                newDay.Stop();
+                newDay.Start();
+            };
+            newDay.Start();
         }
     }
 }

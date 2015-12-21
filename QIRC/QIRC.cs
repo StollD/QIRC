@@ -45,6 +45,8 @@ namespace QIRC
 
             /// Initial Logging
             Logging.Log(Settings.Read<String>("logging__sayHello"), Logging.Level.SPECIAL);
+
+            while (true) ;
         }
     }
 }
