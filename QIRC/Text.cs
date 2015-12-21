@@ -25,7 +25,7 @@ namespace QIRC
         /// <summary>
         /// Creates the prefab for the loaded texts
         /// </summary>
-        public static void Create()
+        public static void Load()
         {
             SettingsFile file = new SettingsFile("texts");
             file.Add("logging__sayHello", ".NET Bot for Internet Relay Chat (IRC) - 2015");

@@ -67,9 +67,12 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Path.cs" />
     <Compile Include="Constants\Paths.cs" />
     <Compile Include="Formatter.cs" />
     <Compile Include="Logging.cs" />
+    <Compile Include="Plugins\IrcPlugin.cs" />
+    <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Text.cs" />
     <Compile Include="QIRC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

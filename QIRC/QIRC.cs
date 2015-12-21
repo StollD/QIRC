@@ -9,6 +9,7 @@ using IrcDotNet;
 
 /// QIRC
 using QIRC.Configuration;
+using QIRC.Plugins;
 
 /// System
 using System;
@@ -33,10 +34,11 @@ namespace QIRC
         /// <param name="args">Commandline arguments</param>
         public static void Main(String[] args)
         {
-            /// -- Plugins here --
+            /// Load Plugins
+            PluginManager.Load();
 
             /// Load the Texts
-            Text.Create();
+            Text.Load();
 
             /// Load the settings
             Settings.Load();

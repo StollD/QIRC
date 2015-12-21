@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Timers;
+using PathIO = System.IO.Path;
 
 /// <summary>
 /// Here's everything stored that is related to the bot configuration.
@@ -104,13 +105,13 @@ namespace QIRC.Configuration
                 Object type = file.ToObject();
                 if (Paths.settings.Exists(name + ".json"))
                 {
-                    String json = File.ReadAllText(Path.Combine(Paths.settings, name + ".json"));
+                    String json = File.ReadAllText(PathIO.Combine(Paths.settings, name + ".json"));
                     type = JsonConvert.DeserializeObject(json, type.GetType(), settings);
                 }
                 else
                 {
                     String json = JsonConvert.SerializeObject(type, settings);
-                    File.WriteAllText(Path.Combine(Paths.settings, name + ".json"), json);
+                    File.WriteAllText(PathIO.Combine(Paths.settings, name + ".json"), json);
                 }
                 foreach (FieldInfo field in type.GetType().GetFields())
                     Write(field.Name, field.GetValue(type));
@@ -139,7 +140,7 @@ namespace QIRC.Configuration
                 String name = file.ToString();
                 Object type = file.ToObject(fileValues);
                 String json = JsonConvert.SerializeObject(type, settings);
-                File.WriteAllText(Path.Combine(Paths.settings, name + ".json"), json);
+                File.WriteAllText(PathIO.Combine(Paths.settings, name + ".json"), json);
             }
         }
 
@@ -170,14 +171,11 @@ namespace QIRC.Configuration
         /// <summary>
         /// Grabs a <see cref="SettingsFile"/> based on it's name
         /// </summary>
-        public SettingsFile this[String name]
+        public static SettingsFile GetFile(String name)
         {
-            get
-            {
-                if (files.Count(f => f.ToString() == name) == 0)
-                    throw new IndexOutOfRangeException();
-                return files.FirstOrDefault(f => f.ToString() == name);
-            }
+            if (files.Count(f => f.ToString() == name) == 0)
+                throw new IndexOutOfRangeException();
+            return files.FirstOrDefault(f => f.ToString() == name);
         }
 
         /// <summary>
