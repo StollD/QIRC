@@ -16,7 +16,7 @@ using System.Timers;
 /// <summary>
 /// The main namespace. Here's everything that executes actively.
 /// </summary>
-namespace QIRC
+namespace QIRC.Logging
 {
     /// <summary>
     /// Class to support logging to disk and CLI

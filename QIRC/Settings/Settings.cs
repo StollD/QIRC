@@ -191,6 +191,14 @@ namespace QIRC.Configuration
                     "name", "QIRC-Bot",
                     "control", "!",
                     "saveInterval", 10
+                ),
+                new SettingsFile("connection",
+                    "host", "",
+                    "port", 6667,
+                    "useSSL", false,
+                    "password", "",
+                    "messageBurst", 4,
+                    "counterPeriod", 2000L
                 )
             };
         }

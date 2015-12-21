@@ -4,6 +4,9 @@
 /// QIRC is licensed under the MIT License
 /// --------------------------------------
 
+/// IRC
+using IrcDotNet;
+
 /// System
 using System;
 
@@ -17,9 +20,20 @@ namespace QIRC.Plugins
     /// </summary>
     public abstract class IrcPlugin
     {
-        public abstract String GetName();
-        public abstract String GetInfo();
-        public abstract String GetVersion();
+        /// <summary>
+        /// The IRC client that manages our connection
+        /// </summary>
+        protected StandardIrcClient client
+        {
+            get { return QIRC.client; }
+            set { QIRC.client = value; }
+        }
+
+        /// Virtual Functions
+        public virtual void OnLoad() { }
+        public virtual void OnAwake() { }
+        public virtual void OnConnect(String host, Int32 port, String nick, Boolean useSSL) { }
+        public virtual void OnChannelListReceived(IrcChannelListReceivedEventArgs e) { }
     }
 }
 

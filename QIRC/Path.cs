@@ -65,7 +65,7 @@ namespace QIRC
         public static implicit operator Path(String path)
         {
             if (path.StartsWith(Directory.GetCurrentDirectory()))
-                path = path.Remove(0, Directory.GetCurrentDirectory().Length);
+                path = path.Remove(0, Directory.GetCurrentDirectory().Length + 1);
             return new Path(path);
         }
     }
