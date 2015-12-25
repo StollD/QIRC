@@ -30,7 +30,7 @@ namespace QIRC.Logging
         {
             SettingsFile file = new SettingsFile("texts");
             file.Add("logging__sayHello", ".NET Bot for Internet Relay Chat (IRC) - 2015");
-            file.Add("logging__onConnect", "Connecting to IRC: {0}:{1} as user {2}. {4}");
+            file.Add("logging__onConnect", "Connecting to IRC: {0}:{1} as user {2}. {3}");
 
             /// Inject the file
             Settings.AddFile(file);

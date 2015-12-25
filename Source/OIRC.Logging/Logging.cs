@@ -97,6 +97,9 @@ namespace QIRC.Logging
         /// </summary>
         static Logging()
         {
+            /// Dont init twice
+            if (writer != null) return;
+
             /// Get the logging path
             Directory.CreateDirectory(Paths.logs);
 

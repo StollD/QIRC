@@ -4,6 +4,10 @@
 /// QIRC is licensed under the MIT License
 /// --------------------------------------
 
+/// IRC
+using ChatSharp;
+using ChatSharp.Events;
+
 /// QIRC
 using QIRC.Constants;
 
@@ -88,6 +92,16 @@ namespace QIRC.Plugins
         {
             foreach (IrcPlugin plugin in plugins)
                 plugin.OnConnect(host, port, nick, useSSL);
+        }
+
+        /// <summary>
+        /// Calls OnChannelListReceived in the IrcPlugins
+        /// </summary>
+        public static void Invoke(String name, params Object[] arguments)
+        {
+            Console.WriteLine(name);
+            foreach (IrcPlugin plugin in plugins)
+                plugin.GetType().GetMethod("On" + name).Invoke(plugin, arguments);
         }
 
         /// <summary>

@@ -56,8 +56,8 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="IrcDotNet">
-      <HintPath>..\Dependencies\IrcDotNet.dll</HintPath>
+    <Reference Include="ChatSharp">
+      <HintPath>..\Dependencies\ChatSharp.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -67,6 +67,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IRC\ProtoIrcChannel.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="Constants\Paths.cs" />
     <Compile Include="Formatter.cs" />

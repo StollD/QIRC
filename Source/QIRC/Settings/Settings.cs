@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 /// QIRC
 using QIRC.Constants;
+using QIRC.IRC;
 
 /// System
 using System;
@@ -198,7 +199,8 @@ namespace QIRC.Configuration
                     "useSSL", false,
                     "password", "",
                     "messageBurst", 4,
-                    "counterPeriod", 2000L
+                    "counterPeriod", 2000L,
+                    "channels", new List<ProtoIrcChannel>()
                 )
             };
         }
