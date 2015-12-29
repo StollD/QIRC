@@ -37,5 +37,11 @@ namespace QIRC.Constants
         /// This is relative to the location of the main executable.
         /// </summary>
         public static readonly Path plugins = "plugins/";
+
+        /// <summary>
+        /// The Directory where the persistent data is stored.
+        /// This is relative to the location of the main executable.
+        /// </summary>
+        public static readonly Path data = "data/";
     }
 }
