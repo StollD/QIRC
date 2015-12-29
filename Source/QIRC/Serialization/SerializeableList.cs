@@ -87,6 +87,7 @@ namespace QIRC.Serialization
 
         public SerializeableList(String name)
         {
+            Directory.CreateDirectory(Paths.data);
             this.name = name;
             if (Paths.data.Exists(name + ".dat"))
             {
@@ -104,6 +105,7 @@ namespace QIRC.Serialization
 
         public SerializeableList(String name, Int32 capacity)
         {
+            Directory.CreateDirectory(Paths.data);
             this.name = name;
             if (Paths.data.Exists(name + ".dat"))
             {
@@ -122,6 +124,7 @@ namespace QIRC.Serialization
 
         public SerializeableList(String name, IEnumerable<T> collection)
         {
+            Directory.CreateDirectory(Paths.data);
             this.name = name;
             if (Paths.data.Exists(name + ".dat"))
             {

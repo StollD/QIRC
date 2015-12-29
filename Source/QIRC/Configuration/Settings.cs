@@ -172,11 +172,11 @@ namespace QIRC.Configuration
         /// <summary>
         /// Grabs a <see cref="SettingsFile"/> based on it's name
         /// </summary>
-        public static SettingsFile GetFile(String name)
+        public static void GetFile(String name, ref SettingsFile file)
         {
             if (files.Count(f => f.ToString() == name) == 0)
                 throw new IndexOutOfRangeException();
-            return files.FirstOrDefault(f => f.ToString() == name);
+            file = files.FirstOrDefault(f => f.ToString() == name);
         }
 
         /// <summary>
@@ -198,8 +198,6 @@ namespace QIRC.Configuration
                     "port", 6667,
                     "useSSL", false,
                     "password", "",
-                    "messageBurst", 4,
-                    "counterPeriod", 2000L,
                     "channels", new List<ProtoIrcChannel>()
                 )
             };
