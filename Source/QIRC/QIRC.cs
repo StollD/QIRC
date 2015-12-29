@@ -60,11 +60,11 @@ namespace QIRC
         {
             /// Load the settings of the Bot
             PluginManager.Load();
-            PluginManager.OnLoad();
+            PluginManager.Invoke("Load");
             Settings.Load();
 
             /// Call OnAwake
-            PluginManager.OnAwake();
+            PluginManager.Invoke("Awake");
 
             /// Connect to the IRC
             ircThread = new Thread(Connect);
@@ -117,7 +117,7 @@ namespace QIRC
 
             /// Connect to IRC
             client.ConnectAsync();
-            PluginManager.OnConnect(host, port, client.User.Nick, useSSL);
+            PluginManager.Invoke("Connect", host, port, client.User.Nick, useSSL);
 
             /// Set isConnected to false, which is funny since the function is named Connect, but hey!
             isConnected = false;
