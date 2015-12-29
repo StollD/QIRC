@@ -144,7 +144,7 @@ namespace QIRC
         /// </summary>
         private static void ChannelTopicReceived(Object sender, ChannelTopicEventArgs e)
         {
-            PluginManager.Invoke("ChannelMessageRecieved", client, e);
+            PluginManager.Invoke("ChannelTopicReceived", client, e);
         }
 
         /// <summary>
