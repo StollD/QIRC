@@ -68,40 +68,13 @@ namespace QIRC.Plugins
         }
 
         /// <summary>
-        /// Calls OnLoad in the IrcPlugins
-        /// </summary>
-        public static void OnLoad()
-        {
-            foreach (IrcPlugin plugin in plugins)
-                plugin.OnLoad();
-        }
-
-        /// <summary>
-        /// Calls OnAwake in the IrcPlugins
-        /// </summary>
-        public static void OnAwake()
-        {
-            foreach (IrcPlugin plugin in plugins)
-                plugin.OnAwake();
-        }
-
-        /// <summary>
-        /// Calls OnConnect in the IrcPlugins
-        /// </summary>
-        public static void OnConnect(String host, Int32 port, String nick, Boolean useSSL)
-        {
-            foreach (IrcPlugin plugin in plugins)
-                plugin.OnConnect(host, port, nick, useSSL);
-        }
-
-        /// <summary>
         /// Calls OnChannelListReceived in the IrcPlugins
         /// </summary>
         public static void Invoke(String name, params Object[] arguments)
         {
-            Console.WriteLine(name);
+            MethodInfo info = typeof(IrcPlugin).GetMethod("On" + name);
             foreach (IrcPlugin plugin in plugins)
-                plugin.GetType().GetMethod("On" + name).Invoke(plugin, arguments);
+                info.Invoke(plugin, arguments);
         }
 
         /// <summary>
