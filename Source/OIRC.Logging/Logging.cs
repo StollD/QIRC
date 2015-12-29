@@ -11,6 +11,7 @@ using QIRC.Constants;
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Timers;
 
 /// <summary>
@@ -103,9 +104,6 @@ namespace QIRC.Logging
             /// Get the logging path
             Directory.CreateDirectory(Paths.logs);
 
-            /// Create the writer
-            writer = new StreamWriter(Paths.logs + "latest.log", true);
-
             /// Create the Timer
             DateTime tomorrow = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day) + new TimeSpan(1, 0, 0, 0);
             Double millisecs = (tomorrow - DateTime.UtcNow).TotalMilliseconds + 1000;
@@ -114,19 +112,30 @@ namespace QIRC.Logging
             {
                 writer.Flush();
                 writer.Close();
-                Directory.CreateDirectory(Paths.logs + "archive/");
-                String name = (DateTime.UtcNow - new TimeSpan(1, 0, 0, 0)).ToString("yyyy-MM-dd");
-                GZipStream gzip = new GZipStream(File.Create(Paths.logs + "archive/" + name + ".log.gz"), CompressionMode.Compress);
-                Stream temp = File.Open(Paths.logs + "latest.log", FileMode.Open);
-                temp.CopyTo(gzip);
-                temp.Close();
-                gzip.Flush();
-                gzip.Close();
-                writer = new StreamWriter(Paths.logs + "latest.log");
-                newDay.Interval = 24 * 60 * 60 * 1000;
-                newDay.Stop();
-                newDay.Start();
+                NewDay();
             };
+            newDay.Start();
+
+            /// Create the writer
+            writer = new StreamWriter(Paths.logs + "latest.log", true);
+        }
+
+        /// <summary>
+        /// Archives Old Logfiles
+        /// </summary>
+        private static void NewDay()
+        {
+            Directory.CreateDirectory(Paths.logs + "archive/");
+            String name = (DateTime.UtcNow - new TimeSpan(1, 0, 0, 0)).ToString("yyyy-MM-dd");
+            GZipStream gzip = new GZipStream(File.Create(Paths.logs + "archive/" + name + ".log.gz"), CompressionMode.Compress);
+            Stream temp = File.Open(Paths.logs + "latest.log", FileMode.Open);
+            temp.CopyTo(gzip);
+            temp.Close();
+            gzip.Flush();
+            gzip.Close();
+            writer = new StreamWriter(Paths.logs + "latest.log");
+            newDay.Interval = 24 * 60 * 60 * 1000;
+            newDay.Stop();
             newDay.Start();
         }
     }
