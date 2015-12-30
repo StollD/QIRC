@@ -108,7 +108,7 @@ namespace QIRC.Logging
         public override void OnNoticeRecieved(IrcClient client, IrcNoticeEventArgs e)
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
-            Logging.Log(String.Format(Settings.Read<String>("logging__noticeRecieved"), msg.User, msg.Message), Logging.Level.WARNING);
+            Logging.Log(String.Format(Settings.Read<String>("logging__noticeRecieved"), msg.User.Split('!')[0], msg.Message), Logging.Level.WARNING);
             messages.Add(msg);
         }
 
