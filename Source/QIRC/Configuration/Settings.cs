@@ -198,7 +198,8 @@ namespace QIRC.Configuration
                     "port", 6667,
                     "useSSL", false,
                     "password", "",
-                    "channels", new List<ProtoIrcChannel>()
+                    "channels", new List<ProtoIrcChannel>(),
+                    "admins", new List<ProtoIrcAdmin>()
                 )
             };
         }

@@ -27,22 +27,22 @@ namespace QIRC.IRC
         /// <summary>
         /// Whether the Message was sent in a channel or via. /query
         /// </summary>
-        public Boolean IsChannelMessage { get; }
+        public Boolean IsChannelMessage { get; set; }
 
         /// <summary>
         /// The actual message
         /// </summary>
-        public String Message { get; }
+        public String Message { get; set; }
 
         /// <summary>
         /// The Source of the Message
         /// </summary>
-        public String Source { get; }
+        public String Source { get; set; }
 
         /// <summary>
         /// The User who has sent the message
         /// </summary>
-        public String User { get; }
+        public String User { get; set; }
 
         /// <summary>
         /// Create the ProtoMessage

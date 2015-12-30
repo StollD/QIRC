@@ -175,5 +175,16 @@ namespace QIRC.Logging
         {
             Logging.Log(String.Format(Settings.Read<String>("logging__userQuit"), e.User.Nick), Logging.Level.ERROR);
         }
+
+        /// <summary>
+        /// Logs when a message was sent
+        /// </summary>
+        /// <param name="client"></param>
+        /// <param name="message"></param>
+        public override void OnMessageSent(IrcClient client, ProtoIrcMessage message)
+        {
+            Logging.Log(String.Format(Settings.Read<String>("logging__messageRecieved"), message.User, message.IsChannelMessage ? message.Source : "Private", message.Message), Logging.Level.INFO);
+            messages.Add(message);
+        }
     }
 }

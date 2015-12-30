@@ -16,6 +16,7 @@ using QIRC.Plugins;
 /// System
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -222,6 +223,14 @@ namespace QIRC
         private static void PrivateMessageRecieved(Object sender, PrivateMessageEventArgs e)
         {
             PluginManager.Invoke("PrivateMessageRecieved", client, e);
+
+            /// Commands
+            String control = Settings.Read<String>("control");
+            ProtoIrcMessage msg = new ProtoIrcMessage(e);
+            if (msg.Message.StartsWith(control))
+            {
+                HandleCommand(msg, client);
+            }
         }
 
         /// <summary>
@@ -325,5 +334,106 @@ namespace QIRC
                 Settings.Write("channels", list);
             }
         }
+
+        /// <summary>
+        /// Handles an incoming command
+        /// </summary>
+        public static void HandleCommand(ProtoIrcMessage message, IrcClient client)
+        {
+            String control = Settings.Read<String>("control");
+            message.Message = message.Message.Remove(0, control.Length);
+            foreach (IrcCommand command in PluginManager.commands)
+            {
+                String cmd = message.Message.Split(' ')[0];
+                if (command.GetName() == cmd)
+                {
+                    message.Message = message.Message.Remove(0, cmd.Length).Trim();
+                    AccessLevel level = AccessLevel.NORMAL;
+                    IrcUser user = client.Users[message.User];
+                    if (message.IsChannelMessage)
+                    {
+                        IrcChannel channel = client.Channels[message.Source];
+                        if (channel.UsersByMode['@'].Contains(user))
+                            level = AccessLevel.OPERATOR;
+                        else if (channel.UsersByMode['+'].Contains(user))
+                            level = AccessLevel.VOICE;
+                    }
+                    client.WhoIs(user.Nick, (WhoIs whoIs) =>
+                    {
+                        List<ProtoIrcAdmin> admins = Settings.Read<List<ProtoIrcAdmin>>("admins");
+                        if (admins.Count(a => a.name == whoIs.LoggedInAs) == 1)
+                        {
+                            ProtoIrcAdmin admin = admins.FirstOrDefault(a => a.name == whoIs.LoggedInAs);
+                            if (admin.root)
+                                level = AccessLevel.ROOT;
+                            else
+                                level = AccessLevel.ADMIN;
+                        }
+                        if (CheckPermission(command.GetAccessLevel(), level))
+                            command.RunCommand(client, message);
+                        else
+                            SendMessage(client, "You don't have the permission to use this command! Only " + command.GetAccessLevel() + " can use this command! You are " + level + ".", message.User, message.Source);
+                    });
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sends a message to the IRC
+        /// </summary>
+        public static ProtoIrcMessage SendMessage(IrcClient client, string message, string from, string to, bool noname = false)
+        {
+            message = Formatter.Format(message);
+            string[] splits = new string[(int)Math.Round(message.Length / 460d) + 1];
+            for (int i = 0; i < message.Length; i = i + 460)
+                splits[i] = new string(message.Take(Math.Min(460, message.Length - i)).ToArray());
+            if (!to.StartsWith("#")) to = from;
+            for (int j = 0; j < splits.Length; j++)
+            {
+                if (j == 0 && !noname)
+                    client.SendMessage(from + ": " + splits[j], to);
+                else
+                    client.SendMessage(splits[j], to);
+            }
+            ProtoIrcMessage proto = new ProtoIrcMessage()
+            {
+                IsChannelMessage = to.StartsWith("#"),
+                Message = message,
+                Source = to.StartsWith("#") ? to : client.User.Nick,
+                User = client.User.Nick
+            };
+            PluginManager.Invoke("MessageSent", client, proto);
+            return proto;
+        }
+
+        /// <summary>
+        /// Checks if two Access Levels are compatible
+        /// </summary>
+        public static bool CheckPermission(AccessLevel required, AccessLevel given)
+        {
+            if (required == AccessLevel.NORMAL)
+                return true;
+            else if (required == AccessLevel.VOICE)
+                return given == AccessLevel.VOICE || given == AccessLevel.OPERATOR || given == AccessLevel.ADMIN || given == AccessLevel.ROOT;
+            else if (required == AccessLevel.OPERATOR)
+                return given == AccessLevel.OPERATOR || given == AccessLevel.ADMIN || given == AccessLevel.ROOT;
+            else if (required == AccessLevel.ADMIN)
+                return given == AccessLevel.ADMIN || given == AccessLevel.ROOT;
+            else if (required == AccessLevel.ROOT)
+                return given == AccessLevel.ROOT;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// The various access levels
+    /// </summary>
+    public enum AccessLevel
+    {
+        NORMAL,
+        VOICE,
+        OPERATOR,
+        ADMIN,
+        ROOT
     }
 }

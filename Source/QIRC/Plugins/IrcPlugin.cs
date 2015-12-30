@@ -8,6 +8,9 @@
 using ChatSharp;
 using ChatSharp.Events;
 
+/// QIRC
+using QIRC.IRC;
+
 /// System
 using System;
 
@@ -46,6 +49,7 @@ namespace QIRC.Plugins
         public virtual void OnUserPartedChannel(IrcClient client, ChannelUserEventArgs e) { }
         public virtual void OnUserQuit(IrcClient client, UserEventArgs e) { }
         public virtual void OnWhoIsReceived(IrcClient client, WhoIsReceivedEventArgs e) { }
+        public virtual void OnMessageSent(IrcClient client, ProtoIrcMessage message) { }
     }
 }
 

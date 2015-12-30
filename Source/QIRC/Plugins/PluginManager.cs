@@ -33,6 +33,11 @@ namespace QIRC.Plugins
         public static HashSet<IrcPlugin> plugins { get; set; }
 
         /// <summary>
+        /// All loaded <see cref="IrcCommand"/>
+        /// </summary>
+        public static HashSet<IrcCommand> commands { get; set; }
+
+        /// <summary>
         /// All loaded <see cref="Assembly"/>
         /// </summary>
         public static HashSet<Assembly> assemblies { get; set; }
@@ -53,6 +58,11 @@ namespace QIRC.Plugins
                 {
                     IrcPlugin plugin = (IrcPlugin)Activator.CreateInstance(type);
                     plugins.Add(plugin);
+                }
+                else if (type.IsSubclassOf(typeof(IrcCommand)))
+                {
+                    IrcCommand command = (IrcCommand)Activator.CreateInstance(type);
+                    commands.Add(command);
                 }
             }
             return assembly;
@@ -84,6 +94,7 @@ namespace QIRC.Plugins
         {
             assemblies = new HashSet<Assembly>();
             plugins = new HashSet<IrcPlugin>();
+            commands = new HashSet<IrcCommand>();
             Directory.CreateDirectory(Paths.plugins);
         }
     }

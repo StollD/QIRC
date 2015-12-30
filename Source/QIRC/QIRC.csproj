@@ -70,11 +70,13 @@
   <ItemGroup>
     <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Configuration\SettingsFile.cs" />
+    <Compile Include="IRC\ProtoIrcAdmin.cs" />
     <Compile Include="IRC\ProtoIrcMessage.cs" />
     <Compile Include="IRC\ProtoIrcChannel.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="Constants\Paths.cs" />
     <Compile Include="Formatter.cs" />
+    <Compile Include="Plugins\IrcCommand.cs" />
     <Compile Include="Plugins\IrcPlugin.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="QIRC.cs" />
