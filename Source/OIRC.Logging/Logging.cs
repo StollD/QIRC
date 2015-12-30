@@ -56,7 +56,7 @@ namespace QIRC.Logging
         {
             String levelName = Enum.GetName(typeof(Level), level);
             String date = DateTime.UtcNow.ToLongTimeString();
-            return "[" + levelName + " " + date + "] ";
+            return "[" + date + "] ";
         }
 
         /// <summary>
