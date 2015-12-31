@@ -28,12 +28,7 @@ namespace QIRC.Logging
     /// The initialization for that is here.
     /// </summary>
     public class Log : IrcPlugin
-    {
-        /// <summary>
-        /// All the messages that were recieved on IRC, stored as BSON
-        /// </summary>
-        public SerializeableList<ProtoIrcMessage> messages = new SerializeableList<ProtoIrcMessage>("messages");
-        
+    {        
         /// <summary>
         /// Creates the prefab for the loaded texts
         /// </summary>
@@ -89,7 +84,7 @@ namespace QIRC.Logging
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
             Logging.Log(String.Format(Settings.Read<String>("logging__messageRecieved"), msg.User, msg.Source, msg.Message), Logging.Level.INFO);
-            messages.Add(msg);
+            QIRC.messages.Add(msg);
         }
 
         /// <summary>
@@ -99,7 +94,7 @@ namespace QIRC.Logging
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
             Logging.Log(String.Format(Settings.Read<String>("logging__messageRecieved"), msg.User, "Private", msg.Message), Logging.Level.INFO);
-            messages.Add(msg);
+            QIRC.messages.Add(msg);
         }
 
         /// <summary>
@@ -109,7 +104,7 @@ namespace QIRC.Logging
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
             Logging.Log(String.Format(Settings.Read<String>("logging__noticeRecieved"), msg.User.Split('!')[0], msg.Message), Logging.Level.WARNING);
-            messages.Add(msg);
+            QIRC.messages.Add(msg);
         }
 
         /// <summary>
@@ -184,7 +179,7 @@ namespace QIRC.Logging
         public override void OnMessageSent(IrcClient client, ProtoIrcMessage message)
         {
             Logging.Log(String.Format(Settings.Read<String>("logging__messageRecieved"), message.User, message.IsChannelMessage ? message.Source : "Private", message.Message), Logging.Level.INFO);
-            messages.Add(message);
+            QIRC.messages.Add(message);
         }
     }
 }
