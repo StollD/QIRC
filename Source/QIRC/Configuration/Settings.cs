@@ -69,13 +69,20 @@ namespace QIRC.Configuration
         /// <typeparam name="T">The type of the returned object.</typeparam>
         /// <param name="name">An identifier to access the internal object.</param>
         /// <returns>The value of <paramref name="name"/></returns>
-        public static T Read<T>(String name)
+        public static T Read<T>(String name) 
         {
             if (String.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
             if (!values.ContainsKey(name))
                 throw new ArgumentException(String.Format("\"{0}\" is not a valid key!", name), nameof(name));
-            return (T)Convert.ChangeType(values[name], typeof(T));
+            try
+            {
+                return (T)Convert.ChangeType(values[name], typeof(T));
+            }
+            catch
+            {
+                return default(T);
+            }
         }
 
         /// <summary>
