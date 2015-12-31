@@ -22,6 +22,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OIRC.Logging", "Source\OIRC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.NickServ", "Source\QIRC.NickServ\QIRC.NickServ.csproj", "{E8D0C208-4D5F-4694-AD86-72D70D3F36DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OIRC.Say", "Source\OIRC.Say\OIRC.Say.csproj", "{CE2C9D61-FA3C-4CC3-8338-D6319053414E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.Action", "Source\QIRC.Action\QIRC.Action.csproj", "{F70E226E-0E7F-4520-9407-57E9F861CE16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -40,6 +44,14 @@ Global
 		{E8D0C208-4D5F-4694-AD86-72D70D3F36DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8D0C208-4D5F-4694-AD86-72D70D3F36DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8D0C208-4D5F-4694-AD86-72D70D3F36DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE2C9D61-FA3C-4CC3-8338-D6319053414E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE2C9D61-FA3C-4CC3-8338-D6319053414E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE2C9D61-FA3C-4CC3-8338-D6319053414E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE2C9D61-FA3C-4CC3-8338-D6319053414E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F70E226E-0E7F-4520-9407-57E9F861CE16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F70E226E-0E7F-4520-9407-57E9F861CE16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F70E226E-0E7F-4520-9407-57E9F861CE16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F70E226E-0E7F-4520-9407-57E9F861CE16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
