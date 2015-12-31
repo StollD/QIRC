@@ -32,7 +32,7 @@ namespace QIRC.Commands
         /// </summary>
         public override AccessLevel GetAccessLevel()
         {
-            return AccessLevel.ROOT;
+            return AccessLevel.NORMAL;
         }
 
         /// <summary>
