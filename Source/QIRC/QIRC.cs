@@ -12,6 +12,7 @@ using ChatSharp.Events;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
+using QIRC.Serialization;
 
 /// System
 using System;
@@ -51,6 +52,10 @@ namespace QIRC
         /// The thread that manages the IRC Connection
         /// </summary>
         public static Thread ircThread { get; protected set; }
+        /// <summary>
+        /// All the messages that were recieved on IRC, stored as BSON
+        /// </summary>
+        public static SerializeableList<ProtoIrcMessage> messages = new SerializeableList<ProtoIrcMessage>("messages");
 
         /// <summary>
         /// This function is executed when the Program starts.
@@ -92,6 +97,7 @@ namespace QIRC
             /// Create the IrcClient
             client = new IrcClient(String.Join(":", host, port), user, useSSL);
             client.Encoding = Encoding.UTF8;
+            client.Settings.ModeOnJoin = true;
 
             /// Add delegates
             client.ChannelListRecieved += ChannelListRecieved;
@@ -353,10 +359,11 @@ namespace QIRC
                     if (message.IsChannelMessage)
                     {
                         IrcChannel channel = client.Channels[message.Source];
-                        if (channel.UsersByMode['@'].Contains(user))
+                        if (user.ChannelModes[channel] == 'o')
                             level = AccessLevel.OPERATOR;
-                        else if (channel.UsersByMode['+'].Contains(user))
+                        else if (user.ChannelModes[channel] == 'v')
                             level = AccessLevel.VOICE;
+                        Console.WriteLine(level);
                     }
                     client.WhoIs(user.Nick, (WhoIs whoIs) =>
                     {
@@ -368,9 +375,18 @@ namespace QIRC
                                 level = AccessLevel.ROOT;
                             else
                                 level = AccessLevel.ADMIN;
+                            Console.WriteLine(level);
                         }
                         if (CheckPermission(command.GetAccessLevel(), level))
+                        {
+                            if (message.IsChannelMessage)
+                            {
+                                List<ProtoIrcChannel> channels = Settings.Read<List<ProtoIrcChannel>>("channels");
+                                ProtoIrcChannel channel = channels.FirstOrDefault(c => c.name == message.Source);
+                                if (channel.serious && !command.IsSerious()) return;
+                            }
                             command.RunCommand(client, message);
+                        }
                         else
                             SendMessage(client, "You don't have the permission to use this command! Only " + command.GetAccessLevel() + " can use this command! You are " + level + ".", message.User, message.Source);
                     });
@@ -399,6 +415,24 @@ namespace QIRC
             {
                 IsChannelMessage = to.StartsWith("#"),
                 Message = message,
+                Source = to.StartsWith("#") ? to : client.User.Nick,
+                User = client.User.Nick
+            };
+            PluginManager.Invoke("MessageSent", client, proto);
+            return proto;
+        }
+
+        /// <summary>
+        /// Sends an action to the IRC
+        /// </summary>
+        public static ProtoIrcMessage SendAction(IrcClient client, string message, string to)
+        {
+            message = Formatter.Format(message);
+            client.SendAction(message, to);
+            ProtoIrcMessage proto = new ProtoIrcMessage()
+            {
+                IsChannelMessage = to.StartsWith("#"),
+                Message = "ACTION" + message,
                 Source = to.StartsWith("#") ? to : client.User.Nick,
                 User = client.User.Nick
             };
