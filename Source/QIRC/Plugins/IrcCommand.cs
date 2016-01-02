@@ -30,7 +30,7 @@ namespace QIRC.Plugins
         public virtual void RunCommand(IrcClient client, ProtoIrcMessage message) { }
         public virtual String[] GetParameters() { return new String[0]; }
         protected Boolean StartsWithParam(String param, String message) { return message.StartsWith("-" + param + "=") || message.StartsWith("-" + param + ":"); }
-        protected String StripParam(String param, String message) { return message.Replace("-" + param + "=", "").Replace("-" + param + ":", ""); }
+        protected String StripParam(String param, String message) { return message.Replace("-" + param + "=", "").Replace("-" + param + ":", "").Replace("-" + param, ""); }
     }
 }
 
