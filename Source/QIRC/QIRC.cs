@@ -65,6 +65,9 @@ namespace QIRC
         /// <param name="args">Commandline arguments</param>
         public static void Main(String[] args)
         {
+            /// We are alive
+            isAlive = true;
+
             /// Load the settings of the Bot
             PluginManager.Load();
             PluginManager.Invoke("Load");
@@ -78,7 +81,18 @@ namespace QIRC
             ircThread.Start();
 
             /// Command line handler goes here
-            while (true) ;
+            while (isAlive)
+            {
+                Console.Write("> ");
+                String input = Console.ReadLine();
+                HandleCommand(new ProtoIrcMessage()
+                {
+                    IsChannelMessage = false,
+                    Message = input,
+                    Source = Settings.Read<String>("name"),
+                    User = Settings.Read<String>("name")
+                }, client);
+            }            
         }
 
         /// <summary>

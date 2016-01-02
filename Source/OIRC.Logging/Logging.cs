@@ -89,8 +89,10 @@ namespace QIRC.Logging
             /// Write to CLI
             ConsoleColor old = Console.ForegroundColor;
             Console.ForegroundColor = GetColor(level);
+            Console.CursorLeft = 0;
             Console.WriteLine(prefix + message);
             Console.ForegroundColor = old;
+            Console.Write("> ");
         }
 
         /// <summary>
