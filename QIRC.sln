@@ -26,6 +26,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OIRC.Say", "Source\OIRC.Say
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.Action", "Source\QIRC.Action\QIRC.Action.csproj", "{F70E226E-0E7F-4520-9407-57E9F861CE16}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Commands", "Commands", "{6F06FB95-2A03-4F27-9C75-BE059580F5EB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.Roll", "Source\QIRC.Roll\QIRC.Roll.csproj", "{9977B6DA-48A4-42AD-A072-6BB4984D26C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,8 +56,17 @@ Global
 		{F70E226E-0E7F-4520-9407-57E9F861CE16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F70E226E-0E7F-4520-9407-57E9F861CE16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F70E226E-0E7F-4520-9407-57E9F861CE16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9977B6DA-48A4-42AD-A072-6BB4984D26C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9977B6DA-48A4-42AD-A072-6BB4984D26C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9977B6DA-48A4-42AD-A072-6BB4984D26C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9977B6DA-48A4-42AD-A072-6BB4984D26C0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CE2C9D61-FA3C-4CC3-8338-D6319053414E} = {6F06FB95-2A03-4F27-9C75-BE059580F5EB}
+		{F70E226E-0E7F-4520-9407-57E9F861CE16} = {6F06FB95-2A03-4F27-9C75-BE059580F5EB}
+		{9977B6DA-48A4-42AD-A072-6BB4984D26C0} = {6F06FB95-2A03-4F27-9C75-BE059580F5EB}
 	EndGlobalSection
 EndGlobal
