@@ -17,6 +17,7 @@ using QIRC.Serialization;
 /// System
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -375,7 +376,6 @@ namespace QIRC
                                 level = AccessLevel.ROOT;
                             else
                                 level = AccessLevel.ADMIN;
-                            Console.WriteLine(level);
                         }
                         if (CheckPermission(command.GetAccessLevel(), level))
                         {
@@ -385,7 +385,15 @@ namespace QIRC
                                 ProtoIrcChannel channel = channels.FirstOrDefault(c => c.name == message.Source);
                                 if (channel.serious && !command.IsSerious()) return;
                             }
-                            command.RunCommand(client, message);
+                            Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+                            try
+                            {
+                                command.RunCommand(client, message);
+                            }
+                            catch (Exception e)
+                            {
+                                SendMessage(client, e.Message, message.User, message.Source);
+                            }
                         }
                         else
                             SendMessage(client, "You don't have the permission to use this command! Only " + command.GetAccessLevel() + " can use this command! You are " + level + ".", message.User, message.Source);
