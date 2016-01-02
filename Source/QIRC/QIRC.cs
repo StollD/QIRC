@@ -378,7 +378,6 @@ namespace QIRC
                             level = AccessLevel.OPERATOR;
                         else if (user.ChannelModes[channel] == 'v')
                             level = AccessLevel.VOICE;
-                        Console.WriteLine(level);
                     }
                     client.WhoIs(user.Nick, (WhoIs whoIs) =>
                     {
@@ -412,6 +411,7 @@ namespace QIRC
                         else
                             SendMessage(client, "You don't have the permission to use this command! Only " + command.GetAccessLevel() + " can use this command! You are " + level + ".", message.User, message.Source);
                     });
+                    break;
                 }
             }
         }
