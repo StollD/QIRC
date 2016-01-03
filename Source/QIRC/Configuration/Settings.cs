@@ -45,10 +45,9 @@ namespace QIRC.Configuration
         protected static HashSet<SettingsFile> files { get; set; }
 
         /// <summary>
-        /// A timer that serializes the settings to disk after a
-        /// specific amount of seconds. It is created automatically.
+        /// A boolean that indicates if the initial load is completed
         /// </summary>
-        protected static Timer saveInterval { get; set; }
+        private static Boolean isLoaded { get; set; }
 
         /// <summary>
         /// Settings for the JSON Serializer
@@ -81,7 +80,14 @@ namespace QIRC.Configuration
             }
             catch
             {
-                return default(T);
+                try
+                {
+                    return (T)values[name];
+                }
+                catch
+                {
+                    return default(T);
+                }
             }
         }
 
@@ -99,6 +105,7 @@ namespace QIRC.Configuration
                 values.Add(name, value);
             else
                 values[name] = value;
+            Save();
         }
 
         /// <summary>
@@ -124,14 +131,7 @@ namespace QIRC.Configuration
                 foreach (FieldInfo field in type.GetType().GetFields())
                     Write(field.Name, field.GetValue(type));
             }
-            saveInterval = new Timer(Read<Double>("saveInterval") * 60 * 1000);
-            saveInterval.Elapsed += delegate (Object sender, ElapsedEventArgs e)
-            {
-                Save();
-                saveInterval.Stop();
-                saveInterval.Start();
-            };
-            saveInterval.Start();
+            isLoaded = true;
         }
 
         /// <summary>
@@ -140,6 +140,8 @@ namespace QIRC.Configuration
         /// </summary>
         public static void Save()
         {
+            if (!isLoaded)
+                return;
             foreach (SettingsFile file in files)
             {
                 Dictionary<String, Object> fileValues = new Dictionary<String, Object>();
