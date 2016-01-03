@@ -77,7 +77,7 @@ namespace QIRC.Commands
         /// <returns></returns>
         public override String GetExample()
         {
-            return Settings.Read<String>("control") + GetName() + " -to:#botwar Hi, I'm the new one. | " + Settings.Read<String>("control") + GetName() + " Welcome friend!";
+            return Settings.Read<String>("control") + GetName() + " -to:#botwar Hi, I'm the new one.";
         }
 
         /// <summary>

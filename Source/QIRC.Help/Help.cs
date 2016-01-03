@@ -67,7 +67,7 @@ namespace QIRC.Commands
         /// <returns></returns>
         public override String GetExample()
         {
-            return Settings.Read<String>("control") + GetName() + " | " + Settings.Read<String>("control") + GetName() + " <command>";
+            return Settings.Read<String>("control") + GetName() + " <command>";
         }
 
         /// <summary>
