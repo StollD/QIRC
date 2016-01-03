@@ -10,6 +10,7 @@ using ChatSharp.Events;
 
 /// QIRC
 using QIRC;
+using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
 
@@ -69,6 +70,15 @@ namespace QIRC.Commands
         public override Boolean IsSerious()
         {
             return true;
+        }
+
+        /// <summary>
+        /// An example for using the command.
+        /// </summary>
+        /// <returns></returns>
+        public override String GetExample()
+        {
+            return Settings.Read<String>("control") + GetName() + " | " + Settings.Read<String>("control") + GetName() + " -seed:42 3d255";
         }
 
         /// <summary>

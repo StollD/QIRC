@@ -63,6 +63,15 @@ namespace QIRC.Commands
         }
 
         /// <summary>
+        /// An example for using the command.
+        /// </summary>
+        /// <returns></returns>
+        public override String GetExample()
+        {
+            return Settings.Read<String>("control") + GetName() + " #botwar";
+        }
+
+        /// <summary>
         /// Here we run the command and evaluate the parameters
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)

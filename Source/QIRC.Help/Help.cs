@@ -62,6 +62,15 @@ namespace QIRC.Commands
         }
 
         /// <summary>
+        /// An example for using the command.
+        /// </summary>
+        /// <returns></returns>
+        public override String GetExample()
+        {
+            return Settings.Read<String>("control") + GetName() + " | " + Settings.Read<String>("control") + GetName() + " <command>";
+        }
+
+        /// <summary>
         /// Here we run the command and evaluate the parameters
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
@@ -90,6 +99,8 @@ namespace QIRC.Commands
                     }
                     if (parameters.Length != 0)
                         QIRC.SendMessage(client, "parameters: " + String.Join(", ", parameters), message.User, message.Source, true);
+                    if (!String.IsNullOrWhiteSpace(command.GetExample()))
+                        QIRC.SendMessage(client, "example: " + command.GetExample(), message.User, message.Source, true);
                 }
             }
         }
