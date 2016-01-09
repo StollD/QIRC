@@ -357,6 +357,39 @@ namespace QIRC
         }
 
         /// <summary>
+        /// Leaves a channel on the IRC
+        /// </summary>
+        public static void LeaveChannel(String channel, String reason = "")
+        {
+            /// If we aren't connected, we cant join.
+            if (!isConnected)
+                return;
+
+            /// We don't need empty junk
+            if (String.IsNullOrWhiteSpace(channel))
+                return;
+
+            /// Leave
+            try
+            {
+                if (String.IsNullOrWhiteSpace(reason))
+                    client.PartChannel(channel);
+                else
+                    client.PartChannel(channel, reason);
+            }
+            catch
+            {
+
+            }
+            
+
+            /// Edit the cfg
+            List<ProtoIrcChannel> list = Settings.Read<List<ProtoIrcChannel>>("channels");
+            list.RemoveAll(c => c.name == channel);
+            Settings.Write("channels", list);
+        }
+
+        /// <summary>
         /// Handles an incoming command
         /// </summary>
         public static void HandleCommand(ProtoIrcMessage message, IrcClient client)
