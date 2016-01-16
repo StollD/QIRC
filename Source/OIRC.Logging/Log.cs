@@ -1,6 +1,6 @@
 ﻿/// --------------------------------------
 /// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2015
+/// Copyright (c) ThomasKerman 2016
 /// QIRC is licensed under the MIT License
 /// --------------------------------------
 
@@ -35,7 +35,7 @@ namespace QIRC.Logging
         public override void OnLoad()
         {
             SettingsFile file = new SettingsFile("texts");
-            file.Add("logging__sayHello", ".NET Bot for Internet Relay Chat (IRC) - 2015");
+            file.Add("logging__sayHello", ".NET Bot for Internet Relay Chat (IRC) - 2016");
             file.Add("logging__onConnect", "Connecting to IRC: {0}:{1} as user {2}. {3}");
             file.Add("logging__modtRecieved", "Recieved Message of the Day");
             file.Add("logging__onConnected", "Connection established! Network name: {0}");

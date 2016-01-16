@@ -1,6 +1,6 @@
 /// --------------------------------------
 /// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2015
+/// Copyright (c) ThomasKerman 2016
 /// QIRC is licensed under the MIT License
 /// --------------------------------------
 

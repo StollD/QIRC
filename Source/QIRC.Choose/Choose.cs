@@ -16,7 +16,6 @@ using QIRC.Plugins;
 
 /// System
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
@@ -25,17 +24,17 @@ using System.Linq;
 namespace QIRC.Commands
 {
     /// <summary>
-    /// This is the implementation for the join command. It tells the bot to join the given channel.
-    /// The command requires Admin Access
+    /// This is the implementation for the help command. It displays every available command
+    /// and provides short descriptions. It also explains parameters
     /// </summary>
-    public class Join : IrcCommand
+    public class Choose : IrcCommand
     {
         /// <summary>
         /// The Access Level that is needed to execute the command
         /// </summary>
         public override AccessLevel GetAccessLevel()
         {
-            return AccessLevel.ADMIN;
+            return AccessLevel.NORMAL;
         }
 
         /// <summary>
@@ -43,7 +42,7 @@ namespace QIRC.Commands
         /// </summary>
         public override String GetName()
         {
-            return "join";
+            return "choose";
         }
 
         /// <summary>
@@ -51,7 +50,7 @@ namespace QIRC.Commands
         /// </summary>
         public override String GetDescription()
         {
-            return "Makes the bot join the given channel.";
+            return "Picks one option from 2 or more different things.";
         }
 
         /// <summary>
@@ -68,7 +67,7 @@ namespace QIRC.Commands
         /// <returns></returns>
         public override String GetExample()
         {
-            return Settings.Read<String>("control") + GetName() + " #botwar";
+            return Settings.Read<String>("control") + GetName() + " coffee|tea";
         }
 
         /// <summary>
@@ -78,22 +77,12 @@ namespace QIRC.Commands
         {
             if (String.IsNullOrWhiteSpace(message.Message))
             {
-                QIRC.SendAction(client, "tries to unlock the tremendous energy of the vacuum", message.Source);
+                QIRC.SendMessage(client, "You have to submit at least two options!", message.User, message.Source);
             }
-            else if(!message.Message.StartsWith("#"))
+            else
             {
-                QIRC.SendMessage(client, "Invalid channel name!", message.User, message.Source);
-            }
-            else if (Settings.Read<List<ProtoIrcChannel>>("channels").Count(c => c.name == message.Message) > 0)
-            {
-                QIRC.SendMessage(client, "I am already active in " + message.Message + ".", message.User, message.Source);
-            }
-            else 
-            {
-                String channel = message.Message;
-                ProtoIrcChannel proto = new ProtoIrcChannel() { name = channel, password = "", serious = true };
-                QIRC.JoinChannel(proto);
-                QIRC.SendMessage(client, "I have joined " + channel + "!", message.User, message.Source);
+                String[] options = message.Message.Split('|').Select(s => s.Trim()).ToArray();
+                QIRC.SendMessage(client, "Your options are: " + String.Join(", ", options) + ". My choice: " + options[new Random().Next(0, options.Length)], message.User, message.Source);
             }
         }
     }
