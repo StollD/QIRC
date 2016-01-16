@@ -454,6 +454,8 @@ namespace QIRC
         /// </summary>
         public static ProtoIrcMessage SendMessage(IrcClient client, string message, string from, string to, bool noname = false)
         {
+            if (String.IsNullOrWhiteSpace(message))
+                return new ProtoIrcMessage();
             message = Formatter.Format(message);
             string[] splits = new string[(int)Math.Round(message.Length / 460d) + 1];
             for (int i = 0; i < message.Length; i = i + 460)
