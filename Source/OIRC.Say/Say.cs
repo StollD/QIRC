@@ -87,10 +87,8 @@ namespace QIRC.Commands
         {
             if (StartsWithParam("to", message.Message))
             {
-                message.Message = StripParam("to", message.Message);
-                String[] split = message.Message.Split(new[] { ' ' }, 2);
-                String target = split[0];
-                String text = split[1];
+                String text = message.Message;
+                String target = StripParam("to", ref text);
                 QIRC.SendMessage(client, text, target, target, true);
             }
             else

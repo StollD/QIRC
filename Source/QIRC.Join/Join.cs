@@ -84,7 +84,7 @@ namespace QIRC.Commands
             {
                 QIRC.SendMessage(client, "Invalid channel name!", message.User, message.Source);
             }
-            else if (Settings.Read<List<ProtoIrcChannel>>("channels").Count(c => c.name == message.Message) > 0)
+            else if (Settings.Read<List<ProtoIrcChannel>>("channels").Count(c => String.Equals(c.name, message.Message, StringComparison.InvariantCultureIgnoreCase)) > 0)
             {
                 QIRC.SendMessage(client, "I am already active in " + message.Message + ".", message.User, message.Source);
             }

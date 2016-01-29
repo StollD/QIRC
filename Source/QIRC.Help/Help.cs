@@ -85,7 +85,7 @@ namespace QIRC.Commands
             else
             {
                 String name = message.Message;
-                IrcCommand command = PluginManager.commands.FirstOrDefault(c => c.GetName() == name);
+                IrcCommand command = PluginManager.commands.FirstOrDefault(c => String.Equals(c.GetName(), name, StringComparison.InvariantCultureIgnoreCase));
                 if (command != null)
                 {
                     String description = command.GetDescription();

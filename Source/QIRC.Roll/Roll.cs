@@ -88,11 +88,11 @@ namespace QIRC.Commands
         {
             if (StartsWithParam("seed", message.Message))
             {
-                message.Message = StripParam("seed", message.Message);
-                String[] split = message.Message.Split(new[] { ' ' }, 2);
-                Int32 seed = Int32.Parse(split[0]);
+                String text = message.Message;
+                String seedS = StripParam("seed", ref text);
+                Int32 seed = Int32.Parse(seedS);
                 Random random = new Random(seed);
-                Int32[] numbers = split.Length == 2 ? split[1].Split(new[] { 'd' }, 2).Select(i => Math.Min(300, Math.Max(1, Int32.Parse(i)))).ToArray() : new Int32[] { 1, 6 };
+                Int32[] numbers = !String.IsNullOrWhiteSpace(text) ? text.Split(new[] { 'd' }, 2).Select(i => Math.Min(300, Math.Max(1, Int32.Parse(i)))).ToArray() : new Int32[] { 1, 6 };
                 Int32[] results = new Int32[numbers[0]];
                 for (Int32 i = 0; i < results.Length; i++)
                     results[i] = random.Next(1, numbers[1]);

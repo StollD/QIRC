@@ -385,7 +385,7 @@ namespace QIRC
 
             /// Edit the cfg
             List<ProtoIrcChannel> list = Settings.Read<List<ProtoIrcChannel>>("channels");
-            list.RemoveAll(c => c.name == channel);
+            list.RemoveAll(c => String.Equals(c.name, channel, StringComparison.InvariantCultureIgnoreCase));
             Settings.Write("channels", list);
         }
 
@@ -399,7 +399,7 @@ namespace QIRC
             foreach (IrcCommand command in PluginManager.commands)
             {
                 String cmd = message.Message.Split(' ')[0];
-                if (command.GetName() == cmd)
+                if (String.Equals(command.GetName(), cmd, StringComparison.InvariantCultureIgnoreCase))
                 {
                     message.Message = message.Message.Remove(0, cmd.Length).Trim();
                     AccessLevel level = AccessLevel.NORMAL;
@@ -415,9 +415,9 @@ namespace QIRC
                     client.WhoIs(user.Nick, (WhoIs whoIs) =>
                     {
                         List<ProtoIrcAdmin> admins = Settings.Read<List<ProtoIrcAdmin>>("admins");
-                        if (admins.Count(a => a.name == whoIs.LoggedInAs) == 1)
+                        if (admins.Count(a => String.Equals(a.name, whoIs.LoggedInAs, StringComparison.InvariantCultureIgnoreCase)) == 1)
                         {
-                            ProtoIrcAdmin admin = admins.FirstOrDefault(a => a.name == whoIs.LoggedInAs);
+                            ProtoIrcAdmin admin = admins.FirstOrDefault(a => String.Equals(a.name, whoIs.LoggedInAs, StringComparison.InvariantCultureIgnoreCase));
                             if (admin.root)
                                 level = AccessLevel.ROOT;
                             else
@@ -428,7 +428,7 @@ namespace QIRC
                             if (message.IsChannelMessage)
                             {
                                 List<ProtoIrcChannel> channels = Settings.Read<List<ProtoIrcChannel>>("channels");
-                                ProtoIrcChannel channel = channels.FirstOrDefault(c => c.name == message.Source);
+                                ProtoIrcChannel channel = channels.FirstOrDefault(c => String.Equals(c.name, message.Source));
                                 if (channel.serious && !command.IsSerious()) return;
                             }
                             Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
