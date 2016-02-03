@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC", "Source\QIRC\QIRC.csproj", "{3C25C49A-7FF1-43B9-B4DA-BC9F81623D0B}"
 EndProject
@@ -18,11 +18,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OIRC.Logging", "Source\OIRC.Logging\OIRC.Logging.csproj", "{6B584DF1-42E8-43BF-B5C6-759C501CA9E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OIRC.Logging", "Source\QIRC.Logging\QIRC.Logging.csproj", "{6B584DF1-42E8-43BF-B5C6-759C501CA9E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.NickServ", "Source\QIRC.NickServ\QIRC.NickServ.csproj", "{E8D0C208-4D5F-4694-AD86-72D70D3F36DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OIRC.Say", "Source\OIRC.Say\OIRC.Say.csproj", "{CE2C9D61-FA3C-4CC3-8338-D6319053414E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OIRC.Say", "Source\QIRC.Say\QIRC.Say.csproj", "{CE2C9D61-FA3C-4CC3-8338-D6319053414E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.Action", "Source\QIRC.Action\QIRC.Action.csproj", "{F70E226E-0E7F-4520-9407-57E9F861CE16}"
 EndProject
@@ -37,6 +37,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.Leave", "Source\QIRC.Leave\QIRC.Leave.csproj", "{E8B5B0FA-121C-4F4D-9AAC-4D6D878B484F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.Choose", "Source\QIRC.Choose\QIRC.Choose.csproj", "{C1C1DD53-E0B3-4748-A1EB-BCFB2BEF03F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.Acronyms", "Source\QIRC.Acronyms\QIRC.Acronyms.csproj", "{FBBB0D49-98A2-42C1-B9BC-9FE7D0556694}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -84,6 +86,10 @@ Global
 		{C1C1DD53-E0B3-4748-A1EB-BCFB2BEF03F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1C1DD53-E0B3-4748-A1EB-BCFB2BEF03F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1C1DD53-E0B3-4748-A1EB-BCFB2BEF03F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBBB0D49-98A2-42C1-B9BC-9FE7D0556694}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBBB0D49-98A2-42C1-B9BC-9FE7D0556694}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBBB0D49-98A2-42C1-B9BC-9FE7D0556694}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBBB0D49-98A2-42C1-B9BC-9FE7D0556694}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,5 +102,6 @@ Global
 		{046AB02D-59B4-4D56-8C85-C9918C364A25} = {6F06FB95-2A03-4F27-9C75-BE059580F5EB}
 		{E8B5B0FA-121C-4F4D-9AAC-4D6D878B484F} = {6F06FB95-2A03-4F27-9C75-BE059580F5EB}
 		{C1C1DD53-E0B3-4748-A1EB-BCFB2BEF03F5} = {6F06FB95-2A03-4F27-9C75-BE059580F5EB}
+		{FBBB0D49-98A2-42C1-B9BC-9FE7D0556694} = {6F06FB95-2A03-4F27-9C75-BE059580F5EB}
 	EndGlobalSection
 EndGlobal

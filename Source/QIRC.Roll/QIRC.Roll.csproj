@@ -32,6 +32,7 @@
   <ItemGroup>
     <Reference Include="ChatSharp">
       <HintPath>..\..\Dependencies\ChatSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
@@ -43,6 +44,7 @@
     <ProjectReference Include="..\QIRC\QIRC.csproj">
       <Project>{3c25c49a-7ff1-43b9-b4da-bc9f81623d0b}</Project>
       <Name>QIRC</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
