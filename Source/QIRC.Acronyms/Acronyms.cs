@@ -89,7 +89,7 @@ namespace QIRC.Commands
         /// <returns></returns>
         public override String GetExample()
         {
-            return Settings.Read<String>("control") + GetName() + " IRC.";
+            return Settings.Read<String>("control") + GetName() + " IRC";
         }
 
         /// <summary>
@@ -182,6 +182,39 @@ namespace QIRC.Commands
                     }
                     QIRC.SendMessage(client, "[" + message.Message.Trim() + "] => " + acronyms.First(t => t.Item1 == message.Message.Trim()).Item2, message.User, message.Source);
                 }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Aliased version of the Acronym command
+    /// </summary>
+    public class Acronym_L : Acronym
+    {
+        public override String GetName()
+        {
+            return "acronym";
+        }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AcronymPlugin : IrcPlugin
+    {
+        /// <summary>
+        /// Reply to messages who match a special scheme
+        /// </summary>
+        public override void OnPrivateMessageRecieved(IrcClient client, PrivateMessageEventArgs e)
+        {
+            if (e.PrivateMessage.Message.EndsWith("?", StringComparison.InvariantCultureIgnoreCase))
+            {
+                String message = e.PrivateMessage.Message.Remove(e.PrivateMessage.Message.Length - 1);
+                IrcCommand acr = PluginManager.commands.First(c => c.GetName() == "acr");
+                (acr as Acronym).acronyms = new SerializeableList<Tuple<String, String>>("acronyms");
+                Logging.Log((acr as Acronym).acronyms.Count(t => t.Item1 == message) > 0, Logging.Level.INFO);
+                if ((acr as Acronym).acronyms.Count(t => t.Item1 == message) > 0)
+                    acr.RunCommand(client, new ProtoIrcMessage(e) { Message = message });
             }
         }
     }

@@ -12,12 +12,13 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Timers;
 
 /// <summary>
 /// The main namespace. Here's everything that executes actively.
 /// </summary>
-namespace QIRC.Logging
+namespace QIRC
 {
     /// <summary>
     /// Class to support logging to disk and CLI

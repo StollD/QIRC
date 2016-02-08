@@ -73,6 +73,7 @@
     <Compile Include="IRC\ProtoIrcAdmin.cs" />
     <Compile Include="IRC\ProtoIrcMessage.cs" />
     <Compile Include="IRC\ProtoIrcChannel.cs" />
+    <Compile Include="Logging.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="Constants\Paths.cs" />
     <Compile Include="Formatter.cs" />

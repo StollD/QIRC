@@ -82,9 +82,22 @@ namespace QIRC.Plugins
         /// </summary>
         public static void Invoke(String name, params Object[] arguments)
         {
-            MethodInfo info = typeof(IrcPlugin).GetMethod("On" + name);
-            foreach (IrcPlugin plugin in plugins)
-                info.Invoke(plugin, arguments);
+            try
+            {
+                MethodInfo info = typeof(IrcPlugin).GetMethod("On" + name);
+                foreach (IrcPlugin plugin in plugins)
+                    info.Invoke(plugin, arguments);
+            }
+            catch (Exception e)
+            {
+                Logging.Log(e.Message, Logging.Level.ERROR);
+                Logging.Log(e.StackTrace, Logging.Level.INFO);
+                if (e.InnerException != null)
+                {
+                    Logging.Log("   Inner Exception: " + e.InnerException.Message, Logging.Level.ERROR);
+                    Logging.Log("   Inner Exception: " + e.InnerException.StackTrace, Logging.Level.INFO);
+                }
+            }
         }
 
         /// <summary>

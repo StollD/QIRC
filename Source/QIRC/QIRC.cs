@@ -91,7 +91,7 @@ namespace QIRC
                     Message = input,
                     Source = Settings.Read<String>("name"),
                     User = Settings.Read<String>("name")
-                }, client);
+                }, client, true);
             }            
         }
 
@@ -342,6 +342,7 @@ namespace QIRC
             /// Join
             String name = channel.name;
             String password = channel.password;
+            Console.WriteLine(name);
             if (String.IsNullOrWhiteSpace(password))
                 client.JoinChannel(name);
             else
@@ -382,7 +383,6 @@ namespace QIRC
 
             }
             
-
             /// Edit the cfg
             List<ProtoIrcChannel> list = Settings.Read<List<ProtoIrcChannel>>("channels");
             list.RemoveAll(c => String.Equals(c.name, channel, StringComparison.InvariantCultureIgnoreCase));
@@ -392,7 +392,7 @@ namespace QIRC
         /// <summary>
         /// Handles an incoming command
         /// </summary>
-        public static void HandleCommand(ProtoIrcMessage message, IrcClient client)
+        public static void HandleCommand(ProtoIrcMessage message, IrcClient client, Boolean commandLine = false)
         {
             String control = Settings.Read<String>("control");
             message.Message = message.Message.Remove(0, control.Length);
@@ -423,7 +423,7 @@ namespace QIRC
                             else
                                 level = AccessLevel.ADMIN;
                         }
-                        if (CheckPermission(command.GetAccessLevel(), level))
+                        if (CheckPermission(command.GetAccessLevel(), level) || commandLine)
                         {
                             if (message.IsChannelMessage)
                             {
