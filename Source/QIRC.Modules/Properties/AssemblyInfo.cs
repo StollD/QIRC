@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("QIRC.Google")]
-[assembly: AssemblyDescription("Google Command for QIRC")]
+[assembly: AssemblyTitle("QIRC.Modules")]
+[assembly: AssemblyDescription("Modules Command for QIRC")]
 [assembly: AssemblyProduct("QIRC")]
 [assembly: AssemblyCopyright("Copyright © ThomasKerman 2016")]
 [assembly: ComVisible(false)]
-[assembly: Guid("1f638e4d-da88-4ea3-96ea-06ac823043d6")]
+[assembly: Guid("9acccb38-9475-4b72-bdcc-3d718ffab8ff")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
