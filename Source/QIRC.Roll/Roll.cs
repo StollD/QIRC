@@ -102,7 +102,6 @@ namespace QIRC.Commands
             {
                 Random random = new Random();
                 Int32[] numbers = !String.IsNullOrWhiteSpace(message.Message) ? message.Message.Split(new[] { 'd' }, 2).Select(i => Math.Min(300, Math.Max(1, Int32.Parse(i)))).ToArray() : new Int32[] { 1, 6 };
-                Console.WriteLine(numbers[0]);
                 Int32[] results = new Int32[numbers[0]];
                 for (Int32 i = 0; i < results.Length; i++)
                     results[i] = random.Next(1, numbers[1]);

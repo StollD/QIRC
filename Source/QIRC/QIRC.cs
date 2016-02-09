@@ -458,11 +458,16 @@ namespace QIRC
             if (String.IsNullOrWhiteSpace(message))
                 return new ProtoIrcMessage();
             message = Formatter.Format(message);
-            string[] splits = new string[(int)Math.Round(message.Length / 460d) + 1];
-            for (int i = 0; i < message.Length; i = i + 460)
-                splits[i] = new string(message.Take(Math.Min(460, message.Length - i)).ToArray());
+            String[] splits = new String[(Int32)Math.Round(message.Length / 460d) + 1];
+            String text = message;
+            for (Int32 i = 0; i < splits.Length; i++)
+            { 
+                splits[i] = new String(text.Take(Math.Min(460, text.Length)).ToArray());
+                text = text.Remove(0, Math.Min(460, text.Length - 1));
+            }
+
             if (!to.StartsWith("#")) to = from;
-            for (int j = 0; j < splits.Length; j++)
+            for (Int32 j = 0; j < splits.Length; j++)
             {
                 if (j == 0 && !noname)
                     client.SendMessage(from + ": " + splits[j], to);

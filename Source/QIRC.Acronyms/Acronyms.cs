@@ -169,7 +169,7 @@ namespace QIRC.Commands
                 else if (StartsWithParam("list", message.Message))
                 {
                     /// Announce it
-                    QIRC.SendMessage(client, "I will send you a list of my acronyms!", message.User, message.Source);
+                    if (message.IsChannelMessage) QIRC.SendMessage(client, "I will send you a list of my acronyms!", message.User, message.Source);
                     QIRC.SendMessage(client, "Here is a list of all my acronyms: " + String.Join(", ", acronyms.Select(t => t.Item1)), message.User, message.User, true);
                 }
                 else
