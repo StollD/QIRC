@@ -83,7 +83,7 @@ namespace QIRC.Commands
         /// <returns></returns>
         public override String GetExample()
         {
-            return Settings.Read<String>("control") + GetName() + " What is IRC?";
+            return Settings.Read<String>("control") + GetName() + " Internet Relay Chat";
         }
 
         /// <summary>
