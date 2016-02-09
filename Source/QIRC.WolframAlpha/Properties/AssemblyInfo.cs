@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("QIRC.Say")]
-[assembly: AssemblyDescription("Say Command for QIRC")]
+[assembly: AssemblyTitle("QIRC.WolframAlpha")]
+[assembly: AssemblyDescription("WolframAlpha Command for QIRC")]
 [assembly: AssemblyProduct("QIRC")]
 [assembly: AssemblyCopyright("Copyright © ThomasKerman 2016")]
 [assembly: ComVisible(false)]
