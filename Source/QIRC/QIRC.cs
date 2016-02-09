@@ -342,7 +342,6 @@ namespace QIRC
             /// Join
             String name = channel.name;
             String password = channel.password;
-            Console.WriteLine(name);
             if (String.IsNullOrWhiteSpace(password))
                 client.JoinChannel(name);
             else
