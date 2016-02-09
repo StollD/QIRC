@@ -45,6 +45,11 @@ namespace QIRC.IRC
         public String User { get; set; }
 
         /// <summary>
+        /// The time when the message was sent.
+        /// </summary>
+        public DateTime Time { get; set; }
+
+        /// <summary>
         /// Create the ProtoMessage
         /// </summary>
         public ProtoIrcMessage(PrivateMessage message)
@@ -53,6 +58,7 @@ namespace QIRC.IRC
             Message = message.Message;
             Source = message.Source;
             User = message.User.Nick;
+            Time = DateTime.UtcNow;
         }
 
         /// <summary>
@@ -68,6 +74,7 @@ namespace QIRC.IRC
             IsChannelMessage = true;
             Message = e.Notice;
             Source = User = e.Source;
+            Time = DateTime.UtcNow;
         }
 
         /// <summary>
@@ -78,6 +85,7 @@ namespace QIRC.IRC
         {
             IsChannelMessage = false;
             Message = Source = User = "";
+            Time = DateTime.UtcNow;
         }
     }
 }
