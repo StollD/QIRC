@@ -407,11 +407,18 @@ namespace QIRC
                     IrcUser user = client.Users[message.User];
                     if (message.IsChannelMessage)
                     {
-                        IrcChannel channel = client.Channels[message.Source];
-                        if (user.ChannelModes[channel] == 'o')
-                            level = AccessLevel.OPERATOR;
-                        else if (user.ChannelModes[channel] == 'v')
-                            level = AccessLevel.VOICE;
+                        try
+                        {
+                            IrcChannel channel = client.Channels[message.Source];
+                            if (user.ChannelModes[channel] == 'o')
+                                level = AccessLevel.OPERATOR;
+                            else if (user.ChannelModes[channel] == 'v')
+                                level = AccessLevel.VOICE;
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
                     }
                     client.WhoIs(user.Nick, (WhoIs whoIs) =>
                     {
@@ -469,10 +476,17 @@ namespace QIRC
             if (!to.StartsWith("#")) to = from;
             for (Int32 j = 0; j < splits.Length; j++)
             {
-                if (j == 0 && !noname)
-                    client.SendMessage(from + ": " + splits[j], to);
-                else
-                    client.SendMessage(splits[j], to);
+                try
+                {
+                    if (j == 0 && !noname)
+                        client.SendMessage(from + ": " + splits[j], to);
+                    else
+                        client.SendMessage(splits[j], to);
+                }
+                catch (Exception e)
+                {
+                    client.SendMessage(from + ": " + e.Message, to);
+                }
             }
             ProtoIrcMessage proto = new ProtoIrcMessage()
             {
