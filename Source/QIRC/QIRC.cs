@@ -458,7 +458,7 @@ namespace QIRC
             if (String.IsNullOrWhiteSpace(message))
                 return new ProtoIrcMessage();
             message = Formatter.Format(message);
-            String[] splits = new String[(Int32)Math.Round(message.Length / 460d) + 1];
+            String[] splits = new String[(Int32)Math.Ceiling(message.Length / 460d)];
             String text = message;
             for (Int32 i = 0; i < splits.Length; i++)
             { 

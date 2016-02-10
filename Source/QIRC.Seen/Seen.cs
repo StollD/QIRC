@@ -25,7 +25,7 @@ using System.Text.RegularExpressions;
 namespace QIRC.Commands
 {
     /// <summary>
-    /// This is the implementation for the say command. The bot will store the latest message of
+    /// This is the implementation for the seen command. The bot will store the latest message of
     /// every user, and output it on demand.
     /// </summary>
     public class Seen : IrcCommand
