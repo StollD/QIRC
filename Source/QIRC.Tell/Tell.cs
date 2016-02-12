@@ -152,7 +152,7 @@ namespace QIRC.Commands
             List<Msg> toDelete = new List<Msg>();
             foreach (Msg tell in Tell.tells)
             {
-                if (!Regex.IsMatch(e.PrivateMessage.User.Nick, tell.to))
+                if (!Regex.IsMatch(e.PrivateMessage.User.Nick, tell.to, RegexOptions.IgnoreCase))
                     continue;
                 if (tell.channel && tell.channelName != e.PrivateMessage.Source)
                     continue;

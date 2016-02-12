@@ -399,29 +399,29 @@ namespace QIRC
             message.Message = message.Message.Remove(0, control.Length);
             foreach (IrcCommand command in PluginManager.commands)
             {
-                String cmd = message.Message.Split(' ')[0];
-                if (String.Equals(command.GetName(), cmd, StringComparison.InvariantCultureIgnoreCase))
+                client.WhoIs(message.User, (WhoIs whoIs) =>
                 {
-                    message.Message = message.Message.Remove(0, cmd.Length).Trim();
-                    AccessLevel level = AccessLevel.NORMAL;
-                    IrcUser user = client.Users[message.User];
-                    if (message.IsChannelMessage)
+                    String cmd = message.Message.Split(' ')[0];
+                    if (String.Equals(command.GetName(), cmd, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        try
+                        message.Message = message.Message.Remove(0, cmd.Length).Trim();
+                        AccessLevel level = AccessLevel.NORMAL;
+                        IrcUser user = client.Users[message.User];
+                        if (message.IsChannelMessage)
                         {
-                            IrcChannel channel = client.Channels[message.Source];
-                            if (user.ChannelModes[channel] == 'o')
-                                level = AccessLevel.OPERATOR;
-                            else if (user.ChannelModes[channel] == 'v')
-                                level = AccessLevel.VOICE;
-                        }
-                        catch (Exception e)
-                        {
+                            try
+                            {
+                                IrcChannel channel = client.Channels[message.Source];
+                                if (user.ChannelModes[channel] == 'o' || user.ChannelModes[channel] == 'O')
+                                    level = AccessLevel.OPERATOR;
+                                else if (user.ChannelModes[channel] == 'v' || user.ChannelModes[channel] == 'V')
+                                    level = AccessLevel.VOICE;
+                            }
+                            catch (Exception e)
+                            {
 
+                            }
                         }
-                    }
-                    client.WhoIs(user.Nick, (WhoIs whoIs) =>
-                    {
                         List<ProtoIrcAdmin> admins = Settings.Read<List<ProtoIrcAdmin>>("admins");
                         if (admins.Count(a => String.Equals(a.name, whoIs.LoggedInAs, StringComparison.InvariantCultureIgnoreCase)) == 1)
                         {
@@ -451,11 +451,12 @@ namespace QIRC
                         }
                         else
                             SendMessage(client, "You don't have the permission to use this command! Only " + command.GetAccessLevel() + " can use this command! You are " + level + ".", message.User, message.Source);
-                    });
-                    break;
-                }
+                    }
+                });
+                break;
             }
         }
+        
 
         /// <summary>
         /// Sends a message to the IRC

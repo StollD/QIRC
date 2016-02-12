@@ -92,7 +92,7 @@ namespace QIRC.Commands
                 String text = message.Message;
                 String target = StripParam("channel", ref text);
                 String wildcard = "^" + Regex.Escape(text.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard) && p.IsChannelMessage && p.Source == target).ToArray();
+                ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && p.Source == target).ToArray();
                 if (messages.Length == 0)
                 {
                     QIRC.SendMessage(client, "I haven't seen the user [b]" + text.Trim() + "[/b] in the channel [b]" + target + "[/b] yet.", message.User, message.Source);
@@ -104,7 +104,7 @@ namespace QIRC.Commands
             else
             {
                 String wildcard = "^" + Regex.Escape(message.Message.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard) && p.IsChannelMessage).ToArray();
+                ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage).ToArray();
                 if (messages.Length == 0)
                 {
                     QIRC.SendMessage(client, "I haven't seen the user [b]" + message.Message.Trim() + "[/b] yet.", message.User, message.Source);

@@ -20,7 +20,7 @@ using System;
 /// <summary>
 /// Here we log into NickServ
 /// </summary>
-namespace QIRC.Logging
+namespace QIRC.Addons
 {
     /// <summary>
     /// This is the IrcPlugin that loads information about NickServ and 
