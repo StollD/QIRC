@@ -34,7 +34,7 @@ namespace QIRC.Addons
         /// <summary>
         /// The regular expression that is used to detect the syntax (Copyright goes to the Willie/Sopel Devs)
         /// </summary>
-        public const String regex = @"(?:(\S+)[:,]\s+)?s/((?:[^/])+)/((?:[^/])*)?";
+        public const String regex = @"^(?:(\S+)[:]\s+)?s/((?:[^/])+)/((?:[^/])*)?$";
 
         /// <summary>
         /// This gets invoked when someone wrote something in a channel
@@ -45,7 +45,7 @@ namespace QIRC.Addons
             if (!Regex.IsMatch(message.Message, regex, RegexOptions.IgnoreCase))
                 return;
             Match match = Regex.Match(message.Message, regex, RegexOptions.IgnoreCase);
-            String nick = match.Groups[1].Success ? match.Groups[1].Value : message.User;
+            String nick = match.Groups[1].Success ? match.Groups[1].Value : message.User;                
             if (!client.Users.Contains(nick))
                 return;
             String find = match.Groups[2].Value.Replace(@"\/", "/");
