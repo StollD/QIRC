@@ -212,7 +212,6 @@ namespace QIRC.Commands
                 String message = e.PrivateMessage.Message.Remove(e.PrivateMessage.Message.Length - 1);
                 IrcCommand acr = PluginManager.commands.First(c => c.GetName() == "acr");
                 (acr as Acronym).acronyms = new SerializeableList<Tuple<String, String>>("acronyms");
-                Logging.Log((acr as Acronym).acronyms.Count(t => t.Item1 == message) > 0, Logging.Level.INFO);
                 if ((acr as Acronym).acronyms.Count(t => t.Item1 == message) > 0)
                     acr.RunCommand(client, new ProtoIrcMessage(e) { Message = message });
             }

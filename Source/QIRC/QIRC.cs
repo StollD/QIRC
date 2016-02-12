@@ -397,16 +397,16 @@ namespace QIRC
         {
             String control = Settings.Read<String>("control");
             message.Message = message.Message.Remove(0, control.Length);
-            foreach (IrcCommand command in PluginManager.commands)
+            IrcUser user = client.Users[message.User];
+            client.WhoIs(user.Nick, (WhoIs whoIs) =>
             {
-                client.WhoIs(message.User, (WhoIs whoIs) =>
+                foreach (IrcCommand command in PluginManager.commands)
                 {
                     String cmd = message.Message.Split(' ')[0];
                     if (String.Equals(command.GetName(), cmd, StringComparison.InvariantCultureIgnoreCase))
                     {
                         message.Message = message.Message.Remove(0, cmd.Length).Trim();
                         AccessLevel level = AccessLevel.NORMAL;
-                        IrcUser user = client.Users[message.User];
                         if (message.IsChannelMessage)
                         {
                             try
@@ -451,11 +451,12 @@ namespace QIRC
                         }
                         else
                             SendMessage(client, "You don't have the permission to use this command! Only " + command.GetAccessLevel() + " can use this command! You are " + level + ".", message.User, message.Source);
+                        break;
                     }
-                });
-                break;
-            }
+                }
+            });
         }
+        
         
 
         /// <summary>

@@ -86,7 +86,6 @@ namespace QIRC.Commands
                 { Encoding = System.Text.Encoding.UTF8 }
                 .DownloadString("http://api.wolframalpha.com/v2/query?appid=" + config.appid + "&input=" + Uri.EscapeDataString(message.Message) + "&format=plaintext&podindex=1&podindex=2&scantimeout=7&podtimeout=7&formattimeout=7&parsetimeout=7&units=" + config.units);
             document.LoadXml(wa);
-            Console.WriteLine(message.Message);
             String success = document.DocumentElement.Attributes["success"].Value;
             if (success != "true")
             {
@@ -118,7 +117,7 @@ namespace QIRC.Commands
     /// <summary>
     /// Alias for the google command.
     /// </summary>
-    public class Google_L : WolframAlpha
+    public class Wolfram_L : WolframAlpha
     {
         public override String GetName()
         {
