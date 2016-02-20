@@ -179,20 +179,22 @@ namespace QIRC.Commands
             ProtoIrcMessage message = new ProtoIrcMessage(e);
             if (!Regex.IsMatch(message.Message, issueURL))
                 return;
-            Match match = Regex.Match(message.Message, issueURL, RegexOptions.IgnoreCase);
-            String id = match.Groups[5].Value;
-            if (match.Groups[1].Success)
+            foreach (Match match in Regex.Matches(message.Message, issueURL, RegexOptions.IgnoreCase))
             {
-                String repo = GitHubAlias.alias.Count(r => r.Key == match.Groups[1].Value) > 0 ? GitHubAlias.alias.First(r => r.Key == match.Groups[1].Value).Value : match.Groups[1].Value;
-                String info = GetInfo(repo, id);
-                if (!String.IsNullOrWhiteSpace(info))
-                    QIRC.SendMessage(client, info, message.User, message.Source, true);
-            }
-            else
-            {
-                String info = GetInfo(GitHubRepo.repos.FirstOrDefault(r => r.Key == message.Source).Value, id);
-                if (!String.IsNullOrWhiteSpace(info))
-                    QIRC.SendMessage(client, info, message.User, message.Source, true);
+                String id = match.Groups[5].Value;
+                if (match.Groups[1].Success)
+                {
+                    String repo = GitHubAlias.alias.Count(r => r.Key == match.Groups[1].Value) > 0 ? GitHubAlias.alias.First(r => r.Key == match.Groups[1].Value).Value : match.Groups[1].Value;
+                    String info = GetInfo(repo, id);
+                    if (!String.IsNullOrWhiteSpace(info))
+                        QIRC.SendMessage(client, info, message.User, message.Source, true);
+                }
+                else
+                {
+                    String info = GetInfo(GitHubRepo.repos.FirstOrDefault(r => r.Key == message.Source).Value, id);
+                    if (!String.IsNullOrWhiteSpace(info))
+                        QIRC.SendMessage(client, info, message.User, message.Source, true);
+                }
             }
         }
 
