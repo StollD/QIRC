@@ -108,7 +108,7 @@ namespace QIRC.Commands
         /// </summary>
         public override AccessLevel GetAccessLevel()
         {
-            return AccessLevel.OPERATOR;
+            return AccessLevel.NORMAL;
         }
 
         /// <summary>
