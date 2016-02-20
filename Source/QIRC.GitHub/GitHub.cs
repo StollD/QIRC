@@ -211,7 +211,7 @@ namespace QIRC.Commands
                     body = data["body"].ToString().Split('\n')[0] + "...";
                 else
                     body = data["body"].ToString().Split('\n')[0];
-                return "[#" + id + "] [b]title:[/b] " + data["title"] + " [b]|[/b] " + body;
+                return "[#" + id + "] [b]title:[/b] " + data["title"] + " [b]|[/b] " + body + " [b]|[/b] " + "https://github.com/" + repository + "/issues/" + id;
             }
             catch
             {
