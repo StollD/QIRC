@@ -398,66 +398,71 @@ namespace QIRC
             String control = Settings.Read<String>("control");
             message.Message = message.Message.Remove(0, control.Length);
             IrcUser user = client.Users[message.User];
-            client.WhoIs(user.Nick, (WhoIs whoIs) =>
+            try
             {
-                foreach (IrcCommand command in PluginManager.commands)
+                client.WhoIs(user.Nick, (WhoIs whoIs) =>
                 {
-                    String cmd = message.Message.Split(' ')[0];
-                    if (String.Equals(command.GetName(), cmd, StringComparison.InvariantCultureIgnoreCase))
+                    foreach (IrcCommand command in PluginManager.commands)
                     {
-                        message.Message = message.Message.Remove(0, cmd.Length).Trim();
-                        AccessLevel level = AccessLevel.NORMAL;
-                        if (message.IsChannelMessage)
+                        String cmd = message.Message.Split(' ')[0];
+                        if (String.Equals(command.GetName(), cmd, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            try
-                            {
-                                IrcChannel channel = client.Channels[message.Source];
-                                if (user.ChannelModes[channel] == 'o' || user.ChannelModes[channel] == 'O')
-                                    level = AccessLevel.OPERATOR;
-                                else if (user.ChannelModes[channel] == 'v' || user.ChannelModes[channel] == 'V')
-                                    level = AccessLevel.VOICE;
-                            }
-                            catch (Exception e)
-                            {
-
-                            }
-                        }
-                        List<ProtoIrcAdmin> admins = Settings.Read<List<ProtoIrcAdmin>>("admins");
-                        if (admins.Count(a => String.Equals(a.name, whoIs.LoggedInAs, StringComparison.InvariantCultureIgnoreCase)) == 1)
-                        {
-                            ProtoIrcAdmin admin = admins.FirstOrDefault(a => String.Equals(a.name, whoIs.LoggedInAs, StringComparison.InvariantCultureIgnoreCase));
-                            if (admin.root)
-                                level = AccessLevel.ROOT;
-                            else
-                                level = AccessLevel.ADMIN;
-                        }
-                        if (CheckPermission(command.GetAccessLevel(), level) || commandLine)
-                        {
+                            message.Message = message.Message.Remove(0, cmd.Length).Trim();
+                            AccessLevel level = AccessLevel.NORMAL;
                             if (message.IsChannelMessage)
                             {
-                                List<ProtoIrcChannel> channels = Settings.Read<List<ProtoIrcChannel>>("channels");
-                                ProtoIrcChannel channel = channels.FirstOrDefault(c => String.Equals(c.name, message.Source));
-                                if (channel.serious && !command.IsSerious()) return;
+                                try
+                                {
+                                    IrcChannel channel = client.Channels[message.Source];
+                                    if (user.ChannelModes[channel] == 'o' || user.ChannelModes[channel] == 'O')
+                                        level = AccessLevel.OPERATOR;
+                                    else if (user.ChannelModes[channel] == 'v' || user.ChannelModes[channel] == 'V')
+                                        level = AccessLevel.VOICE;
+                                }
+                                catch (Exception e)
+                                {
+
+                                }
                             }
-                            Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
-                            try
+                            List<ProtoIrcAdmin> admins = Settings.Read<List<ProtoIrcAdmin>>("admins");
+                            if (admins.Count(a => String.Equals(a.name, whoIs.LoggedInAs, StringComparison.InvariantCultureIgnoreCase)) == 1)
                             {
-                                command.RunCommand(client, message);
+                                ProtoIrcAdmin admin = admins.FirstOrDefault(a => String.Equals(a.name, whoIs.LoggedInAs, StringComparison.InvariantCultureIgnoreCase));
+                                if (admin.root)
+                                    level = AccessLevel.ROOT;
+                                else
+                                    level = AccessLevel.ADMIN;
                             }
-                            catch (Exception e)
+                            if (CheckPermission(command.GetAccessLevel(), level) || commandLine)
                             {
-                                SendMessage(client, e.Message, message.User, message.Source);
+                                if (message.IsChannelMessage)
+                                {
+                                    List<ProtoIrcChannel> channels = Settings.Read<List<ProtoIrcChannel>>("channels");
+                                    ProtoIrcChannel channel = channels.FirstOrDefault(c => String.Equals(c.name, message.Source));
+                                    if (channel.serious && !command.IsSerious()) return;
+                                }
+                                Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+                                try
+                                {
+                                    command.RunCommand(client, message);
+                                }
+                                catch (Exception e)
+                                {
+                                    SendMessage(client, e.Message, message.User, message.Source);
+                                }
                             }
+                            else
+                                SendMessage(client, "You don't have the permission to use this command! Only " + command.GetAccessLevel() + " can use this command! You are " + level + ".", message.User, message.Source);
+                            break;
                         }
-                        else
-                            SendMessage(client, "You don't have the permission to use this command! Only " + command.GetAccessLevel() + " can use this command! You are " + level + ".", message.User, message.Source);
-                        break;
                     }
-                }
-            });
-        }
-        
-        
+                });
+            }
+            catch
+            {
+                SendMessage(client, "ChatSharp broke. Please contact your local doctor.", message.User, message.Source);
+            }
+        }     
 
         /// <summary>
         /// Sends a message to the IRC
