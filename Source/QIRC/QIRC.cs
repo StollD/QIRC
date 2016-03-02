@@ -398,9 +398,10 @@ namespace QIRC
             String control = Settings.Read<String>("control");
             message.Message = message.Message.Remove(0, control.Length);
             IrcUser user = client.Users[message.User];
-            try
+
+            client.WhoIs(user.Nick, (WhoIs whoIs) =>
             {
-                client.WhoIs(user.Nick, (WhoIs whoIs) =>
+                try
                 {
                     foreach (IrcCommand command in PluginManager.commands)
                     {
@@ -456,12 +457,12 @@ namespace QIRC
                             break;
                         }
                     }
-                });
-            }
-            catch
-            {
-                SendMessage(client, "ChatSharp broke. Please contact your local doctor.", message.User, message.Source);
-            }
+                }
+                catch
+                {
+                    SendMessage(client, "ChatSharp broke. Please contact your local doctor.", message.User, message.Source);
+                }
+            });            
         }     
 
         /// <summary>
