@@ -473,13 +473,7 @@ namespace QIRC
             if (String.IsNullOrWhiteSpace(message))
                 return new ProtoIrcMessage();
             message = Formatter.Format(message);
-            String[] splits = new String[(Int32)Math.Ceiling(message.Length / 460d)];
-            String text = message;
-            for (Int32 i = 0; i < splits.Length; i++)
-            { 
-                splits[i] = new String(text.Take(Math.Min(460, text.Length)).ToArray());
-                text = text.Remove(0, Math.Min(460, text.Length - 1));
-            }
+            String[] splits = SplitInParts(message, 400).ToArray();
 
             if (!to.StartsWith("#")) to = from;
             for (Int32 j = 0; j < splits.Length; j++)
@@ -505,6 +499,20 @@ namespace QIRC
             };
             PluginManager.Invoke("MessageSent", client, proto);
             return proto;
+        }
+
+        /// <summary>
+        /// Splits a string into multiple chunks
+        /// </summary>
+        protected static IEnumerable<String> SplitInParts(String s, Int32 partLength)
+        {
+            if (s == null)
+                throw new ArgumentNullException("s");
+            if (partLength <= 0)
+                throw new ArgumentException("Part length has to be positive.", "partLength");
+
+            for (Int32 i = 0; i < s.Length; i += partLength)
+                yield return s.Substring(i, Math.Min(partLength, s.Length - i));
         }
 
         /// <summary>

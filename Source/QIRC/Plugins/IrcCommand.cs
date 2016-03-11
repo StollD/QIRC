@@ -46,11 +46,12 @@ namespace QIRC.Plugins
         }
         protected String StripParam(String param, ref String message)
         {
+            String msg = String.Copy(message);
             Regex regex = new Regex(@"-([^-\s:=]+)([:=])?([^-\s]+)?");
-            while (regex.IsMatch(message))
+            while (regex.IsMatch(msg))
             {
-                Match match = regex.Match(message);
-                message = message.Remove(message.IndexOf(match.ToString()), match.ToString().Length);
+                Match match = regex.Match(msg);
+                msg = msg.Remove(msg.IndexOf(match.ToString()), match.ToString().Length);
                 if (!String.Equals(match.Groups[1].Value, param, StringComparison.InvariantCultureIgnoreCase)) continue;
                 String val = "";
                 String replace = "-" + param;
@@ -59,6 +60,7 @@ namespace QIRC.Plugins
                     replace += match.Groups[2].Value + match.Groups[3].Value;
                     val = match.Groups[3].Value;
                 }
+                message = message.Replace(replace + " ", "").Trim();
                 return val;
             }
             return "";
