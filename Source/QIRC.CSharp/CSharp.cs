@@ -23,6 +23,7 @@ using System.Collections;
 using System.Threading;
 using System.Globalization;
 using System.IO;
+using System.Text;
 
 /// Mono
 using Mono.CSharp;
@@ -114,7 +115,7 @@ namespace QIRC.Commands
             /// Reset the evaluator
             if (StartsWithParam("reset", message.Message))
             {
-                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new ConsoleReportPrinter(new StreamWriter(new MemoryStream()))));
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter(state => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, message.Message, message.Source, true); })));
                 Evaluate("using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message, true);
                 foreach (String s in persistent)
                     Evaluate(s, message, true);
@@ -143,7 +144,7 @@ namespace QIRC.Commands
             /// Create the Evaluator
             if (evaluator == null)
             {
-                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new ConsoleReportPrinter(new StreamWriter(new MemoryStream()))));
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter(state => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, message.Message, message.Source, true); })));
                 Evaluate("using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message, true);
                 foreach (String s in persistent)
                     Evaluate(s, message, true);
@@ -386,6 +387,55 @@ namespace QIRC.Commands
                 output += result.ToString();
             }
             return output;
+        }
+    }
+
+    /// <summary>
+    /// A dynamic ReportPrinter
+    /// </summary>
+    public class DelegateReportPrinter : ReportPrinter
+    {
+        /// <summary>
+        /// The action that gets executed
+        /// </summary>
+        protected Action<String> action;
+
+        /// <summary>
+        /// Print sth.
+        /// </summary>
+        public override void Print(AbstractMessage msg, Boolean showFullPath)
+        {
+            String output = "";
+            base.Print(msg, showFullPath);
+            StringBuilder stringBuilder = new StringBuilder();
+            if (!msg.Location.IsNull)
+            {
+                if (!showFullPath)
+                    stringBuilder.Append(msg.Location.ToString());
+                else
+                    stringBuilder.Append(msg.Location.ToStringFullName());
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.AppendFormat("{0} CS{1:0000}: {2}", msg.MessageType, msg.Code, msg.Text);
+            if (msg.IsWarning)
+                output += stringBuilder.ToString();
+            else
+                output += FormatText(stringBuilder.ToString());
+            if (msg.RelatedSymbols != null)
+            {
+                String[] relatedSymbols = msg.RelatedSymbols;
+                for (Int32 i = 0; i < relatedSymbols.Length; i++)
+                    output += String.Concat(relatedSymbols[i], msg.MessageType, ")");
+            }
+            action(output);
+        }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public DelegateReportPrinter(Action<String> action)
+        {
+            this.action = action;
         }
     }
 

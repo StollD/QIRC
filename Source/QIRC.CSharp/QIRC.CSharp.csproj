@@ -54,9 +54,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Condition=" '$(OS)' != 'Unix' ">
-    <PostBuildEvent>#if !__MonoCS__
-copy $(ProjectDir)\Dependencies\Mono.CSharp.dll $(OutDir)\..\
-#endif</PostBuildEvent>
+    <PostBuildEvent>copy $(ProjectDir)\Dependencies\Mono.CSharp.dll $(OutDir)\..\</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
