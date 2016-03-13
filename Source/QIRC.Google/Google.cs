@@ -111,7 +111,7 @@ namespace QIRC.Commands
                 if (message.IsChannelMessage) QIRC.SendMessage(client, "Writing you a PM with the first " + results + " search results for \"" + query + "\"", message.User, message.Source);
                 for (Int32 i = 0; i < results; i++)
                 {
-                    QIRC.SendMessage(client, result.responseData.results[i].url + " [" + result.responseData.results[i].titleNoFormatting + "]", message.User, message.User, true);
+                    QIRC.SendMessage(client, Uri.UnescapeDataString(result.responseData.results[i].url) + " [" + result.responseData.results[i].titleNoFormatting + "]", message.User, message.User, true);
                 }
             }
             else
@@ -123,7 +123,7 @@ namespace QIRC.Commands
                     QIRC.SendMessage(client, "No results found for \"" + query + "\"", message.User, message.Source);
                     return;
                 }
-                QIRC.SendMessage(client, result.responseData.results[0].url + " [" + result.responseData.results[0].titleNoFormatting + "] (" + result.responseData.cursor.resultCount + " results found, took " + result.responseData.cursor.searchResultTime + "s)", message.User, message.Source, !message.IsChannelMessage);
+                QIRC.SendMessage(client, Uri.UnescapeDataString(result.responseData.results[0].url) + " [" + result.responseData.results[0].titleNoFormatting + "] (" + result.responseData.cursor.resultCount + " results found, took " + result.responseData.cursor.searchResultTime + "s)", message.User, message.Source, !message.IsChannelMessage);
             }
         }
     }
