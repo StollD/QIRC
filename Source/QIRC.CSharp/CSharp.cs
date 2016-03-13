@@ -343,9 +343,7 @@ namespace QIRC.Commands
             }
             else if (result is string)
             {
-                output += "\"";
-                output += EscapeString((string)result);
-                output += "\"";
+                output += result.ToString().Replace("\n", " ");
             }
             else if (result is IDictionary)
             {
