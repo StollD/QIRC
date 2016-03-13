@@ -13,13 +13,19 @@ using QIRC;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
+using QIRC.Serialization;
 
 /// System
 using System;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Collections;
+using System.Threading;
+using System.Globalization;
+using System.IO;
 
-/// Microsoft
-using Microsoft.CSharp;
+/// Mono
+using Mono.CSharp;
 
 /// <summary>
 /// Here's everything that is an IrcCommand
@@ -30,7 +36,7 @@ namespace QIRC.Commands
     /// This is the implementation for the csharp command. It will take C# code, compile
     /// and execute it in a Sandbox
     /// </summary>
-    public class Choose : IrcCommand
+    public class CSharp : IrcCommand
     {
         /// <summary>
         /// The Access Level that is needed to execute the command
@@ -65,6 +71,19 @@ namespace QIRC.Commands
         }
 
         /// <summary>
+        /// The Parameters of the Command
+        /// </summary>
+        public override String[] GetParameters()
+        {
+            return new String[]
+            {
+                "reset", "Clears the state of the C# shell.",
+                "persistent", "Saves an expression into the class body.",
+                "state", "Debugs the state of the evaluator"
+            };
+        }
+
+        /// <summary>
         /// An example for using the command.
         /// </summary>
         /// <returns></returns>
@@ -74,45 +93,312 @@ namespace QIRC.Commands
         }
 
         /// <summary>
+        /// The C# Evaluator
+        /// </summary>
+        protected static Evaluator evaluator { get; set; }
+
+        /// <summary>
+        /// All persistent expressions
+        /// </summary>
+        protected static SerializeableList<String> persistent { get; set; }
+
+        /// <summary>
         /// Here we run the command and evaluate the parameters
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
-            String code = @"using System;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
+            /// Load the list
+            if (persistent == null)
+                persistent = new SerializeableList<String>("csharp_persistent");
 
-public class Eval
-{
-    public static Object Evaluate()
-    {
-        return " + message.Message.Trim() + @";
-    }
-}";
-            /// If we have no args
-            /// Get a CSharp Code Compiler
-            CSharpCodeProvider csharp = new CSharpCodeProvider();
+            /// Reset the evaluator
+            if (StartsWithParam("reset", message.Message))
+            {
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new ConsoleReportPrinter(new StreamWriter(new MemoryStream()))));
+                Evaluate("using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message, true);
+                foreach (String s in persistent)
+                    Evaluate(s, message, true);
+                QIRC.SendMessage(client, "Cleared the C# Evaluator.", message.User, message.Source);
+                return;
+            }
 
-            /// Configure it
-            CompilerParameters param = new CompilerParameters(new[] { "System.dll", "System.Core.dll" });
-            CompilerResults result = csharp.CompileAssemblyFromSource(param, code
-                .Replace("System.IO", "")
+            /// Debugs the evaluator state
+            if (StartsWithParam("state", message.Message))
+            {
+                QIRC.SendMessage(client, "Using: " + evaluator.GetUsing().Replace("\n", ""), message.User, message.User, true);
+                QIRC.SendMessage(client, "Variables: " + evaluator.GetVars().Replace('\n', ';'), message.User, message.User, true);
+                if (message.IsChannelMessage) QIRC.SendMessage(client, "I sent you the current state of the evaluator.", message.User, message.Source);
+                return;
+            }
+
+            /// Saves an expression
+            if (StartsWithParam("persistent", message.Message))
+            {
+                String text = message.Message;
+                StripParam("persistent", ref text);
+                persistent.Add(text.Trim());
+                message.Message = text.Trim();
+            }
+
+            /// Create the Evaluator
+            if (evaluator == null)
+            {
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new ConsoleReportPrinter(new StreamWriter(new MemoryStream()))));
+                Evaluate("using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message, true);
+                foreach (String s in persistent)
+                    Evaluate(s, message, true);
+            }
+
+            /// Evaluate!
+            Evaluate(message.Message, message);
+        }
+
+        /// <summary>
+        /// Evaluates a C# expression. Ported from Mono REPL
+        /// </summary>
+        protected virtual string Evaluate(string input, ProtoIrcMessage message, Boolean quite = false)
+        {
+            bool result_set;
+            object result;
+            Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+            input = input.Replace("System.IO", "")
                 .Replace("System.Xml", "")
                 .Replace("System.Diagnostics.Process", "")
                 .Replace("while(true)", "")
                 .Replace("while (true)", "")
                 .Replace("Console.ReadKey()", "")
                 .Replace("Console.Read()", "")
-                .Replace("Console.ReadLine()", "")
-            );
+                .Replace("Console.ReadLine()", "");
+            try
+            {
+                input = evaluator.Evaluate(input, out result, out result_set);
+                if (result_set && !quite)
+                    QIRC.SendMessage(QIRC.client, PrettyPrint(result), message.Message, message.Source, true);
+            }
+            catch (Exception e)
+            {
+                if (!quite)
+                    QIRC.SendMessage(QIRC.client, e.ToString().Replace('\n', ' '), message.User, message.Source, true);
+                return null;
+            }
+            return input;
+        }
 
-            /// Execute it
-            foreach (Object s in result.Errors) Logging.Log(s, Logging.Level.ERROR);
-            Object value = result.CompiledAssembly.GetType("Eval").GetMethod("Evaluate").Invoke(null, null);
-            QIRC.SendMessage(client, value.ToString(), message.User, message.Source);
+        /// <summary>
+        /// Ported from Mono REPL
+        /// </summary>
+        protected static String EscapeString(String s)
+        {
+            String output = "";
+            foreach (Char c in s)
+            {
+                if (c > 32)
+                {
+                    output += c;
+                    continue;
+                }
+                switch (c)
+                {
+                    case '\"':
+                        output += "\\\""; break;
+                    case '\a':
+                        output += "\\a"; break;
+                    case '\b':
+                        output += "\\b"; break;
+                    case '\n':
+                        output += "\\n";
+                        break;
+
+                    case '\v':
+                        output += "\\v";
+                        break;
+
+                    case '\r':
+                        output += "\\r";
+                        break;
+
+                    case '\f':
+                        output += "\\f";
+                        break;
+
+                    case '\t':
+                        output += "\\t";
+                        break;
+
+                    default:
+                        output += String.Format("\\x{0:x}", (Int32)c);
+                        break;
+                }
+            }
+            return output;
+        }
+
+        /// <summary>
+        /// Escapes a char. Ported from Mono REPL
+        /// </summary>
+        protected static String EscapeChar(char c)
+        {
+            String output = "";
+            if (c == '\'')
+            {
+                output += "'\\''";
+                return output;
+            }
+            if (c > 32)
+            {
+                output += String.Format("'{0}'", c);
+                return output;
+            }
+            switch (c)
+            {
+                case '\a':
+                    output += "'\\a'";
+                    break;
+
+                case '\b':
+                    output += "'\\b'";
+                    break;
+
+                case '\n':
+                    output += "'\\n'";
+                    break;
+
+                case '\v':
+                    output += "'\\v'";
+                    break;
+
+                case '\r':
+                    output += "'\\r'";
+                    break;
+
+                case '\f':
+                    output += "'\\f'";
+                    break;
+
+                case '\t':
+                    output += "'\\t";
+                    break;
+
+                default:
+                    output += String.Format("'\\x{0:x}", (int)c);
+                    break;
+            }
+            return output;
+        }
+
+        // Some types (System.Json.JsonPrimitive) implement
+        // IEnumerator and yet, throw an exception when we
+        // try to use them, helper function to check for that
+        // condition
+        protected static bool WorksAsEnumerable(Object obj)
+        {
+            IEnumerable enumerable = obj as IEnumerable;
+            if (enumerable != null)
+            {
+                try
+                {
+                    enumerable.GetEnumerator();
+                    return true;
+                }
+                catch
+                {
+                    // nothing, we return false below
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Pretty prints an object. Ported from Mono REPL
+        /// </summary>
+        protected static String PrettyPrint(object result)
+        {
+            String output = "";
+            if (result == null)
+            {
+                output += "null";
+                return output; ;
+            }
+
+            if (result is Array)
+            {
+                Array a = (Array)result;
+
+                output += "{ ";
+                int top = a.GetUpperBound(0);
+                for (int i = a.GetLowerBound(0); i <= top; i++)
+                {
+                    output += PrettyPrint(a.GetValue(i));
+                    if (i != top)
+                        output += ", ";
+                }
+                output += " }";
+            }
+            else if (result is bool)
+            {
+                if ((bool)result)
+                    output += "true";
+                else
+                    output += "false";
+            }
+            else if (result is string)
+            {
+                output += "\"";
+                output += EscapeString((string)result);
+                output += "\"";
+            }
+            else if (result is IDictionary)
+            {
+                IDictionary dict = (IDictionary)result;
+                int top = dict.Count, count = 0;
+
+                output += "{";
+                foreach (DictionaryEntry entry in dict)
+                {
+                    count++;
+                    output += "{ ";
+                    output += PrettyPrint(entry.Key);
+                    output += ", ";
+                    output += PrettyPrint(entry.Value);
+                    if (count != top)
+                        output += " }, ";
+                    else
+                        output += " }";
+                }
+                output += "}";
+            }
+            else if (WorksAsEnumerable(result))
+            {
+                int i = 0;
+                output += "{ ";
+                foreach (object item in (IEnumerable)result)
+                {
+                    if (i++ != 0)
+                        output += ", ";
+
+                    output += PrettyPrint(item);
+                }
+                output += " }";
+            }
+            else if (result is char)
+            {
+                output += EscapeChar((char)result);
+            }
+            else {
+                output += result.ToString();
+            }
+            return output;
+        }
+    }
+
+    /// <summary>
+    /// An alias of CSharp to the shorter form c
+    /// </summary>
+    public class C : CSharp
+    {
+        public override String GetName()
+        {
+            return "c";
         }
     }
 }
