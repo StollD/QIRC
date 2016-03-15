@@ -104,10 +104,18 @@ namespace QIRC.Commands
         protected static SerializeableList<String> persistent { get; set; }
 
         /// <summary>
+        /// The last message we got
+        /// </summary>
+        internal static ProtoIrcMessage lastMsg { get; set; }
+
+        /// <summary>
         /// Here we run the command and evaluate the parameters
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
+            /// Update the message 
+            lastMsg = message;
+
             /// Load the list
             if (persistent == null)
                 persistent = new SerializeableList<String>("csharp_persistent");
@@ -399,7 +407,6 @@ namespace QIRC.Commands
         /// The action that gets executed
         /// </summary>
         protected Action<String, ProtoIrcMessage> action;
-        protected ProtoIrcMessage message;
 
         /// <summary>
         /// Print sth.
@@ -428,16 +435,15 @@ namespace QIRC.Commands
                 for (Int32 i = 0; i < relatedSymbols.Length; i++)
                     output += String.Concat(relatedSymbols[i], msg.MessageType, ")");
             }
-            action(output, message);
+            action(output, CSharp.lastMsg);
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public DelegateReportPrinter(Action<String, ProtoIrcMessage> action, ProtoIrcMessage message)
+        public DelegateReportPrinter(Action<String, ProtoIrcMessage> action)
         {
             this.action = action;
-            this.message = message;
         }
     }
 
