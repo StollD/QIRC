@@ -126,7 +126,7 @@ namespace QIRC.Commands
                 evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); })));
                 Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, true);
                 foreach (String s in persistent)
-                    Evaluate(client, s, message.User, message.Source, true);
+                    Evaluate(client, s, message.User, message.Source, QIRC.CheckPermission(AccessLevel.ADMIN, message.level), true);
                 QIRC.SendMessage(client, "Cleared the C# Evaluator.", message.User, message.Source);
                 return;
             }
@@ -153,19 +153,19 @@ namespace QIRC.Commands
             if (evaluator == null)
             {
                 evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); })));
-                Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, true);
+                Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, QIRC.CheckPermission(AccessLevel.ADMIN, message.level), true);
                 foreach (String s in persistent)
                     Evaluate(client, s, message.User, message.Source, true);
             }
 
             /// Evaluate!
-            Evaluate(client, message.Message, message.User, message.Source);
+            Evaluate(client, message.Message, message.User, message.Source, QIRC.CheckPermission(AccessLevel.ADMIN, message.level));
         }
 
         /// <summary>
         /// Evaluates a C# expression. Ported from Mono REPL
         /// </summary>
-        protected string Evaluate(IrcClient client, String input, String user, String source, Boolean quite = false)
+        protected string Evaluate(IrcClient client, String input, String user, String source, Boolean admin, Boolean quite = false)
         {
             bool result_set;
             object result;
@@ -177,7 +177,7 @@ namespace QIRC.Commands
                     return "";
                 SDILReader.MethodBodyReader reader = new SDILReader.MethodBodyReader(method.Method);
                 String il = reader.GetBodyCode();
-                if (il.Contains("System.IO") ||
+                if ((il.Contains("System.IO") ||
                     il.Contains("System.Xml") ||
                     il.Contains("System.Runtime.InteropServices") ||
                     il.Contains("System.Diagnostics.Process") ||
@@ -185,7 +185,7 @@ namespace QIRC.Commands
                     il.Contains("System.Threading") ||
                     il.Contains("System.Environment::Exit") ||
                     il.Contains("System.Environment::FailFast") ||
-                    il.Contains("System.Environment::SetEnvironmentVariable"))
+                    il.Contains("System.Environment::SetEnvironmentVariable")) && !admin)
                 {
                     QIRC.SendMessage(client, "You tried to use a forbidden type, method or namespace!", user, source);
                     return "";

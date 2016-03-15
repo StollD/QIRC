@@ -434,6 +434,7 @@ namespace QIRC
                                 else
                                     level = AccessLevel.ADMIN;
                             }
+                            message.level = level;
                             if (CheckPermission(command.GetAccessLevel(), level) || commandLine)
                             {
                                 if (message.IsChannelMessage)

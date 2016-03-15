@@ -50,6 +50,11 @@ namespace QIRC.IRC
         public DateTime Time { get; set; }
 
         /// <summary>
+        /// The access level of the user who sent the message
+        /// </summary>
+        public AccessLevel level { get; set; }
+
+        /// <summary>
         /// Create the ProtoMessage
         /// </summary>
         public ProtoIrcMessage(PrivateMessage message)
