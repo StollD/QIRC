@@ -183,7 +183,7 @@ namespace QIRC.Commands
                     il.Contains("System.Threading"))
                 {
                     QIRC.SendMessage(client, "You tried to use a forbidden type or namespace!", user, source);
-                    return;
+                    return "";
                 }
                 input = evaluator.Evaluate(input, out result, out result_set);
                 if (result_set && !quite)
