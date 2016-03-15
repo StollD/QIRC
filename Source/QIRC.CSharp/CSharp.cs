@@ -172,6 +172,7 @@ namespace QIRC.Commands
             Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
             input = input.Replace("System.IO", "")
                 .Replace("System.Xml", "")
+                .Replace("System.Runtime", "")
                 .Replace("System.Diagnostics.Process", "")
                 .Replace("while(true)", "")
                 .Replace("while (true)", "")
