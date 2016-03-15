@@ -115,10 +115,10 @@ namespace QIRC.Commands
             /// Reset the evaluator
             if (StartsWithParam("reset", message.Message))
             {
-                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter(state => { foreach (String s in state.Split('\n')) QIRC.SendMessage(client, s, message.Message, message.Source, true); })));
-                Evaluate("using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message, true);
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter(state => { foreach (String s in state.Split('\n')) QIRC.SendMessage(client, s, message.User, message.Source, true); })));
+                Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, true);
                 foreach (String s in persistent)
-                    Evaluate(s, message, true);
+                    Evaluate(client, s, message.User, message.Source, true);
                 QIRC.SendMessage(client, "Cleared the C# Evaluator.", message.User, message.Source);
                 return;
             }
@@ -144,20 +144,20 @@ namespace QIRC.Commands
             /// Create the Evaluator
             if (evaluator == null)
             {
-                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter(state => { foreach (String s in state.Split('\n')) QIRC.SendMessage(client, s, message.Message, message.Source, true); })));
-                Evaluate("using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message, true);
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter(state => { foreach (String s in state.Split('\n')) QIRC.SendMessage(client, s, message.User, message.Source, true); })));
+                Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, true);
                 foreach (String s in persistent)
-                    Evaluate(s, message, true);
+                    Evaluate(client, s, message.User, message.Source, true);
             }
 
             /// Evaluate!
-            Evaluate(message.Message, message);
+            Evaluate(client, message.Message, message.User, message.Source);
         }
 
         /// <summary>
         /// Evaluates a C# expression. Ported from Mono REPL
         /// </summary>
-        protected virtual string Evaluate(string input, ProtoIrcMessage message, Boolean quite = false)
+        protected string Evaluate(IrcClient client, String input, String user, String source, Boolean quite = false)
         {
             bool result_set;
             object result;
@@ -174,12 +174,12 @@ namespace QIRC.Commands
             {
                 input = evaluator.Evaluate(input, out result, out result_set);
                 if (result_set && !quite)
-                    QIRC.SendMessage(QIRC.client, PrettyPrint(result), message.Message, message.Source, true);
+                    QIRC.SendMessage(client, PrettyPrint(result), user, source, true);
             }
             catch (Exception e)
             {
                 if (!quite)
-                    QIRC.SendMessage(QIRC.client, e.ToString().Replace('\n', ' '), message.User, message.Source, true);
+                    QIRC.SendMessage(client, e.ToString().Replace('\n', ' '), user, source, true);
                 return null;
             }
             return input;
