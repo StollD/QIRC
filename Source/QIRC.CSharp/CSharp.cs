@@ -173,6 +173,8 @@ namespace QIRC.Commands
             try
             {
                 CompiledMethod method = evaluator.Compile(input);
+                if (method == null)
+                    return "";
                 SDILReader.MethodBodyReader reader = new SDILReader.MethodBodyReader(method.Method);
                 String il = reader.GetBodyCode();
                 if (il.Contains("System.IO") ||
