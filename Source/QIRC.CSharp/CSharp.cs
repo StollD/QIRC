@@ -170,17 +170,21 @@ namespace QIRC.Commands
             bool result_set;
             object result;
             Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
-            input = input.Replace("System.IO", "")
-                .Replace("System.Xml", "")
-                .Replace("System.Runtime.InteropServices", "")
-                .Replace("System.Diagnostics.Process", "")
-                .Replace("while(true)", "")
-                .Replace("while (true)", "")
-                .Replace("Console.ReadKey()", "")
-                .Replace("Console.Read()", "")
-                .Replace("Console.ReadLine()", "");
             try
             {
+                CompiledMethod method = evaluator.Compile(input);
+                SDILReader.MethodBodyReader reader = new SDILReader.MethodBodyReader(method.Method);
+                String il = reader.GetBodyCode();
+                if (il.Contains("System.IO") ||
+                    il.Contains("System.Xml") ||
+                    il.Contains("System.Runtime.InteropServices") ||
+                    il.Contains("System.Diagnostics.Process") ||
+                    il.Contains("System.Console") ||
+                    il.Contains("System.Threading"))
+                {
+                    QIRC.SendMessage(client, "You tried to use a forbidden type or namespace!", user, source);
+                    return;
+                }
                 input = evaluator.Evaluate(input, out result, out result_set);
                 if (result_set && !quite)
                     QIRC.SendMessage(client, PrettyPrint(result), user, source, true);
