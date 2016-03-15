@@ -115,7 +115,7 @@ namespace QIRC.Commands
             /// Reset the evaluator
             if (StartsWithParam("reset", message.Message))
             {
-                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter(state => { foreach (String s in state.Split('\n')) QIRC.SendMessage(client, s, message.User, message.Source, true); })));
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); }, message)));
                 Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, true);
                 foreach (String s in persistent)
                     Evaluate(client, s, message.User, message.Source, true);
@@ -144,7 +144,7 @@ namespace QIRC.Commands
             /// Create the Evaluator
             if (evaluator == null)
             {
-                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter(state => { foreach (String s in state.Split('\n')) QIRC.SendMessage(client, s, message.User, message.Source, true); })));
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); }, message)));
                 Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, true);
                 foreach (String s in persistent)
                     Evaluate(client, s, message.User, message.Source, true);
@@ -398,7 +398,8 @@ namespace QIRC.Commands
         /// <summary>
         /// The action that gets executed
         /// </summary>
-        protected Action<String> action;
+        protected Action<String, ProtoIrcMessage> action;
+        protected ProtoIrcMessage message;
 
         /// <summary>
         /// Print sth.
@@ -427,15 +428,16 @@ namespace QIRC.Commands
                 for (Int32 i = 0; i < relatedSymbols.Length; i++)
                     output += String.Concat(relatedSymbols[i], msg.MessageType, ")");
             }
-            action(output);
+            action(output, message);
         }
 
         /// <summary>
         /// Constructor
         /// </summary>
-        public DelegateReportPrinter(Action<String> action)
+        public DelegateReportPrinter(Action<String, ProtoIrcMessage> action, ProtoIrcMessage message)
         {
             this.action = action;
+            this.message = message;
         }
     }
 
