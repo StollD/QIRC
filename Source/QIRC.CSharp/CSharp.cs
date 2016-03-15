@@ -123,7 +123,7 @@ namespace QIRC.Commands
             /// Reset the evaluator
             if (StartsWithParam("reset", message.Message))
             {
-                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); }, message)));
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); })));
                 Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, true);
                 foreach (String s in persistent)
                     Evaluate(client, s, message.User, message.Source, true);
@@ -152,7 +152,7 @@ namespace QIRC.Commands
             /// Create the Evaluator
             if (evaluator == null)
             {
-                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); }, message)));
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); })));
                 Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, true);
                 foreach (String s in persistent)
                     Evaluate(client, s, message.User, message.Source, true);
