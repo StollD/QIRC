@@ -182,9 +182,12 @@ namespace QIRC.Commands
                     il.Contains("System.Runtime.InteropServices") ||
                     il.Contains("System.Diagnostics.Process") ||
                     il.Contains("System.Console") ||
-                    il.Contains("System.Threading"))
+                    il.Contains("System.Threading") ||
+                    il.Contains("System.Environment::Exit") ||
+                    il.Contains("System.Environment::FailFast") ||
+                    il.Contains("System.Environment::SetEnvironmentVariable"))
                 {
-                    QIRC.SendMessage(client, "You tried to use a forbidden type or namespace!", user, source);
+                    QIRC.SendMessage(client, "You tried to use a forbidden type, method or namespace!", user, source);
                     return "";
                 }
                 input = evaluator.Evaluate(input, out result, out result_set);
