@@ -80,7 +80,8 @@ namespace QIRC.Commands
             {
                 "reset", "Clears the state of the C# shell.",
                 "persistent", "Saves an expression into the class body.",
-                "state", "Debugs the state of the evaluator"
+                "state", "Debugs the state of the evaluator",
+                "remove", "Removes a persistend expression."
             };
         }
 
@@ -136,8 +137,23 @@ namespace QIRC.Commands
             {
                 QIRC.SendMessage(client, "Using: " + evaluator.GetUsing().Replace("\n", ""), message.User, message.User, true);
                 QIRC.SendMessage(client, "Variables: " + evaluator.GetVars().Replace('\n', ';'), message.User, message.User, true);
+                foreach (String exp in persistent)
+                    QIRC.SendMessage(client, "[" + persistent.IndexOf(exp) + "] " + exp, message.User, message.User, true);
                 if (message.IsChannelMessage) QIRC.SendMessage(client, "I sent you the current state of the evaluator.", message.User, message.Source);
                 return;
+            }
+
+            /// Removes an expression
+            if (StartsWithParam("remove", message.Message))
+            {
+                String text = message.Message;
+                String nr = StripParam("remove", ref text);
+                Int32 index = 0;
+                if (!Int32.TryParse(nr, out index))
+                    QIRC.SendMessage(client, "Please enter a valid index!", message.User, message.Source);
+                if (!(persistent.Count > index))
+                    QIRC.SendMessage(client, "Please enter a valid index!", message.User, message.Source);
+                persistent.RemoveAt(index);
             }
 
             /// Saves an expression
