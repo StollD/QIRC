@@ -58,7 +58,7 @@ namespace QIRC.Addons
             new_msg.Message = Regex.Replace(new_msg.Message, find, repl, RegexOptions.IgnoreCase);
             if (nick == message.User)
                 QIRC.SendMessage(client, nick + " [b]meant[/b] to say: " + new_msg.Message, message.User, message.Source, true);
-            else
+            else if (!client.Channels[message.Source].Users.Contains("Kountdown"))
                 QIRC.SendMessage(client, message.User + " thinks " + nick + " [b]meant[/b] to say: " + new_msg.Message, message.User, message.Source, true);
         }
     }
