@@ -137,8 +137,8 @@ namespace QIRC.Commands
             {
                 QIRC.SendMessage(client, "Using: " + evaluator.GetUsing().Replace("\n", ""), message.User, message.User, true);
                 QIRC.SendMessage(client, "Variables: " + evaluator.GetVars().Replace('\n', ';'), message.User, message.User, true);
-                foreach (String exp in persistent)
-                    QIRC.SendMessage(client, "[" + persistent.IndexOf(exp) + "] " + exp, message.User, message.User, true);
+                for (Int32 i = 0; i < persistent.Count; i++)
+                    QIRC.SendMessage(client, "[" + i + "] " + persistent[i], message.User, message.User, true);
                 if (message.IsChannelMessage) QIRC.SendMessage(client, "I sent you the current state of the evaluator.", message.User, message.Source);
                 return;
             }
