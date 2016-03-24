@@ -154,6 +154,7 @@ namespace QIRC.Commands
                 if (!(persistent.Count > index))
                     QIRC.SendMessage(client, "Please enter a valid index!", message.User, message.Source);
                 persistent.RemoveAt(index);
+                return;
             }
 
             /// Saves an expression
