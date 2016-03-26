@@ -41,13 +41,14 @@ namespace QIRC.Plugins
                 if (!s.StartsWith("-"))
                     break;
                 arguments[i] = s.Remove(0, 1).Split(':', '=')[0];
+                i++;
             }
             return arguments.Contains(param);
         }
         protected String StripParam(String param, ref String message)
         {
             String msg = String.Copy(message);
-            Regex regex = new Regex(@"-([^-\s:=]+)([:=])?([^-\s]+)?");
+            Regex regex = new Regex(@"-([^-\s:=]+)([:=])?([^\s]+)?");
             while (regex.IsMatch(msg))
             {
                 Match match = regex.Match(msg);
