@@ -125,7 +125,7 @@ namespace QIRC.Commands
                 String[] split = text.Trim().Split(new Char[] { ' ' }, 2);
                 foreach (String name in split[0].Split(','))
                 {
-                    String wildcard = "^" + Regex.Escape(split[0].Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
+                    String wildcard = "^" + Regex.Escape(name.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
                     tells.Add(new Msg
                     {
                         channel = false,
