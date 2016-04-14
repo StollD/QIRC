@@ -103,18 +103,21 @@ namespace QIRC.Commands
                 String text = message.Message;
                 String target = StripParam("channel", ref text);
                 String[] split = text.Trim().Split(new Char[] { ' ' }, 2);
-                String wildcard = "^" + Regex.Escape(split[0].Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                tells.Add(new Msg
+                foreach (String name in split[0].Split(','))
                 {
-                    channel = true,
-                    channelName = target,
-                    message = split[1],
-                    pm = false,
-                    source = message.IsChannelMessage ? message.Source : "Private",
-                    time = DateTime.UtcNow,
-                    to = wildcard,
-                    user = message.User
-                });
+                    String wildcard = "^" + Regex.Escape(name.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
+                    tells.Add(new Msg
+                    {
+                        channel = true,
+                        channelName = target,
+                        message = split[1],
+                        pm = false,
+                        source = message.IsChannelMessage ? message.Source : "Private",
+                        time = DateTime.UtcNow,
+                        to = wildcard,
+                        user = message.User
+                    });
+                }
             }
             else
             {
