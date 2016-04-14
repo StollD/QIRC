@@ -243,8 +243,6 @@ namespace QIRC
         /// </summary>
         private static void PrivateMessageRecieved(Object sender, PrivateMessageEventArgs e)
         {
-            PluginManager.Invoke("PrivateMessageRecieved", client, e);
-
             /// Commands
             String control = Settings.Read<String>("control");
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
@@ -252,6 +250,8 @@ namespace QIRC
             {
                 HandleCommand(msg, client);
             }
+
+            PluginManager.Invoke("PrivateMessageRecieved", client, e);
         }
 
         /// <summary>
