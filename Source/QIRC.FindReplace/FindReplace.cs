@@ -34,7 +34,7 @@ namespace QIRC.Addons
         /// <summary>
         /// The regular expression that is used to detect the syntax (Copyright goes to the Willie/Sopel Devs)
         /// </summary>
-        public const String regex = @"^(?:(\S+)[:,]\s+)?s/((?:\\/|[^\/])+)/((?:\\/|[^\/])*)(?:\/)?$";
+        public const String regex = @"^(?:(\S+)[:,]\s+)?s/((?:\\/|[^\/])+)/((?:\\/|[^\/])*)(?:/)?$";
 
         /// <summary>
         /// This gets invoked when someone wrote something in a channel
