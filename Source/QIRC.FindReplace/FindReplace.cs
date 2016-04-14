@@ -34,7 +34,7 @@ namespace QIRC.Addons
         /// <summary>
         /// The regular expression that is used to detect the syntax (Copyright goes to the Willie/Sopel Devs)
         /// </summary>
-        public const String regex = @"^(?:(\S+)[:]\s+)?s/((?:[^/])+)/((?:[^/])*)(?:/)?$";
+        public const String regex = @"^(?:(\S+)[:,]\s+)?s/((?:\\/|[^\/])+)/((?:\\/|[^\/])*)(?:/(\S+))?$";
 
         /// <summary>
         /// This gets invoked when someone wrote something in a channel
@@ -53,8 +53,8 @@ namespace QIRC.Addons
             ProtoIrcMessage new_msg = QIRC.messages.Where(m => m.User == nick && Regex.IsMatch(m.Message, find, RegexOptions.IgnoreCase)).LastOrDefault();
             if (new_msg == null)
                 return;
-            if (new_msg.Message.StartsWith("ACTION"))
-                new_msg.Message = "/me" + new_msg.Message.Remove(0, "ACTION".Length - 1);
+            if (new_msg.Message.StartsWith("\x01" + "ACTION"))
+                new_msg.Message = "/me" + new_msg.Message.Remove(0, ("\x01" + "ACTION").Length - 1).Remove(new_msg.Message.Length - 2);
             new_msg.Message = Regex.Replace(new_msg.Message, find, repl, RegexOptions.IgnoreCase);
             if (nick == message.User)
                 QIRC.SendMessage(client, nick + " [b]meant[/b] to say: " + new_msg.Message, message.User, message.Source, true);
