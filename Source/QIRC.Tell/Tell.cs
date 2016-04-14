@@ -123,18 +123,21 @@ namespace QIRC.Commands
                 Logging.Log(pm, Logging.Level.INFO);
                 StripParam("private", ref text);
                 String[] split = text.Trim().Split(new Char[] { ' ' }, 2);
-                String wildcard = "^" + Regex.Escape(split[0].Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                tells.Add(new Msg
+                foreach (String name in split[0].Split(','))
                 {
-                    channel = false,
-                    channelName = "",
-                    message = split[1],
-                    pm = pm,
-                    source = message.IsChannelMessage ? message.Source : "Private",
-                    time = DateTime.UtcNow,
-                    to = wildcard,
-                    user = message.User
-                });
+                    String wildcard = "^" + Regex.Escape(split[0].Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
+                    tells.Add(new Msg
+                    {
+                        channel = false,
+                        channelName = "",
+                        message = split[1],
+                        pm = pm,
+                        source = message.IsChannelMessage ? message.Source : "Private",
+                        time = DateTime.UtcNow,
+                        to = wildcard,
+                        user = message.User
+                    });
+                }
             }
             QIRC.SendMessage(client, "I'll redirect this as soon as they are around.", message.User, message.Source);
         }
