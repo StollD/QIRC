@@ -94,8 +94,8 @@ namespace QIRC
             /// Color
             while (input.Contains("[color="))
             {
-                String color = input.Split(new[] { "[color=" }, 2, StringSplitOptions.RemoveEmptyEntries)[1];
-                String code = color.Split(new[] { "]" }, 2, StringSplitOptions.RemoveEmptyEntries)[0];
+                String color = input.Split(new[] { "[color=" }, 2, StringSplitOptions.None)[1];
+                String code = color.Split(new[] { "]" }, 2, StringSplitOptions.None)[0];
                 if (code.Contains(","))
                 {
                     String[] colors = code.Split(',');
