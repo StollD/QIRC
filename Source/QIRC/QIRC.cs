@@ -116,7 +116,6 @@ namespace QIRC
 
             /// Add delegates
             client.ChannelListRecieved += ChannelListRecieved;
-            client.ChannelMessageRecieved += ChannelMessageRecieved;
             client.ChannelTopicReceived += ChannelTopicReceived;
             client.ConnectionComplete += ConnectionComplete;
             client.ModeChanged += ModeChanged;
@@ -132,7 +131,6 @@ namespace QIRC
             client.ServerInfoRecieved += ServerInfoRecieved;
             client.UserJoinedChannel += UserJoinedChannel;
             client.UserKicked += UserKicked;
-            client.UserMessageRecieved += UserMessageRecieved;
             client.UserPartedChannel += UserPartedChannel;
             client.UserQuit += UserQuit;
             client.WhoIsReceived += WhoIsReceived;
