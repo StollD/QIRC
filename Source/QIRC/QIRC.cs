@@ -154,14 +154,6 @@ namespace QIRC
         }
 
         /// <summary>
-        /// Channel Message Event
-        /// </summary>
-        private static void ChannelMessageRecieved(Object sender, PrivateMessageEventArgs e)
-        {
-            PluginManager.Invoke("ChannelMessageRecieved", client, e);
-        }
-
-        /// <summary>
         /// Channel Topic Event
         /// </summary>
         private static void ChannelTopicReceived(Object sender, ChannelTopicEventArgs e)
@@ -252,6 +244,10 @@ namespace QIRC
             }
 
             PluginManager.Invoke("PrivateMessageRecieved", client, e);
+            if (e.PrivateMessage.IsChannelMessage)
+                PluginManager.Invoke("ChannelMessageRecieved", client, e);
+            else
+                PluginManager.Invoke("UserMessageRecieved", client, e);
         }
 
         /// <summary>
@@ -294,14 +290,6 @@ namespace QIRC
             if (e.Kicked.Nick == Settings.Read<String>("name"))
                 LeaveChannel(e.Channel.Name);
             PluginManager.Invoke("UserKicked", client, e);
-        }
-
-        /// <summary>
-        /// User Message Recieved Event
-        /// </summary>
-        private static void UserMessageRecieved(Object sender, PrivateMessageEventArgs e)
-        {
-            PluginManager.Invoke("UserMessageRecieved", client, e);
         }
         
         /// <summary>
