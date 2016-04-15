@@ -458,8 +458,8 @@ namespace QIRC
                 {
                     SendMessage(client, "ChatSharp broke. Please contact your local doctor.", message.User, message.Source);
                 }
-            });
-            if (afterWhoIs != null) afterWhoIs();            
+                if (afterWhoIs != null) afterWhoIs();
+            });         
         }     
 
         /// <summary>
