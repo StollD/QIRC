@@ -238,14 +238,23 @@ namespace QIRC
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
             if (msg.Message.StartsWith(control))
             {
-                HandleCommand(msg, client);
+                HandleCommand(msg, client, afterWhoIs: () =>
+                {
+                    PluginManager.Invoke("PrivateMessageRecieved", client, e);
+                    if (e.PrivateMessage.IsChannelMessage)
+                        PluginManager.Invoke("ChannelMessageRecieved", client, e);
+                    else
+                        PluginManager.Invoke("UserMessageRecieved", client, e);
+                });
             }
-
-            PluginManager.Invoke("PrivateMessageRecieved", client, e);
-            if (e.PrivateMessage.IsChannelMessage)
-                PluginManager.Invoke("ChannelMessageRecieved", client, e);
             else
-                PluginManager.Invoke("UserMessageRecieved", client, e);
+            {
+                PluginManager.Invoke("PrivateMessageRecieved", client, e);
+                if (e.PrivateMessage.IsChannelMessage)
+                    PluginManager.Invoke("ChannelMessageRecieved", client, e);
+                else
+                    PluginManager.Invoke("UserMessageRecieved", client, e);
+            }            
         }
 
         /// <summary>
@@ -379,7 +388,7 @@ namespace QIRC
         /// <summary>
         /// Handles an incoming command
         /// </summary>
-        public static void HandleCommand(ProtoIrcMessage message, IrcClient client, Boolean commandLine = false)
+        public static void HandleCommand(ProtoIrcMessage message, IrcClient client, Boolean commandLine = false, Action afterWhoIs = null)
         {
             String control = Settings.Read<String>("control");
             message.Message = message.Message.Remove(0, control.Length);
@@ -449,7 +458,8 @@ namespace QIRC
                 {
                     SendMessage(client, "ChatSharp broke. Please contact your local doctor.", message.User, message.Source);
                 }
-            });            
+            });
+            if (afterWhoIs != null) afterWhoIs();            
         }     
 
         /// <summary>
