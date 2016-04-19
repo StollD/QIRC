@@ -92,7 +92,10 @@ namespace QIRC.Commands
                 String seedS = StripParam("seed", ref text);
                 Int32 seed = Int32.Parse(seedS);
                 Random random = new Random(seed);
-                Int32[] numbers = !String.IsNullOrWhiteSpace(text) ? text.Split(new[] { 'd' }, 2).Select(i => Math.Min(300, Math.Max(1, Int32.Parse(i)))).ToArray() : new Int32[] { 1, 6 };
+                Int32[] numbers = new Int32[] { 1, 6 };
+                String[] splits = text.Split(new[] { 'd' }, 2);
+                numbers[0] = String.IsNullOrWhiteSpace(splits[0]) ? numbers[0] : Math.Min(300, Math.Max(1, Int32.Parse(splits[0])));
+                numbers[1] = String.IsNullOrWhiteSpace(splits[1]) ? numbers[1] : Math.Min(300, Math.Max(1, Int32.Parse(splits[1])));
                 Int32[] results = new Int32[numbers[0]];
                 for (Int32 i = 0; i < results.Length; i++)
                     results[i] = random.Next(1, numbers[1]);
@@ -101,7 +104,11 @@ namespace QIRC.Commands
             else
             {
                 Random random = new Random();
-                Int32[] numbers = !String.IsNullOrWhiteSpace(message.Message) ? message.Message.Split(new[] { 'd' }, 2).Select(i => Math.Min(300, Math.Max(1, Int32.Parse(i)))).ToArray() : new Int32[] { 1, 6 };
+                Int32[] numbers = new Int32[] { 1, 6 };
+                String[] splits = message.Message.Split(new[] { 'd' }, 2);
+                Logging.Log(splits[0] + " " + splits[1], Logging.Level.INFO);
+                numbers[0] = String.IsNullOrWhiteSpace(splits[0]) ? numbers[0] : Math.Min(300, Math.Max(1, Int32.Parse(splits[0])));
+                numbers[1] = String.IsNullOrWhiteSpace(splits[1]) ? numbers[1] : Math.Min(300, Math.Max(1, Int32.Parse(splits[1])));
                 Int32[] results = new Int32[numbers[0]];
                 for (Int32 i = 0; i < results.Length; i++)
                     results[i] = random.Next(1, numbers[1]);
