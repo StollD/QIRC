@@ -404,6 +404,7 @@ namespace QIRC
                         if (String.Equals(command.GetName(), cmd, StringComparison.InvariantCultureIgnoreCase))
                         {
                             message.Message = message.Message.Remove(0, cmd.Length).Trim();
+                            message.Message = message.Message.Split(new[] { "//" }, 2, StringSplitOptions.None)[0];
                             AccessLevel level = AccessLevel.NORMAL;
                             if (message.IsChannelMessage)
                             {
