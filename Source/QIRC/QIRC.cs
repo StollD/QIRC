@@ -394,18 +394,22 @@ namespace QIRC
             message.Message = message.Message.Remove(0, control.Length);
             IrcUser user = client.Users[message.User];
 
+            /// We need to figure out of we know this user. Whois him.
             client.WhoIs(user.Nick, (WhoIs whoIs) =>
             {
                 try
                 {
+                    /// Go through all the commands
                     foreach (IrcCommand command in PluginManager.commands)
                     {
+                        /// Get the name of the supplied command and continue if it doesn't matches
                         String cmd = message.Message.Split(' ')[0];
                         if (String.Equals(command.GetName(), cmd, StringComparison.InvariantCultureIgnoreCase))
                         {
                             message.Message = message.Message.Remove(0, cmd.Length).Trim();
-                            message.Message = message.Message.Split(new[] { "//" }, 2, StringSplitOptions.None)[0];
                             AccessLevel level = AccessLevel.NORMAL;
+
+                            /// Figure out which role the user has in the channel (if the message was received in a channel)
                             if (message.IsChannelMessage)
                             {
                                 try
@@ -421,6 +425,8 @@ namespace QIRC
 
                                 }
                             }
+
+                            /// Maybe the user is a bot admin, which is independent on the channel status. Check that.
                             List<ProtoIrcAdmin> admins = Settings.Read<List<ProtoIrcAdmin>>("admins");
                             if (admins.Count(a => String.Equals(a.name, whoIs.LoggedInAs, StringComparison.InvariantCultureIgnoreCase)) == 1)
                             {
@@ -431,14 +437,19 @@ namespace QIRC
                                     level = AccessLevel.ADMIN;
                             }
                             message.level = level;
+
+                            /// Does the user have the permission to call this command?
                             if (CheckPermission(command.GetAccessLevel(), level) || commandLine)
                             {
+                                /// Check the status of the current channel. If the channel is marked as serious, don't execute the command if it isn't marked as serious
                                 if (message.IsChannelMessage)
                                 {
                                     List<ProtoIrcChannel> channels = Settings.Read<List<ProtoIrcChannel>>("channels");
                                     ProtoIrcChannel channel = channels.FirstOrDefault(c => String.Equals(c.name, message.Source));
                                     if (channel.serious && !command.IsSerious()) return;
                                 }
+
+                                /// Speak English, bot!
                                 Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
                                 try
                                 {
@@ -459,6 +470,8 @@ namespace QIRC
                 {
                     SendMessage(client, "ChatSharp broke. Please contact your local doctor.", message.User, message.Source);
                 }
+
+                /// Run actions that should get executed after the WhoIs
                 if (afterWhoIs != null) afterWhoIs();
             });         
         }     
@@ -468,11 +481,17 @@ namespace QIRC
         /// </summary>
         public static ProtoIrcMessage SendMessage(IrcClient client, string message, string from, string to, bool noname = false)
         {
+            /// We don't need empty stuff
             if (String.IsNullOrWhiteSpace(message))
                 return new ProtoIrcMessage();
+
+            /// Format the message nicely
             message = Formatter.Format(message);
+
+            /// Split it into parts so nothing gets lost
             String[] splits = SplitInParts(message, 400).ToArray();
 
+            /// Loop through theese parts and send them to the server
             if (!to.StartsWith("#")) to = from;
             for (Int32 j = 0; j < splits.Length; j++)
             {
@@ -488,6 +507,8 @@ namespace QIRC
                     client.SendMessage(from + ": " + e.Message, to);
                 }
             }
+
+            /// Do internal stuff
             ProtoIrcMessage proto = new ProtoIrcMessage()
             {
                 IsChannelMessage = to.StartsWith("#"),
