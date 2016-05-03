@@ -189,6 +189,8 @@ namespace QIRC.Commands
             // Evaluate!
             if (!worker.IsBusy)
             {
+                worker.Dispose();
+                worker = new BackgroundWorker();
                 worker.DoWork += delegate(Object sender, DoWorkEventArgs e)
                 {
                     Evaluate(client, message.Message, message.User, message.Source,
