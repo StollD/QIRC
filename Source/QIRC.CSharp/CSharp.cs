@@ -1,36 +1,21 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// IRC
 using ChatSharp;
-using ChatSharp.Events;
-
-/// QIRC
-using QIRC;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
 using QIRC.Serialization;
-
-/// System
 using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
 using System.Collections;
+using System.ComponentModel;
 using System.Threading;
 using System.Globalization;
-using System.IO;
-using System.Text;
-
-/// Mono
 using Mono.CSharp;
 
-/// <summary>
-/// Here's everything that is an IrcCommand
-/// </summary>
 namespace QIRC.Commands
 {
     /// <summary>
@@ -81,7 +66,8 @@ namespace QIRC.Commands
                 "reset", "Clears the state of the C# shell.",
                 "persistent", "Saves an expression into the class body.",
                 "state", "Debugs the state of the evaluator",
-                "remove", "Removes a persistend expression."
+                "remove", "Removes a persistend expression.",
+                "stop", "Stops the current evaluation"
             };
         }
 
@@ -110,18 +96,28 @@ namespace QIRC.Commands
         internal static ProtoIrcMessage lastMsg { get; set; }
 
         /// <summary>
+        /// The thread where the C# gets evaluated
+        /// </summary>
+        private static BackgroundWorker worker { get; set; }
+
+        /// <summary>
         /// Here we run the command and evaluate the parameters
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
-            /// Update the message 
+            // Update the message 
             lastMsg = message;
 
-            /// Load the list
+            // Create the Backgroundworker
+            if (worker == null)
+                worker = new BackgroundWorker();
+            worker.WorkerSupportsCancellation = true;
+
+            // Load the list
             if (persistent == null)
                 persistent = new SerializeableList<String>("csharp_persistent");
 
-            /// Reset the evaluator
+            // Reset the evaluator
             if (StartsWithParam("reset", message.Message))
             {
                 evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); })));
@@ -132,7 +128,7 @@ namespace QIRC.Commands
                 return;
             }
 
-            /// Debugs the evaluator state
+            // Debugs the evaluator state
             if (StartsWithParam("state", message.Message))
             {
                 QIRC.SendMessage(client, "Using: " + evaluator.GetUsing().Replace("\n", ""), message.User, message.User, true);
@@ -143,7 +139,7 @@ namespace QIRC.Commands
                 return;
             }
 
-            /// Removes an expression
+            // Removes an expression
             if (StartsWithParam("remove", message.Message))
             {
                 String text = message.Message;
@@ -157,7 +153,7 @@ namespace QIRC.Commands
                 return;
             }
 
-            /// Saves an expression
+            // Saves an expression
             if (StartsWithParam("persistent", message.Message))
             {
                 String text = message.Message;
@@ -166,7 +162,22 @@ namespace QIRC.Commands
                 message.Message = text.Trim();
             }
 
-            /// Create the Evaluator
+            // Stops the current evaluation
+            if (StartsWithParam("stop", message.Message))
+            {
+                if (worker == null || !worker.IsBusy)
+                {
+                    QIRC.SendMessage(client, "No evaluation running!", message.User, message.Source);
+                    return;
+                }
+                worker.Dispose();
+                worker = new BackgroundWorker();
+                worker.WorkerSupportsCancellation = true;
+                QIRC.SendMessage(client, "Aborted the evaluation that was currently running.", message.User, message.Source);
+                return;
+            }
+
+            // Create the Evaluator
             if (evaluator == null)
             {
                 evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); })));
@@ -175,20 +186,30 @@ namespace QIRC.Commands
                     Evaluate(client, s, message.User, message.Source, true);
             }
 
-            /// Evaluate!
-            Evaluate(client, message.Message, message.User, message.Source, QIRC.CheckPermission(AccessLevel.ADMIN, message.level));
+            // Evaluate!
+            if (!worker.IsBusy)
+            {
+                worker.DoWork += delegate(Object sender, DoWorkEventArgs e)
+                {
+                    Evaluate(client, message.Message, message.User, message.Source,
+                        QIRC.CheckPermission(AccessLevel.ADMIN, message.level));
+                };
+                worker.RunWorkerAsync();
+            }
+            else
+                QIRC.SendMessage(client, "There is already an evaluation going on. Please wait until it terminates.", message.User, message.Source);
         }
 
         /// <summary>
         /// Evaluates a C# expression. Ported from Mono REPL
         /// </summary>
-        protected string Evaluate(IrcClient client, String input, String user, String source, Boolean admin, Boolean quite = false)
+        protected String Evaluate(IrcClient client, String input, String user, String source, Boolean admin, Boolean quite = false)
         {
-            bool result_set;
-            object result;
             Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
             try
             {
+                Boolean result_set;
+                Object result;
                 CompiledMethod method = evaluator.Compile(input);
                 if (method == null)
                     return "";
@@ -262,7 +283,7 @@ namespace QIRC.Commands
                         break;
 
                     default:
-                        output += String.Format("\\x{0:x}", (Int32)c);
+                        output += $"\\x{(Int32) c:x}";
                         break;
                 }
             }
@@ -282,7 +303,7 @@ namespace QIRC.Commands
             }
             if (c > 32)
             {
-                output += String.Format("'{0}'", c);
+                output += $"'{c}'";
                 return output;
             }
             switch (c)
@@ -316,7 +337,7 @@ namespace QIRC.Commands
                     break;
 
                 default:
-                    output += String.Format("'\\x{0:x}", (int)c);
+                    output += $"'\\x{(int) c:x}";
                     break;
             }
             return output;
@@ -361,8 +382,8 @@ namespace QIRC.Commands
                 Array a = (Array)result;
 
                 output += "{ ";
-                int top = a.GetUpperBound(0);
-                for (int i = a.GetLowerBound(0); i <= top; i++)
+                Int32 top = a.GetUpperBound(0);
+                for (Int32 i = a.GetLowerBound(0); i <= top; i++)
                 {
                     output += PrettyPrint(a.GetValue(i));
                     if (i != top)
@@ -370,14 +391,14 @@ namespace QIRC.Commands
                 }
                 output += " }";
             }
-            else if (result is bool)
+            else if (result is Boolean)
             {
-                if ((bool)result)
+                if ((Boolean)result)
                     output += "true";
                 else
                     output += "false";
             }
-            else if (result is string)
+            else if (result is String)
             {
                 output += result.ToString().Replace("\n", " ");
             }
@@ -403,9 +424,9 @@ namespace QIRC.Commands
             }
             else if (WorksAsEnumerable(result))
             {
-                int i = 0;
+                Int32 i = 0;
                 output += "{ ";
-                foreach (object item in (IEnumerable)result)
+                foreach (Object item in (IEnumerable)result)
                 {
                     if (i++ != 0)
                         output += ", ";
@@ -414,63 +435,14 @@ namespace QIRC.Commands
                 }
                 output += " }";
             }
-            else if (result is char)
+            else if (result is Char)
             {
-                output += EscapeChar((char)result);
+                output += EscapeChar((Char)result);
             }
             else {
                 output += result.ToString();
             }
             return output;
-        }
-    }
-
-    /// <summary>
-    /// A dynamic ReportPrinter
-    /// </summary>
-    public class DelegateReportPrinter : ReportPrinter
-    {
-        /// <summary>
-        /// The action that gets executed
-        /// </summary>
-        protected Action<String, ProtoIrcMessage> action;
-
-        /// <summary>
-        /// Print sth.
-        /// </summary>
-        public override void Print(AbstractMessage msg, Boolean showFullPath)
-        {
-            String output = "";
-            base.Print(msg, showFullPath);
-            StringBuilder stringBuilder = new StringBuilder();
-            if (!msg.Location.IsNull)
-            {
-                if (!showFullPath)
-                    stringBuilder.Append(msg.Location.ToString());
-                else
-                    stringBuilder.Append(msg.Location.ToStringFullName());
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.AppendFormat("{0} CS{1:0000}: {2}", msg.MessageType, msg.Code, msg.Text);
-            if (msg.IsWarning)
-                output += stringBuilder.ToString();
-            else
-                output += FormatText(stringBuilder.ToString());
-            if (msg.RelatedSymbols != null)
-            {
-                String[] relatedSymbols = msg.RelatedSymbols;
-                for (Int32 i = 0; i < relatedSymbols.Length; i++)
-                    output += String.Concat(relatedSymbols[i], msg.MessageType, ")");
-            }
-            action(output, CSharp.lastMsg);
-        }
-
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public DelegateReportPrinter(Action<String, ProtoIrcMessage> action)
-        {
-            this.action = action;
         }
     }
 
