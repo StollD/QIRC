@@ -1,20 +1,15 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// IRC
 using ChatSharp;
 using ChatSharp.Events;
-
-/// QIRC
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
 using QIRC.Serialization;
-
-/// System
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -22,9 +17,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-/// <summary>
-/// The main namespace. Here's everything that executes actively.
-/// </summary>
 namespace QIRC
 {
     /// <summary>
@@ -65,22 +57,22 @@ namespace QIRC
         /// <param name="args">Commandline arguments</param>
         public static void Main(String[] args)
         {
-            /// We are alive
+            // We are alive
             isAlive = true;
 
-            /// Load the settings of the Bot
+            // Load the settings of the Bot
             PluginManager.Load();
             PluginManager.Invoke("Load");
             Settings.Load();
 
-            /// Call OnAwake
+            // Call OnAwake
             PluginManager.Invoke("Awake");
 
-            /// Connect to the IRC
+            // Connect to the IRC
             ircThread = new Thread(Connect);
             ircThread.Start();
 
-            /// Command line handler goes here
+            // Command line handler goes here
             while (isAlive)
             {
                 Console.Write("> ");
@@ -101,20 +93,20 @@ namespace QIRC
         /// </summary>
         public static void Connect()
         {
-            /// Identification
+            // Identification
             IrcUser user = new IrcUser(Settings.Read<String>("name"), Settings.Read<String>("name"), Settings.Read<String>("password"), "QIRC - A friendly IRC bot!");
 
-            /// Grab settings
+            // Grab settings
             String host = Settings.Read<String>("host");
             Int32 port = Settings.Read<Int32>("port");
             Boolean useSSL = Settings.Read<Boolean>("useSSL");
 
-            /// Create the IrcClient
+            // Create the IrcClient
             client = new IrcClient(String.Join(":", host, port), user, useSSL);
             client.Encoding = Encoding.UTF8;
             client.Settings.ModeOnJoin = true;
 
-            /// Add delegates
+            // Add delegates
             client.ChannelListRecieved += ChannelListRecieved;
             client.ChannelTopicReceived += ChannelTopicReceived;
             client.ConnectionComplete += ConnectionComplete;
@@ -135,11 +127,11 @@ namespace QIRC
             client.UserQuit += UserQuit;
             client.WhoIsReceived += WhoIsReceived;
 
-            /// Connect to IRC
+            // Connect to IRC
             client.ConnectAsync();
             PluginManager.Invoke("Connect", host, port, client.User.Nick, useSSL);
 
-            /// Set isConnected to false, which is funny since the function is named Connect, but hey!
+            // Set isConnected to false, which is funny since the function is named Connect, but hey!
             isConnected = false;
         }
 
@@ -167,7 +159,7 @@ namespace QIRC
             isConnected = true;
             PluginManager.Invoke("ConnectionComplete", client);
 
-            /// Join Channels
+            // Join Channels
             foreach (ProtoIrcChannel channel in Settings.Read<List<ProtoIrcChannel>>("channels"))
                 JoinChannel(channel, false);
         }
@@ -233,7 +225,7 @@ namespace QIRC
         /// </summary>
         private static void PrivateMessageRecieved(Object sender, PrivateMessageEventArgs e)
         {
-            /// Commands
+            // Commands
             String control = Settings.Read<String>("control");
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
             if (msg.Message.StartsWith(control))
@@ -328,23 +320,23 @@ namespace QIRC
         /// </summary>
         public static void JoinChannel(ProtoIrcChannel channel, Boolean addToCFG = true)
         {
-            /// If we aren't connected, we cant join. Same if the channel is null
+            // If we aren't connected, we cant join. Same if the channel is null
             if (!isConnected || channel == null)
                 return;
 
-            /// We don't need empty junk
+            // We don't need empty junk
             if (String.IsNullOrWhiteSpace(channel.name))
                 return;
             
-            /// Join
+            // Join
             String name = channel.name;
             String password = channel.password;
             if (String.IsNullOrWhiteSpace(password))
                 client.JoinChannel(name);
             else
-                client.JoinChannel(name + ":" + password);
+                client.JoinChannel(name, password);
 
-            /// Add it to the cfg
+            // Add it to the cfg
             if (addToCFG)
             {
                 List<ProtoIrcChannel> list = Settings.Read<List<ProtoIrcChannel>>("channels");
@@ -358,15 +350,15 @@ namespace QIRC
         /// </summary>
         public static void LeaveChannel(String channel, String reason = "")
         {
-            /// If we aren't connected, we cant join.
+            // If we aren't connected, we cant join.
             if (!isConnected)
                 return;
 
-            /// We don't need empty junk
+            // We don't need empty junk
             if (String.IsNullOrWhiteSpace(channel))
                 return;
 
-            /// Leave
+            // Leave
             try
             {
                 if (String.IsNullOrWhiteSpace(reason))
@@ -379,7 +371,7 @@ namespace QIRC
 
             }
             
-            /// Edit the cfg
+            // Edit the cfg
             List<ProtoIrcChannel> list = Settings.Read<List<ProtoIrcChannel>>("channels");
             list.RemoveAll(c => String.Equals(c.name, channel, StringComparison.InvariantCultureIgnoreCase));
             Settings.Write("channels", list);
@@ -394,22 +386,22 @@ namespace QIRC
             message.Message = message.Message.Remove(0, control.Length);
             IrcUser user = client.Users[message.User];
 
-            /// We need to figure out of we know this user. Whois him.
+            // We need to figure out of we know this user. Whois him.
             client.WhoIs(user.Nick, (WhoIs whoIs) =>
             {
                 try
                 {
-                    /// Go through all the commands
+                    // Go through all the commands
                     foreach (IrcCommand command in PluginManager.commands)
                     {
-                        /// Get the name of the supplied command and continue if it doesn't matches
+                        // Get the name of the supplied command and continue if it doesn't matches
                         String cmd = message.Message.Split(' ')[0];
                         if (String.Equals(command.GetName(), cmd, StringComparison.InvariantCultureIgnoreCase))
                         {
                             message.Message = message.Message.Remove(0, cmd.Length).Trim();
                             AccessLevel level = AccessLevel.NORMAL;
 
-                            /// Figure out which role the user has in the channel (if the message was received in a channel)
+                            // Figure out which role the user has in the channel (if the message was received in a channel)
                             if (message.IsChannelMessage)
                             {
                                 try
@@ -426,7 +418,7 @@ namespace QIRC
                                 }
                             }
 
-                            /// Maybe the user is a bot admin, which is independent on the channel status. Check that.
+                            // Maybe the user is a bot admin, which is independent on the channel status. Check that.
                             List<ProtoIrcAdmin> admins = Settings.Read<List<ProtoIrcAdmin>>("admins");
                             if (admins.Count(a => String.Equals(a.name, whoIs.LoggedInAs, StringComparison.InvariantCultureIgnoreCase)) == 1)
                             {
@@ -438,10 +430,10 @@ namespace QIRC
                             }
                             message.level = level;
 
-                            /// Does the user have the permission to call this command?
+                            // Does the user have the permission to call this command?
                             if (CheckPermission(command.GetAccessLevel(), level) || commandLine)
                             {
-                                /// Check the status of the current channel. If the channel is marked as serious, don't execute the command if it isn't marked as serious
+                                // Check the status of the current channel. If the channel is marked as serious, don't execute the command if it isn't marked as serious
                                 if (message.IsChannelMessage)
                                 {
                                     List<ProtoIrcChannel> channels = Settings.Read<List<ProtoIrcChannel>>("channels");
@@ -449,7 +441,7 @@ namespace QIRC
                                     if (channel.serious && !command.IsSerious()) return;
                                 }
 
-                                /// Speak English, bot!
+                                // Speak English, bot!
                                 Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
                                 try
                                 {
@@ -471,7 +463,7 @@ namespace QIRC
                     SendMessage(client, "ChatSharp broke. Please contact your local doctor.", message.User, message.Source);
                 }
 
-                /// Run actions that should get executed after the WhoIs
+                // Run actions that should get executed after the WhoIs
                 if (afterWhoIs != null) afterWhoIs();
             });         
         }     
@@ -481,17 +473,17 @@ namespace QIRC
         /// </summary>
         public static ProtoIrcMessage SendMessage(IrcClient client, string message, string from, string to, bool noname = false)
         {
-            /// We don't need empty stuff
+            // We don't need empty stuff
             if (String.IsNullOrWhiteSpace(message))
                 return new ProtoIrcMessage();
 
-            /// Format the message nicely
+            // Format the message nicely
             message = Formatter.Format(message);
 
-            /// Split it into parts so nothing gets lost
+            // Split it into parts so nothing gets lost
             String[] splits = SplitInParts(message, 400).ToArray();
 
-            /// Loop through theese parts and send them to the server
+            // Loop through theese parts and send them to the server
             if (!to.StartsWith("#")) to = from;
             for (Int32 j = 0; j < splits.Length; j++)
             {
@@ -508,7 +500,7 @@ namespace QIRC
                 }
             }
 
-            /// Do internal stuff
+            // Do internal stuff
             ProtoIrcMessage proto = new ProtoIrcMessage()
             {
                 IsChannelMessage = to.StartsWith("#"),
