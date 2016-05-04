@@ -1,0 +1,19 @@
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
+
+using System;
+
+namespace QIRC.Commands
+{
+    /// <summary>
+    /// The config for the Wolfram Query
+    /// </summary>
+    public class WolframConfig
+    {
+        public String units = "metric";
+        public String appid = "";
+    }
+}
