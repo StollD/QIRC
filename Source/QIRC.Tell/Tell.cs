@@ -1,29 +1,19 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// IRC
 using ChatSharp;
 using ChatSharp.Events;
-
-/// QIRC
-using QIRC;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
 using QIRC.Serialization;
-
-/// System
 using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 
-/// <summary>
-/// Here's everything that is an IrcCommand
-/// </summary>
 namespace QIRC.Commands
 {
     /// <summary>
@@ -144,13 +134,10 @@ namespace QIRC.Commands
             }
             QIRC.SendMessage(client, "I'll redirect this as soon as they are around.", message.User, message.Source);
         }
-    }
-
-    /// <summary>
-    /// Deliver the messages from the tell command
-    /// </summary>
-    public class TellPlugin : IrcPlugin
-    {
+    
+        /// <summary>
+        /// Deliver the messages from the tell command
+        /// </summary>
         public override void OnPrivateMessageRecieved(IrcClient client, PrivateMessageEventArgs e)
         {
             if (Tell.tells == null)
@@ -169,19 +156,7 @@ namespace QIRC.Commands
                     QIRC.SendMessage(client, message, e.PrivateMessage.User.Nick, e.PrivateMessage.Source);
                 toDelete.Add(tell);
             }
-            toDelete.ForEach(t => Tell.tells.Remove(t));
+            toDelete.ForEach(t => tells.Remove(t));
         }
-    }
-
-    public struct Msg
-    {
-        public String to;
-        public String source;
-        public String user;
-        public DateTime time;
-        public String message;
-        public Boolean pm;
-        public Boolean channel;
-        public String channelName;
     }
 }
