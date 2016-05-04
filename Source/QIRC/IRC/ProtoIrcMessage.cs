@@ -1,22 +1,14 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
-
-/// IRC
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
+ 
 using ChatSharp;
 using ChatSharp.Events;
-
-/// JSON
 using Newtonsoft.Json;
-
-/// System
 using System;
 
-/// <summary>
-/// In this namespace, everything related to loading IRC Stuff
-/// </summary>
 namespace QIRC.IRC
 {
     /// <summary>

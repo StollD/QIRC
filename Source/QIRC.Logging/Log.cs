@@ -1,26 +1,15 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// IRC
 using ChatSharp;
 using ChatSharp.Events;
-
-/// QIRC
-using QIRC;
-using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-using QIRC.Serialization;
-
-/// System
 using System;
 
-/// <summary>
-/// Here's everything that logs to disk and CMD
-/// </summary>
 namespace QIRC.Logger
 {
     /// <summary>
@@ -43,7 +32,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnConnect(String host, Int32 port, String nick, Boolean useSSL)
         {
-            Logging.Log(String.Format("Connecting to IRC: {0}:{1} as user {2}. {3}", host, port, nick, useSSL ? "Using SSL." : ""), Logging.Level.INFO);
+            Logging.Log($"Connecting to IRC: {host}:{port} as user {nick}. {(useSSL ? "Using SSL." : "")}", Logging.Level.INFO);
         }
 
         /// <summary>
@@ -51,7 +40,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnConnectionComplete(IrcClient client)
         {
-            Logging.Log(String.Format("Connection established! Network name: {0}", client.ServerInfo.NetworkName), Logging.Level.SPECIAL);
+            Logging.Log($"Connection established! Network name: {client.ServerInfo.NetworkName}", Logging.Level.SPECIAL);
         }
 
         /// <summary>
@@ -80,7 +69,7 @@ namespace QIRC.Logger
         public override void OnNoticeRecieved(IrcClient client, IrcNoticeEventArgs e)
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
-            Logging.Log(String.Format("Notice from {0}: {1}", msg.User.Split('!')[0], msg.Message), Logging.Level.WARNING);
+            Logging.Log($"Notice from {msg.User.Split('!')[0]}: {msg.Message}", Logging.Level.WARNING);
             QIRC.messages.Add(msg);
         }
 
@@ -89,7 +78,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnNickChanged(IrcClient client, NickChangedEventArgs e)
         {
-            Logging.Log(String.Format("{0} has changed his Nick to {1}", e.OldNick, e.NewNick), Logging.Level.INFO);
+            Logging.Log($"{e.OldNick} has changed his Nick to {e.NewNick}", Logging.Level.INFO);
         }
 
         /// <summary>
@@ -105,7 +94,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnNetworkError(IrcClient client, SocketErrorEventArgs e)
         {
-            Logging.Log(String.Format("Network Error! Reason: {0}", e.SocketError), Logging.Level.ERROR);
+            Logging.Log($"Network Error! Reason: {e.SocketError}", Logging.Level.ERROR);
         }
 
         /// <summary>
@@ -113,7 +102,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnNickInUse(IrcClient client, ErronousNickEventArgs e)
         {
-            Logging.Log(String.Format("Someone has tried to change his nick to {0}! This is invalid. New Nick: {1}", e.InvalidNick, e.NewNick), Logging.Level.WARNING);
+            Logging.Log($"Someone has tried to change his nick to {e.InvalidNick}! This is invalid. New Nick: {e.NewNick}", Logging.Level.WARNING);
         }
 
         /// <summary>
@@ -121,7 +110,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnUserJoinedChannel(IrcClient client, ChannelUserEventArgs e)
         {
-            Logging.Log(String.Format("{0} has joined {1}", e.User.Nick, e.Channel.Name), Logging.Level.WARNING);
+            Logging.Log($"{e.User.Nick} has joined {e.Channel.Name}", Logging.Level.WARNING);
         }
 
         /// <summary>
@@ -129,7 +118,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnUserKicked(IrcClient client, KickEventArgs e)
         {
-            Logging.Log(String.Format("{0} got kicked from {1} by {2}. Reason: {3}", e.Kicked.Nick, e.Channel.Name, e.Kicker.Nick, e.Reason), Logging.Level.WARNING);
+            Logging.Log($"{e.Kicked.Nick} got kicked from {e.Channel.Name} by {e.Kicker.Nick}. Reason: {e.Reason}", Logging.Level.WARNING);
         }
 
         /// <summary>
@@ -137,7 +126,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnUserPartedChannel(IrcClient client, ChannelUserEventArgs e)
         {
-            Logging.Log(String.Format("{0} has parted {1}", e.User.Nick, e.Channel.Name), Logging.Level.WARNING);
+            Logging.Log($"{e.User.Nick} has parted {e.Channel.Name}", Logging.Level.WARNING);
         }
 
         /// <summary>
@@ -145,7 +134,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnUserQuit(IrcClient client, UserEventArgs e)
         {
-            Logging.Log(String.Format("{0} has quit.", e.User.Nick), Logging.Level.ERROR);
+            Logging.Log($"{e.User.Nick} has quit.", Logging.Level.ERROR);
         }
 
         /// <summary>

@@ -1,35 +1,21 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
-
-/// IRC
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
+ 
 using ChatSharp;
-using ChatSharp.Events;
-
-/// QIRC
-using QIRC;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
 using QIRC.Serialization;
-
-/// System
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.CodeDom.Compiler;
 using System.Security.Cryptography;
-
-/// Microsoft
 using Microsoft.CSharp;
-using System.Reflection.Emit;
 
-/// <summary>
-/// Here's everything that is an IrcCommand
-/// </summary>
 namespace QIRC.Commands
 {
     /// <summary>
@@ -104,11 +90,11 @@ namespace QIRC.Commands
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
-            /// Create the list
+            // Create the list
             if (alias == null)
                 alias = new SerializeableList<_Alias>("alias");
 
-            /// Remove an alias
+            // Remove an alias
             if (StartsWithParam("remove", message.Message))
             {
                 String text = message.Message;
@@ -130,7 +116,7 @@ namespace QIRC.Commands
                 return;
             }
 
-            /// Add one
+            // Add one
             if (StartsWithParam("create", message.Message))
             {
                 String text = message.Message;
@@ -142,24 +128,24 @@ namespace QIRC.Commands
                 }
                 if (!StartsWithParam("structure", text))
                 {
-                    _Alias alias = new _Alias { name = name, command = text.Trim(), level = AccessLevel.NORMAL, example = Settings.Read<String>("control") + name, serious = true };
-                    IrcCommand command = CreateAlias(alias);
-                    Alias.alias.Add(alias);
+                    _Alias alias_ = new _Alias { name = name, command = text.Trim(), level = AccessLevel.NORMAL, example = Settings.Read<String>("control") + name, serious = true };
+                    IrcCommand command = CreateAlias(alias_);
+                    Alias.alias.Add(alias_);
                     PluginManager.commands.Add(command);
                 }
                 else
                 {
                     String regex = StripParam("structure", ref text);
-                    _Alias alias = new _Alias { name = name, command = text.Trim(), level = AccessLevel.NORMAL, example = Settings.Read<String>("control") + name, serious = true, regex = regex };
-                    IrcCommand command = CreateAlias(alias);
-                    Alias.alias.Add(alias);
+                    _Alias alias_ = new _Alias { name = name, command = text.Trim(), level = AccessLevel.NORMAL, example = Settings.Read<String>("control") + name, serious = true, regex = regex };
+                    IrcCommand command = CreateAlias(alias_);
+                    Alias.alias.Add(alias_);
                     PluginManager.commands.Add(command);
                 }
                 QIRC.SendMessage(client, "Aliased \"" + text.Trim() + "\" to \"" + Settings.Read<String>("control") + name + "\"", message.User, message.Source);
                 return;
             }
 
-            /// Edit description
+            // Edit description
             if (StartsWithParam("description", message.Message))
             {
                 String text = message.Message;
@@ -184,7 +170,7 @@ namespace QIRC.Commands
                 return;
             }
 
-            /// Edit access
+            // Edit access
             if (StartsWithParam("level", message.Message))
             {
                 String text = message.Message;
@@ -215,7 +201,7 @@ namespace QIRC.Commands
                 return;
             }
 
-            /// Edit example
+            // Edit example
             if (StartsWithParam("example", message.Message))
             {
                 String text = message.Message;

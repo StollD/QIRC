@@ -1,27 +1,17 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// IRC
 using ChatSharp;
-using ChatSharp.Events;
-
-/// QIRC
-using QIRC;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-
-/// System
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-/// <summary>
-/// Here's everything that is an IrcCommand
-/// </summary>
 namespace QIRC.Commands
 {
     /// <summary>
@@ -89,12 +79,14 @@ namespace QIRC.Commands
         {
             if (StartsWithParam("channel", message.Message))
             {
+                // Create a wildcard
                 String text = message.Message;
                 String target = StripParam("channel", ref text);
                 String wildcard = "^" + Regex.Escape(text.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
                 ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && p.Source == target).ToArray();
                 if (messages.Length == 0)
                 {
+                    // User is MIA
                     QIRC.SendMessage(client, "I haven't seen the user [b]" + text.Trim() + "[/b] in the channel [b]" + target + "[/b] yet.", message.User, message.Source);
                     return;
                 }
@@ -103,10 +95,12 @@ namespace QIRC.Commands
             }
             else
             {
+                // Create a wildcard
                 String wildcard = "^" + Regex.Escape(message.Message.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
                 ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage).ToArray();
                 if (messages.Length == 0)
                 {
+                    // User is MIA
                     QIRC.SendMessage(client, "I haven't seen the user [b]" + message.Message.Trim() + "[/b] yet.", message.User, message.Source);
                     return;
                 }

@@ -1,17 +1,13 @@
-/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// System
 using System;
 using System.IO;
 using PathIO = System.IO.Path;
 
-/// <summary>
-/// The main namespace. Here's everything that executes actively.
-/// </summary>
 namespace QIRC
 {
     /// <summary>

@@ -1,29 +1,19 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
-
-/// Newtonsoft
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
+ 
 using Newtonsoft.Json;
-
-/// QIRC
 using QIRC.Constants;
 using QIRC.IRC;
-
-/// System
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Timers;
 using PathIO = System.IO.Path;
 
-/// <summary>
-/// Here's everything stored that is related to the bot configuration.
-/// Nothing is hardcoded here, except the path where the files are stored.
-/// </summary>
 namespace QIRC.Configuration
 {
     /// <summary>

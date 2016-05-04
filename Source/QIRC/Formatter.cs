@@ -1,15 +1,11 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// System
 using System;
 
-/// <summary>
-/// The main namespace. Here's everything that executes actively.
-/// </summary>
 namespace QIRC
 {
     /// <summary>
@@ -76,22 +72,22 @@ namespace QIRC
         /// </summary>
         public static String Format(String input)
         {
-            /// Bold
-            input = input.Replace("[b]", ControlCode.Bold.ToString()).Replace("[/b]", ControlCode.Bold.ToString());
+            // Bold
+            input = input.Replace("[b]", ControlCode.Bold).Replace("[/b]", ControlCode.Bold);
 
-            /// Italic
-            input = input.Replace("[i]", ControlCode.Italic.ToString()).Replace("[/i]", ControlCode.Italic.ToString());
+            // Italic
+            input = input.Replace("[i]", ControlCode.Italic).Replace("[/i]", ControlCode.Italic);
 
-            /// Strikethrough
-            input = input.Replace("[s]", ControlCode.StrikeThrough.ToString()).Replace("[/s]", ControlCode.StrikeThrough.ToString());
+            // Strikethrough
+            input = input.Replace("[s]", ControlCode.StrikeThrough).Replace("[/s]", ControlCode.StrikeThrough);
 
-            /// Underline
-            input = input.Replace("[u]", ControlCode.Underline.ToString()).Replace("[/u]", ControlCode.Underline.ToString());
+            // Underline
+            input = input.Replace("[u]", ControlCode.Underline).Replace("[/u]", ControlCode.Underline);
 
-            /// Reverse
-            input = input.Replace("[r]", ControlCode.Reverse.ToString()).Replace("[/r]", ControlCode.Reverse.ToString());
+            // Reverse
+            input = input.Replace("[r]", ControlCode.Reverse).Replace("[/r]", ControlCode.Reverse);
 
-            /// Color
+            // Color
             while (input.Contains("[color="))
             {
                 String color = input.Split(new[] { "[color=" }, 2, StringSplitOptions.None)[1];
@@ -111,9 +107,9 @@ namespace QIRC
                     input = input.Replace("[color=" + code + "]", ControlCode.Color + foreground.ToString("00"));
                 }
             }
-            input = input.Replace("[/color]", ControlCode.Color.ToString());
+            input = input.Replace("[/color]", ControlCode.Color);
 
-            /// Return
+            // Return
             return input;
         }
     }

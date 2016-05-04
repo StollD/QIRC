@@ -1,25 +1,14 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// IRC
 using ChatSharp;
-using ChatSharp.Events;
-
-/// QIRC
 using QIRC.Configuration;
-using QIRC.IRC;
 using QIRC.Plugins;
-using QIRC.Serialization;
-
-/// System
 using System;
 
-/// <summary>
-/// Here we log into NickServ
-/// </summary>
 namespace QIRC.Addons
 {
     /// <summary>

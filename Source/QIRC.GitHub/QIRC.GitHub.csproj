@@ -43,8 +43,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GitHub.cs" />
+    <Compile Include="SetChannelRepo.cs" />
+    <Compile Include="GitHubPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetRepoAlias.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QIRC\QIRC.csproj">

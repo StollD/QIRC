@@ -1,31 +1,18 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// IRC
 using ChatSharp;
-using ChatSharp.Events;
-
-/// JSON
 using Newtonsoft.Json;
-
-/// QIRC
-using QIRC;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-
-/// System
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 
-/// <summary>
-/// Here's everything that is an IrcCommand
-/// </summary>
 namespace QIRC.Commands
 {
     /// <summary>
@@ -126,58 +113,43 @@ namespace QIRC.Commands
                 QIRC.SendMessage(client, Uri.UnescapeDataString(result.responseData.results[0].url) + " [" + result.responseData.results[0].titleNoFormatting + "] (" + result.responseData.cursor.resultCount + " results found, took " + result.responseData.cursor.searchResultTime + "s)", message.User, message.Source, !message.IsChannelMessage);
             }
         }
-    }
 
-    /// <summary>
-    /// Alias for the google command.
-    /// </summary>
-    public class Google_S : Google
-    {
-        public override String GetName()
+        /// Google API Classes
+        public struct GoogleResults
         {
-            return "g";
+            public ResponseData responseData;
+            public String responseDetails;
+            public Int32 responseStatus;
         }
-    }
-
-    /// Google API Classes
-    public struct GoogleResults
-    {
-        public ResponseData responseData;
-        public String responseDetails;
-        public Int32 responseStatus;
-    }
-
-    public struct ResponseData
-    {
-        public List<Result> results;
-        public Cursor cursor;
-    }
-
-    public struct Result
-    {
-        public String GsearchResultClass;
-        public String unescapedUrl;
-        public String url;
-        public String visibleUrl;
-        public String cacheUrl;
-        public String title;
-        public String titleNoFormatting;
-        public String content;
-    }
-
-    public struct Cursor
-    {
-        public String resultCount;
-        public List<Page> pages;
-        public String estimatedResultCount;
-        public Int32 currentPageIndex;
-        public String moreResultsUrl;
-        public String searchResultTime;
-    }
-
-    public struct Page
-    {
-        public String start;
-        public Int32 label;
+        public struct ResponseData
+        {
+            public List<Result> results;
+            public Cursor cursor;
+        }
+        public struct Result
+        {
+            public String GsearchResultClass;
+            public String unescapedUrl;
+            public String url;
+            public String visibleUrl;
+            public String cacheUrl;
+            public String title;
+            public String titleNoFormatting;
+            public String content;
+        }
+        public struct Cursor
+        {
+            public String resultCount;
+            public List<Page> pages;
+            public String estimatedResultCount;
+            public Int32 currentPageIndex;
+            public String moreResultsUrl;
+            public String searchResultTime;
+        }
+        public struct Page
+        {
+            public String start;
+            public Int32 label;
+        }
     }
 }

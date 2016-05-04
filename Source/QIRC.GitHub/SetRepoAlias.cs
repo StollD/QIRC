@@ -4,20 +4,22 @@
  * QIRC is licensed under the MIT License
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using ChatSharp;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-using System;
-using System.Linq;
+using QIRC.Serialization;
 
 namespace QIRC.Commands
 {
     /// <summary>
-    /// This is the implementation for the help command. It displays every available command
-    /// and provides short descriptions. It also explains parameters
+    /// This is the implementation for the github tool suite. The command can set the default repository
+    /// for the channel and the IrcPlugin is resposible for posting Links to issues and so on
     /// </summary>
-    public class Choose : IrcCommand
+    public class GitHubAlias : IrcCommand
     {
         /// <summary>
         /// The Access Level that is needed to execute the command
@@ -32,7 +34,7 @@ namespace QIRC.Commands
         /// </summary>
         public override String GetName()
         {
-            return "choose";
+            return "setrepoalias";
         }
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace QIRC.Commands
         /// </summary>
         public override String GetDescription()
         {
-            return "Picks one option from 2 or more different things.";
+            return "Sets an alias for the given repository";
         }
 
         /// <summary>
@@ -57,23 +59,25 @@ namespace QIRC.Commands
         /// <returns></returns>
         public override String GetExample()
         {
-            return Settings.Read<String>("control") + GetName() + " coffee|tea";
+            return Settings.Read<String>("control") + GetName() + " QIRC ThomasKerman/QIRC";
         }
+
+        public static SerializeableList<KeyValuePair<String, String>> alias { get; set; }
 
         /// <summary>
         /// Here we run the command and evaluate the parameters
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
-            if (String.IsNullOrWhiteSpace(message.Message))
-            {
-                QIRC.SendMessage(client, "You have to submit at least two options!", message.User, message.Source);
-            }
+            if (alias == null)
+                alias = new SerializeableList<KeyValuePair<String, String>>("repoalias");
+            if (!message.IsChannelMessage)
+                return;
+            if (alias.Count(r => r.Key == message.Source) == 0)
+                alias.Add(new KeyValuePair<String, String>(message.Message.Split(' ')[0].Trim(), message.Message.Split(' ')[1].Trim()));
             else
-            {
-                String[] options = message.Message.Split('|').Select(s => s.Trim()).ToArray();
-                QIRC.SendMessage(client, "Your options are: " + String.Join(", ", options) + ". My choice: " + options[new Random().Next(0, options.Length)], message.User, message.Source);
-            }
+                alias[alias.IndexOf(alias.First(r => r.Key == message.Message.Split(' ')[0].Trim()))] = new KeyValuePair<String, String>(message.Message.Split(' ')[0].Trim(), message.Message.Split(' ')[1].Trim());
+            QIRC.SendMessage(client, "Set alias for https://github.com/" + message.Message.Split(' ')[1].Trim() + "/ to " + message.Message.Split(' ')[0].Trim(), message.User, message.Source);
         }
     }
 }

@@ -1,23 +1,15 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// QIRC
 using QIRC.Constants;
-
-/// System
 using System;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Runtime.ExceptionServices;
 using System.Timers;
 
-/// <summary>
-/// The main namespace. Here's everything that executes actively.
-/// </summary>
 namespace QIRC
 {
     /// <summary>
@@ -80,14 +72,14 @@ namespace QIRC
         /// <param name="level">The logging level.</param>
         public static void Log(Object message, Level level)
         {
-            /// Get the logging prefix
+            // Get the logging prefix
             String prefix = GetPrefix(level);
 
-            /// Write to disk
+            // Write to disk
             writer.WriteLine(prefix + message);
             writer.Flush();
 
-            /// Write to CLI
+            // Write to CLI
             ConsoleColor old = Console.ForegroundColor;
             Console.ForegroundColor = GetColor(level);
             Console.CursorLeft = 0;
@@ -101,13 +93,13 @@ namespace QIRC
         /// </summary>
         static Logging()
         {
-            /// Dont init twice
+            // Dont init twice
             if (writer != null) return;
 
-            /// Get the logging path
+            // Get the logging path
             Directory.CreateDirectory(Paths.logs);
 
-            /// Create the Timer
+            // Create the Timer
             DateTime tomorrow = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day) + new TimeSpan(1, 0, 0, 0);
             Double millisecs = (tomorrow - DateTime.UtcNow).TotalMilliseconds + 1000;
             newDay = new Timer(millisecs);
@@ -119,7 +111,7 @@ namespace QIRC
             };
             newDay.Start();
 
-            /// Create the writer
+            // Create the writer
             writer = new StreamWriter(Paths.logs + "latest.log", true);
         }
 

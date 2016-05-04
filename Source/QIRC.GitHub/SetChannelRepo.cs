@@ -8,23 +8,25 @@ using ChatSharp;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
+using QIRC.Serialization;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace QIRC.Commands
 {
     /// <summary>
-    /// This is the implementation for the help command. It displays every available command
-    /// and provides short descriptions. It also explains parameters
+    /// This is the implementation for the github tool suite. The command can set the default repository
+    /// for the channel and the IrcPlugin is resposible for posting Links to issues and so on
     /// </summary>
-    public class Choose : IrcCommand
+    public class GitHubRepo : IrcCommand
     {
         /// <summary>
         /// The Access Level that is needed to execute the command
         /// </summary>
         public override AccessLevel GetAccessLevel()
         {
-            return AccessLevel.NORMAL;
+            return AccessLevel.OPERATOR;
         }
 
         /// <summary>
@@ -32,7 +34,7 @@ namespace QIRC.Commands
         /// </summary>
         public override String GetName()
         {
-            return "choose";
+            return "setchannelrepo";
         }
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace QIRC.Commands
         /// </summary>
         public override String GetDescription()
         {
-            return "Picks one option from 2 or more different things.";
+            return "Sets the default GitHub repository for this channel.";
         }
 
         /// <summary>
@@ -57,23 +59,25 @@ namespace QIRC.Commands
         /// <returns></returns>
         public override String GetExample()
         {
-            return Settings.Read<String>("control") + GetName() + " coffee|tea";
+            return Settings.Read<String>("control") + GetName() + " ThomasKerman/QIRC";
         }
+
+        public static SerializeableList<KeyValuePair<String, String>> repos { get; set; }
 
         /// <summary>
         /// Here we run the command and evaluate the parameters
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
-            if (String.IsNullOrWhiteSpace(message.Message))
-            {
-                QIRC.SendMessage(client, "You have to submit at least two options!", message.User, message.Source);
-            }
+            if (repos == null)
+                repos = new SerializeableList<KeyValuePair<String, String>>("repos");
+            if (!message.IsChannelMessage)
+                return;
+            if (repos.Count(r => r.Key == message.Source) == 0)
+                repos.Add(new KeyValuePair<String, String>(message.Source, message.Message.Trim()));
             else
-            {
-                String[] options = message.Message.Split('|').Select(s => s.Trim()).ToArray();
-                QIRC.SendMessage(client, "Your options are: " + String.Join(", ", options) + ". My choice: " + options[new Random().Next(0, options.Length)], message.User, message.Source);
-            }
+                repos[repos.IndexOf(repos.First(r => r.Key == message.Source))] = new KeyValuePair<String, String>(message.Source, message.Message.Trim());
+            QIRC.SendMessage(client, "Set default repository for " + message.Source + " to " + message.Message.Trim(), message.User, message.Source);
         }
     }
 }

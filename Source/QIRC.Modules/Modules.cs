@@ -1,26 +1,16 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// IRC
 using ChatSharp;
-using ChatSharp.Events;
-
-/// QIRC
-using QIRC;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-
-/// System
 using System;
 using System.Linq;
 
-/// <summary>
-/// Here's everything that is an IrcCommand
-/// </summary>
 namespace QIRC.Commands
 {
     /// <summary>
@@ -87,6 +77,7 @@ namespace QIRC.Commands
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
+            // Load a module
             if (StartsWithParam("load", message.Message))
             {
                 String text = message.Message;
@@ -110,7 +101,7 @@ namespace QIRC.Commands
                     plugin.OnAwake();
                     plugin.OnLoad();
                 }
-                else if (type.IsSubclassOf(typeof(IrcCommand)))
+                if (type.IsSubclassOf(typeof(IrcCommand)))
                 {
                     IrcCommand command = (IrcCommand)Activator.CreateInstance(type);
                     PluginManager.commands.Add(command);
@@ -118,6 +109,7 @@ namespace QIRC.Commands
                 QIRC.SendMessage(client, "Loaded the module \"" + module + "\"", message.User, message.Source);
             }
 
+            // Unload a module
             if (StartsWithParam("unload", message.Message))
             {
                 String text = message.Message;
@@ -138,7 +130,7 @@ namespace QIRC.Commands
                 {
                     PluginManager.plugins.RemoveWhere(p => p.GetType() == type);
                 }
-                else if (type.IsSubclassOf(typeof(IrcCommand)))
+                if (type.IsSubclassOf(typeof(IrcCommand)))
                 {
                     PluginManager.commands.RemoveWhere(p => p.GetType() == type);
                 }

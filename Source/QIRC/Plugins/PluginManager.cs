@@ -1,25 +1,15 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// IRC
-using ChatSharp;
-using ChatSharp.Events;
-
-/// QIRC
 using QIRC.Constants;
-
-/// System
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-/// <summary>
-/// The namespace where everything Plugin related is stored.
-/// </summary>
 namespace QIRC.Plugins
 {
     /// <summary>
@@ -78,7 +68,7 @@ namespace QIRC.Plugins
         }
 
         /// <summary>
-        /// Calls OnChannelListReceived in the IrcPlugins
+        /// Calls a method in the IrcPlugins
         /// </summary>
         public static void Invoke(String name, params Object[] arguments)
         {
