@@ -17,5 +17,9 @@ namespace QIRC.Commands
         {
             return "wolfram";
         }
+
+        public override void OnLoad()
+        {
+        }
     }
 }
