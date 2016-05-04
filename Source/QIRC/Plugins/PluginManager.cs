@@ -59,7 +59,7 @@ namespace QIRC.Plugins
                     IrcPlugin plugin = (IrcPlugin)Activator.CreateInstance(type);
                     plugins.Add(plugin);
                 }
-                else if (type.IsSubclassOf(typeof(IrcCommand)))
+                if (type.IsSubclassOf(typeof(IrcCommand)))
                 {
                     IrcCommand command = (IrcCommand)Activator.CreateInstance(type);
                     commands.Add(command);
