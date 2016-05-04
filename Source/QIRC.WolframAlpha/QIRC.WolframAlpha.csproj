@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="WolframAlpha.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WolframConfig.cs" />
+    <Compile Include="WolframLong.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QIRC\QIRC.csproj">
