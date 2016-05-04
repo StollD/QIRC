@@ -1,29 +1,21 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// IRC
 using ChatSharp;
-
-/// QIRC
 using QIRC.IRC;
-
-/// System
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-/// <summary>
-/// The namespace where everything Plugin related is stored.
-/// </summary>
 namespace QIRC.Plugins
 {
     /// <summary>
     /// This is an abstract base for a QIRC Command
     /// </summary>
-    public abstract class IrcCommand
+    public abstract class IrcCommand : IrcPlugin
     {
         public virtual String GetName() { return ""; }
         public virtual String GetDescription() { return ""; }
@@ -32,6 +24,13 @@ namespace QIRC.Plugins
         public virtual void RunCommand(IrcClient client, ProtoIrcMessage message) { }
         public virtual String[] GetParameters() { return new String[0]; }
         public virtual String GetExample() { return ""; }
+
+        /// <summary>
+        /// Whether the message contains the given parameter
+        /// </summary>
+        /// <param name="param">The parameter.</param>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
         protected Boolean StartsWithParam(String param, String message)
         {
             String[] arguments = new String[GetParameters().Length];
@@ -45,6 +44,13 @@ namespace QIRC.Plugins
             }
             return arguments.Contains(param);
         }
+
+        /// <summary>
+        /// Strips the parameter from the message.
+        /// </summary>
+        /// <param name="param">The parameter.</param>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
         protected String StripParam(String param, ref String message)
         {
             String msg = String.Copy(message);
