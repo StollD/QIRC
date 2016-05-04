@@ -1,17 +1,12 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
-
-/// QIRC
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
+ 
 using QIRC.Constants;
-
-/// BSON
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
-
-/// System
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,9 +14,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
 
-/// <summary>
-/// This namespace stores everything related to mass saving of data
-/// </summary>
 namespace QIRC.Serialization
 {
     /// <summary>
@@ -430,10 +422,13 @@ namespace QIRC.Serialization
 
         private void Save()
         {
-            DeflateStream stream = new DeflateStream(File.Open(Paths.data + name + ".dat", FileMode.Create), CompressionMode.Compress, false);
-            BsonWriter bson = new BsonWriter(stream);
-            new JsonSerializer().Serialize(bson, data, typeof(List<T>));
-            bson.Close();
+            Directory.CreateDirectory(Paths.data + "shadow/");
+            using (DeflateStream stream = new DeflateStream(File.Open(Paths.data + "shadow/" + name + ".dat", FileMode.Create), CompressionMode.Compress, false))
+            {
+                using (BsonWriter bson = new BsonWriter(stream))
+                    new JsonSerializer().Serialize(bson, data, typeof (List<T>));
+            }
+            File.Copy(Paths.data + "shadow/" + name + ".dat", Paths.data + name + ".dat", true);
         }
     }
 }
