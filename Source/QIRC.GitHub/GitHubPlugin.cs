@@ -54,7 +54,7 @@ namespace QIRC.Commands
                     }
                 }
             }
-            else if (Regex.IsMatch(message.Message, sha1URL))
+            else if (false/*Regex.IsMatch(message.Message, sha1URL)*/)
             {
                 foreach (Match match in Regex.Matches(message.Message, sha1URL, RegexOptions.IgnoreCase))
                 {
