@@ -1,26 +1,15 @@
-﻿/// --------------------------------------
-/// .NET Bot for Internet Relay Chat (IRC)
-/// Copyright (c) ThomasKerman 2016
-/// QIRC is licensed under the MIT License
-/// --------------------------------------
+﻿/** 
+ * .NET Bot for Internet Relay Chat (IRC)
+ * Copyright (c) ThomasKerman 2016
+ * QIRC is licensed under the MIT License
+ */
 
-/// IRC
 using ChatSharp;
-using ChatSharp.Events;
-
-/// QIRC
-using QIRC;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-
-/// System
 using System;
-using System.Linq;
 
-/// <summary>
-/// Here's everything that is an IrcCommand
-/// </summary>
 namespace QIRC.Commands
 {
     /// <summary>
@@ -95,7 +84,8 @@ namespace QIRC.Commands
                 Int32[] numbers = new Int32[] { 1, 6 };
                 String[] splits = text.Split(new[] { 'd' }, 2);
                 numbers[0] = String.IsNullOrWhiteSpace(splits[0]) ? numbers[0] : Math.Min(300, Math.Max(1, Int32.Parse(splits[0])));
-                numbers[1] = String.IsNullOrWhiteSpace(splits[1]) ? numbers[1] : Math.Min(300, Math.Max(1, Int32.Parse(splits[1])));
+                if (splits.Length == 2)
+                    numbers[1] = String.IsNullOrWhiteSpace(splits[1]) ? numbers[1] : Math.Min(300, Math.Max(1, Int32.Parse(splits[1])));
                 Int32[] results = new Int32[numbers[0]];
                 for (Int32 i = 0; i < results.Length; i++)
                     results[i] = random.Next(1, numbers[1]);
@@ -106,9 +96,9 @@ namespace QIRC.Commands
                 Random random = new Random();
                 Int32[] numbers = new Int32[] { 1, 6 };
                 String[] splits = message.Message.Split(new[] { 'd' }, 2);
-                Logging.Log(splits[0] + " " + splits[1], Logging.Level.INFO);
                 numbers[0] = String.IsNullOrWhiteSpace(splits[0]) ? numbers[0] : Math.Min(300, Math.Max(1, Int32.Parse(splits[0])));
-                numbers[1] = String.IsNullOrWhiteSpace(splits[1]) ? numbers[1] : Math.Min(300, Math.Max(1, Int32.Parse(splits[1])));
+                if (splits.Length == 2)
+                    numbers[1] = String.IsNullOrWhiteSpace(splits[1]) ? numbers[1] : Math.Min(300, Math.Max(1, Int32.Parse(splits[1])));
                 Int32[] results = new Int32[numbers[0]];
                 for (Int32 i = 0; i < results.Length; i++)
                     results[i] = random.Next(1, numbers[1]);
