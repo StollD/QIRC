@@ -17,5 +17,6 @@ namespace QIRC.Commands
         {
             return "g";
         }
+        public override void OnLoad() { }
     }
 }
