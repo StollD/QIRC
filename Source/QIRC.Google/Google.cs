@@ -78,78 +78,88 @@ namespace QIRC.Commands
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
+            // Get the config
+            GoogleConfig config = Settings.Read<GoogleConfig>("Google");
+            
             if (StartsWithParam("results", message.Message))
             {
                 String query = message.Message;
                 Int32 results = Int32.Parse(StripParam("results", ref query));
                 query = query.Trim();
-                GoogleResults result = JsonConvert.DeserializeObject<GoogleResults>(new WebClient().DownloadString("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&q=" + query + "&hl=en"));
-                if (result.responseData.results.Count == 0)
+                GoogleResults result = JsonConvert.DeserializeObject<GoogleResults>(new WebClient().DownloadString("https://www.googleapis.com/customsearch/v1?num=8&q=" + query + "&hl=en&cx=" + config.searchEngine + "&key=" + config.apiKey));
+                if (result.searchInformation.totalResults == "0")
                 {
                     QIRC.SendMessage(client, "No results found for \"" + query + "\"", message.User, message.Source);
                     return;
                 }
                 Int32 start = 7;
-                while (result.responseData.results.Count < results)
+                while (Int32.Parse(result.searchInformation.totalResults) < results)
                 {
-                    result.responseData.results.AddRange(JsonConvert.DeserializeObject<GoogleResults>(new WebClient().DownloadString("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&start=" + start + "&q=" + query + "&hl=en")).responseData.results);
+                    result.items.AddRange(JsonConvert.DeserializeObject<GoogleResults>(new WebClient().DownloadString("https://www.googleapis.com/customsearch/v1?num=8&start=" + start + "&q=" + query + "&hl=en&cx=" + config.searchEngine + "&key=" + config.apiKey)).items);
                     start += 8;
                 }
                 if (message.IsChannelMessage) QIRC.SendMessage(client, "Writing you a PM with the first " + results + " search results for \"" + query + "\"", message.User, message.Source);
                 for (Int32 i = 0; i < results; i++)
                 {
-                    QIRC.SendMessage(client, Uri.UnescapeDataString(result.responseData.results[i].url) + " [" + result.responseData.results[i].titleNoFormatting + "]", message.User, message.User, true);
+                    QIRC.SendMessage(client, result.items[i].link + " [" + result.items[i].title + "]", message.User, message.User, true);
                 }
             }
             else
             {
                 String query = message.Message;
-                GoogleResults result = JsonConvert.DeserializeObject<GoogleResults>(new WebClient().DownloadString("http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&q=" + query + "&hl=en"));
-                if (result.responseData.results.Count == 0)
+                GoogleResults result = JsonConvert.DeserializeObject<GoogleResults>(new WebClient().DownloadString("https://www.googleapis.com/customsearch/v1?num=8&q=" + query + "&hl=en&cx=" + config.searchEngine + "&key=" + config.apiKey));
+                if (result.searchInformation.totalResults == "0") // Why Google, why...
                 {
                     QIRC.SendMessage(client, "No results found for \"" + query + "\"", message.User, message.Source);
                     return;
                 }
-                QIRC.SendMessage(client, Uri.UnescapeDataString(result.responseData.results[0].url) + " [" + result.responseData.results[0].titleNoFormatting + "] (" + result.responseData.cursor.resultCount + " results found, took " + result.responseData.cursor.searchResultTime + "s)", message.User, message.Source, !message.IsChannelMessage);
+                QIRC.SendMessage(client, result.items[0].link + " [" + result.items[0].title + "] (" + result.searchInformation.totalResults + " results found, took " + result.searchInformation.formattedSearchTime + "s)", message.User, message.Source, !message.IsChannelMessage);
             }
+        }
+
+        /// <summary>
+        /// Adds the Google Settings to the config
+        /// </summary>
+        /// IrcClient Functions
+        public override void OnLoad()
+        {
+            SettingsFile file = null;
+            Settings.GetFile("settings", ref file);
+            file.Add("Google", new GoogleConfig());
+        }
+        
+        // Config Class
+        public class GoogleConfig
+        {
+            public string searchEngine = "";
+            public string apiKey = "";
         }
 
         /// Google API Classes
         public struct GoogleResults
         {
-            public ResponseData responseData;
-            public String responseDetails;
-            public Int32 responseStatus;
+            public GoogleSearchInformation searchInformation;
+            [JsonProperty(Required = Required.Default)]
+            public List<GoogleItem> items;
         }
-        public struct ResponseData
+        public struct GoogleSearchInformation
         {
-            public List<Result> results;
-            public Cursor cursor;
+            public Double searchTime;
+            public String formattedSearchTime;
+            public String totalResults;
+            public String formattedTotalResults;
         }
-        public struct Result
+        public struct GoogleItem
         {
-            public String GsearchResultClass;
-            public String unescapedUrl;
-            public String url;
-            public String visibleUrl;
-            public String cacheUrl;
             public String title;
-            public String titleNoFormatting;
-            public String content;
-        }
-        public struct Cursor
-        {
-            public String resultCount;
-            public List<Page> pages;
-            public String estimatedResultCount;
-            public Int32 currentPageIndex;
-            public String moreResultsUrl;
-            public String searchResultTime;
-        }
-        public struct Page
-        {
-            public String start;
-            public Int32 label;
+            public String htmlTitle;
+            public String link;
+            public String displayLink;
+            public String snippet;
+            public String htmlSnippet;
+            public String cacheId;
+            public String formattedUrl;
+            public String htmlFormattedUrl;
         }
     }
 }
