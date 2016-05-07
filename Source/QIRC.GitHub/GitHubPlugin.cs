@@ -88,12 +88,13 @@ namespace QIRC.Commands
                 String json = new System.IO.StreamReader(web.GetResponse().GetResponseStream()).ReadToEnd();
                 JObject data = JObject.Parse(json);
                 String body = "";
-                if (data["body"].ToString().Split('\n').Length > 1)
-                    body = data["body"].ToString().Split('\n')[0] + "...";
-                else if (data["body"].ToString().Split('\n')[0].Length > 200)
-                    body = data["body"].ToString().Split('\n')[0].Substring(0, 200) + "...";
+                String[] split = data["body"].ToString().Split('\n', '\r');
+                if (split.Length > 1)
+                    body = split[0] + "...";
+                else if (split[0].Length > 200)
+                    body = split[0].Substring(0, 200) + "...";
                 else
-                    body = data["body"].ToString().Split('\n')[0];
+                    body = split[0];
                 return "[#" + id + "] [b]title:[/b] " + data["title"] + " [b]|[/b] " + body + " [b]|[/b] " + "https://github.com/" + repository + "/issues/" + id;
             }
             catch
