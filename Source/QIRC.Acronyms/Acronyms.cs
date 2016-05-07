@@ -199,5 +199,6 @@ namespace QIRC.Commands
         {
             return "acronym";
         }
+        public override void OnPrivateMessageRecieved(IrcClient client, PrivateMessageEventArgs e) {}
     }
 }
