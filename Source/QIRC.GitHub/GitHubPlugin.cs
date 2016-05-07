@@ -58,7 +58,7 @@ namespace QIRC.Commands
             {
                 foreach (Match match in Regex.Matches(message.Message, sha1URL, RegexOptions.IgnoreCase))
                 {
-                    String id = isSha1 ? match.Groups[1].Value + match.Groups[4].Value : match.Groups[4].Value;
+                    String id = match.Groups[4].Value;
                     Console.WriteLine(id);
                     if (match.Groups[1].Success)
                     {
