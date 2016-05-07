@@ -24,7 +24,7 @@ namespace QIRC.Commands
     public class GitHubPlugin : IrcPlugin
     {
         public const String issueURL = @"(?:https?:\/\/(?:www\.)?github.com\/)?(?:([A-z0-9\-]+(\/)?[A-z0-9\-]+)?(\/)?)?(issues\/|pull\/|#)([\d]+)";
-        public const String sha1URL = @"(?:https?:\/\/(?:www\.)?github.com\/)?(?:([A-z0-9\-]+(?:\/)?[A-z0-9\-]+)?(\/)?)?(commit\/|@)?([a-z0-9A-Z]{5})";
+        public const String sha1URL = @"(?:https?:\/\/(?:www\.)?github.com\/)?(?:([A-z0-9\-]+(?:\/)?[A-z0-9\-]+)?(\/)?)?(commit\/|@)([a-z0-9A-Z]{5})";
 
         public override void OnChannelMessageRecieved(IrcClient client, PrivateMessageEventArgs e)
         {
@@ -54,14 +54,13 @@ namespace QIRC.Commands
                     }
                 }
             }
-            else if (false/*Regex.IsMatch(message.Message, sha1URL)*/)
+            else if (Regex.IsMatch(message.Message, sha1URL))
             {
                 foreach (Match match in Regex.Matches(message.Message, sha1URL, RegexOptions.IgnoreCase))
                 {
-                    Boolean isSha1 = match.Groups[1].Success && match.Groups[4].Success && match.Groups.OfType<Group>().Count(g => g.Success) == 3;
                     String id = isSha1 ? match.Groups[1].Value + match.Groups[4].Value : match.Groups[4].Value;
                     Console.WriteLine(id);
-                    if (match.Groups[1].Success && !isSha1)
+                    if (match.Groups[1].Success)
                     {
                         String repo = GitHubAlias.alias.Count(r => r.Key == match.Groups[1].Value) > 0 ? GitHubAlias.alias.First(r => r.Key == match.Groups[1].Value).Value : match.Groups[1].Value;
                         String info = GetInfoCommit(repo, id);
