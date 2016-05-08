@@ -62,6 +62,7 @@ namespace QIRC.Commands
                 "create", "Creates an alias with the given name",
                 "remove", "Removes the alias with the given name",
                 "structure", "Defines the structure for a new alias",
+                "escape", "Escapes the params before passing them to the alias command.",
                 "description", "Sets the description for an alias",
                 "level", "Sets the access level for an alias",
                 "example", "Adds a proper example for the alias"
@@ -136,7 +137,7 @@ namespace QIRC.Commands
                 else
                 {
                     String regex = StripParam("structure", ref text);
-                    _Alias alias_ = new _Alias { name = name, command = text.Trim(), level = AccessLevel.NORMAL, example = Settings.Read<String>("control") + name, serious = true, regex = regex };
+                    _Alias alias_ = new _Alias { name = name, command = text.Trim(), level = AccessLevel.NORMAL, example = Settings.Read<String>("control") + name, serious = true, regex = regex, escape = StartsWithParam("escape", text)};
                     IrcCommand command = CreateAlias(alias_);
                     Alias.alias.Add(alias_);
                     PluginManager.commands.Add(command);
@@ -314,7 +315,7 @@ namespace QIRC.Commands
                         return;
                     Match match = regex_.Match(message.Message);
                     List<Group> groups = match.Groups.Cast<Group>().ToList();
-                    message.Message = String.Format(command, groups.Where(g => g.Success && groups.IndexOf(g) != 0).Select(g => g.Value.Trim()).ToArray());
+                    message.Message = String.Format(command, groups.Where(g => g.Success && groups.IndexOf(g) != 0).Select(g => " + (alias.escape ? "Regex.Escape(g.Value.Trim())" : "g.Value.Trim()") + @").ToArray());
                 }
                 catch
                 {
@@ -342,6 +343,7 @@ namespace QIRC.Commands
             public String example;
             public String command;
             public String regex;
+            public Boolean escape;
         }
     }
 
