@@ -137,7 +137,10 @@ namespace QIRC.Commands
                 else
                 {
                     String regex = StripParam("structure", ref text);
-                    _Alias alias_ = new _Alias { name = name, command = text.Trim(), level = AccessLevel.NORMAL, example = Settings.Read<String>("control") + name, serious = true, regex = regex, escape = StartsWithParam("escape", text)};
+                    Boolean escape = StartsWithParam("escape", text);
+                    if (escape)
+                        StripParam("escape", ref text);
+                    _Alias alias_ = new _Alias { name = name, command = text.Trim(), level = AccessLevel.NORMAL, example = Settings.Read<String>("control") + name, serious = true, regex = regex, escape = escape };
                     IrcCommand command = CreateAlias(alias_);
                     Alias.alias.Add(alias_);
                     PluginManager.commands.Add(command);
@@ -315,7 +318,7 @@ namespace QIRC.Commands
                         return;
                     Match match = regex_.Match(message.Message);
                     List<Group> groups = match.Groups.Cast<Group>().ToList();
-                    message.Message = String.Format(command, groups.Where(g => g.Success && groups.IndexOf(g) != 0).Select(g => " + (alias.escape ? "Regex.Escape(g.Value.Trim())" : "g.Value.Trim()") + @").ToArray());
+                    message.Message = String.Format(command, groups.Where(g => g.Success && groups.IndexOf(g) != 0).Select(g => g.Value.Trim()" + (alias.escape ? ".Replace(\"\\\"\", \"\\\\\\\"\"" + ")" : "") + @").ToArray());
                 }
                 catch
                 {
