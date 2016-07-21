@@ -90,7 +90,7 @@ namespace QIRC.Commands
                     QIRC.SendMessage(client, "I haven't seen the user [b]" + text.Trim() + "[/b] in the channel [b]" + target + "[/b] yet.", message.User, message.Source);
                     return;
                 }
-                ProtoIrcMessage lastMsg = messages.OrderBy(p => p.Time.Ticks).ElementAtOrDefault(messages.Length - 2);
+                ProtoIrcMessage lastMsg = messages.OrderBy(p => p.Time.Ticks).Last();
                 QIRC.SendMessage(client, "I last saw [b]" + lastMsg.User + "[/b] on [b][" + lastMsg.Time.ToString("dd.MM.yyyy HH:mm:ss") + "][/b] in [b]" + target + "[/b] saying: \"" + lastMsg.Message + "\"", message.User, message.Source);
             }
             else
@@ -104,7 +104,7 @@ namespace QIRC.Commands
                     QIRC.SendMessage(client, "I haven't seen the user [b]" + message.Message.Trim() + "[/b] yet.", message.User, message.Source);
                     return;
                 }
-                ProtoIrcMessage lastMsg = messages.OrderBy(p => p.Time.Ticks).ElementAtOrDefault(messages.Length - 2);
+                ProtoIrcMessage lastMsg = messages.OrderBy(p => p.Time.Ticks).Last();
                 QIRC.SendMessage(client, "I last saw [b]" + lastMsg.User + "[/b] on [b][" + lastMsg.Time.ToString("dd.MM.yyyy HH:mm:ss") + "][/b] in [b]" + lastMsg.Source + "[/b] saying: \"" + lastMsg.Message + "\"", message.User, message.Source);
             }
         }
