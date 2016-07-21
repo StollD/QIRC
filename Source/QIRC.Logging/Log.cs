@@ -50,7 +50,6 @@ namespace QIRC.Logger
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
             Logging.Log(String.Format("[{1}] <{0}> {2}", msg.User, msg.Source, msg.Message), Logging.Level.INFO);
-            QIRC.messages.Add(msg);
         }
 
         /// <summary>
@@ -60,7 +59,6 @@ namespace QIRC.Logger
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
             Logging.Log(String.Format("[{1}] <{0}> {2}", msg.User, "Private", msg.Message), Logging.Level.INFO);
-            QIRC.messages.Add(msg);
         }
 
         /// <summary>
@@ -70,7 +68,6 @@ namespace QIRC.Logger
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
             Logging.Log($"Notice from {msg.User.Split('!')[0]}: {msg.Message}", Logging.Level.WARNING);
-            QIRC.messages.Add(msg);
         }
 
         /// <summary>

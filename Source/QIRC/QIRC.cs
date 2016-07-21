@@ -45,6 +45,7 @@ namespace QIRC
         /// The thread that manages the IRC Connection
         /// </summary>
         public static Thread ircThread { get; protected set; }
+
         /// <summary>
         /// All the messages that were recieved on IRC, stored as BSON
         /// </summary>
@@ -237,6 +238,7 @@ namespace QIRC
                         PluginManager.Invoke("ChannelMessageRecieved", client, e);
                     else
                         PluginManager.Invoke("UserMessageRecieved", client, e);
+                    messages.Add(msg);
                 });
             }
             else
@@ -246,6 +248,7 @@ namespace QIRC
                     PluginManager.Invoke("ChannelMessageRecieved", client, e);
                 else
                     PluginManager.Invoke("UserMessageRecieved", client, e);
+                messages.Add(msg);
             }            
         }
 
@@ -389,6 +392,9 @@ namespace QIRC
             // We need to figure out of we know this user. Whois him.
             client.WhoIs(user.Nick, (WhoIs whoIs) =>
             {
+                // Run actions that should get executed after the WhoIs
+                if (afterWhoIs != null) afterWhoIs();
+
                 try
                 {
                     // Go through all the commands
@@ -462,9 +468,6 @@ namespace QIRC
                 {
                     SendMessage(client, "ChatSharp broke. Please contact your local doctor.", message.User, message.Source);
                 }
-
-                // Run actions that should get executed after the WhoIs
-                if (afterWhoIs != null) afterWhoIs();
             });         
         }     
 
