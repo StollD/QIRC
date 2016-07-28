@@ -178,7 +178,10 @@ namespace QIRC.Commands
         /// Reply to messages who match a special scheme
         /// </summary>
         public override void OnPrivateMessageRecieved(IrcClient client, PrivateMessageEventArgs e)
-        {
+        {            
+            // Null Check
+            if (acronyms == null)
+                acronyms = new SerializeableList<Tuple<String, String>>("acronyms");
             if (e.PrivateMessage.Message.EndsWith("?", StringComparison.InvariantCultureIgnoreCase))
             {
                 String message = e.PrivateMessage.Message.Remove(e.PrivateMessage.Message.Length - 1);
