@@ -44,7 +44,7 @@ namespace QIRC.Plugins
             assemblies.Add(assembly);
             foreach (Type type in assembly.GetTypes())
             {
-                if (type.IsSubclassOf(typeof(IrcPlugin)) && !type.IsSubclassOf(typeof(IrcCommand))
+                if (type.IsSubclassOf(typeof(IrcPlugin)) && !type.IsSubclassOf(typeof(IrcCommand)))
                 {
                     IrcPlugin plugin = (IrcPlugin)Activator.CreateInstance(type);
                     plugins.Add(plugin);
