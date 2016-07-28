@@ -140,10 +140,10 @@ namespace QIRC.Commands
         /// </summary>
         public override void OnPrivateMessageRecieved(IrcClient client, PrivateMessageEventArgs e)
         {
-            if (Tell.tells == null)
-                Tell.tells = new SerializeableList<Msg>("tell");
+            if (tells == null)
+                tells = new SerializeableList<Msg>("tell");
             List<Msg> toDelete = new List<Msg>();
-            foreach (Msg tell in Tell.tells)
+            foreach (Msg tell in tells)
             {
                 if (!Regex.IsMatch(e.PrivateMessage.User.Nick, tell.to, RegexOptions.IgnoreCase))
                     continue;

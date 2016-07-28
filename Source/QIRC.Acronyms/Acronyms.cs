@@ -22,7 +22,7 @@ namespace QIRC.Commands
     public class Acronym : IrcCommand
     {
         /// <summary>
-        /// The persistant List of Acronyms
+        /// The persistent List of Acronyms
         /// </summary>
         public SerializeableList<Tuple<String, String>> acronyms { get; set; }
 
@@ -182,10 +182,8 @@ namespace QIRC.Commands
             if (e.PrivateMessage.Message.EndsWith("?", StringComparison.InvariantCultureIgnoreCase))
             {
                 String message = e.PrivateMessage.Message.Remove(e.PrivateMessage.Message.Length - 1);
-                IrcCommand acr = PluginManager.commands.First(c => c.GetName() == "acr");
-                (acr as Acronym).acronyms = new SerializeableList<Tuple<String, String>>("acronyms");
-                if ((acr as Acronym).acronyms.Count(t => t.Item1 == message) > 0)
-                    acr.RunCommand(client, new ProtoIrcMessage(e) {Message = message});
+                if (acronyms.Count(t => t.Item1 == message) > 0)
+                    RunCommand(client, new ProtoIrcMessage(e) {Message = message});
             }
         }
     }
