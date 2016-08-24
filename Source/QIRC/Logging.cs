@@ -8,6 +8,7 @@ using QIRC.Constants;
 using System;
 using System.IO;
 using System.IO.Compression;
+using System.Text;
 using System.Timers;
 
 namespace QIRC
@@ -112,7 +113,7 @@ namespace QIRC
             newDay.Start();
 
             // Create the writer
-            writer = new StreamWriter(Paths.logs + "latest.log", true);
+            writer = new StreamWriter(Paths.logs + "latest.log", true, Encoding.Unicode);
         }
 
         /// <summary>

@@ -45,6 +45,7 @@ namespace QIRC
         /// The thread that manages the IRC Connection
         /// </summary>
         public static Thread ircThread { get; protected set; }
+
         /// <summary>
         /// All the messages that were recieved on IRC, stored as BSON
         /// </summary>
@@ -84,7 +85,7 @@ namespace QIRC
                     Source = Settings.Read<String>("name"),
                     User = Settings.Read<String>("name")
                 }, client, true);
-            }            
+            }
         }
 
         /// <summary>
@@ -163,7 +164,7 @@ namespace QIRC
             foreach (ProtoIrcChannel channel in Settings.Read<List<ProtoIrcChannel>>("channels"))
                 JoinChannel(channel, false);
         }
-        
+
         /// <summary>
         /// Mode Changed Event
         /// </summary>
@@ -246,7 +247,7 @@ namespace QIRC
                     PluginManager.Invoke("ChannelMessageRecieved", client, e);
                 else
                     PluginManager.Invoke("UserMessageRecieved", client, e);
-            }            
+            }
         }
 
         /// <summary>
@@ -290,7 +291,7 @@ namespace QIRC
                 LeaveChannel(e.Channel.Name);
             PluginManager.Invoke("UserKicked", client, e);
         }
-        
+
         /// <summary>
         /// User Parted Channel Event
         /// </summary>
@@ -327,7 +328,7 @@ namespace QIRC
             // We don't need empty junk
             if (String.IsNullOrWhiteSpace(channel.name))
                 return;
-            
+
             // Join
             String name = channel.name;
             String password = channel.password;
@@ -370,7 +371,7 @@ namespace QIRC
             {
 
             }
-            
+
             // Edit the cfg
             List<ProtoIrcChannel> list = Settings.Read<List<ProtoIrcChannel>>("channels");
             list.RemoveAll(c => String.Equals(c.name, channel, StringComparison.InvariantCultureIgnoreCase));
@@ -465,8 +466,8 @@ namespace QIRC
 
                 // Run actions that should get executed after the WhoIs
                 if (afterWhoIs != null) afterWhoIs();
-            });         
-        }     
+            });
+        }
 
         /// <summary>
         /// Sends a message to the IRC
