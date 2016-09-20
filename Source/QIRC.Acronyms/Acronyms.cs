@@ -43,6 +43,14 @@ namespace QIRC.Commands
         }
 
         /// <summary>
+        /// Alternative names
+        /// </summary>
+        public override String[] GetAlternativeNames()
+        {
+            return new[] {"acronym"};
+        }
+
+        /// <summary>
         /// Returns a description of the command
         /// </summary>
         public override String GetDescription()
@@ -189,17 +197,5 @@ namespace QIRC.Commands
                     RunCommand(client, new ProtoIrcMessage(e) {Message = message});
             }
         }
-    }
-
-    /// <summary>
-    /// Aliased version of the Acronym command
-    /// </summary>
-    public class AcronymLong : Acronym
-    {
-        public override String GetName()
-        {
-            return "acronym";
-        }
-        public override void OnPrivateMessageRecieved(IrcClient client, PrivateMessageEventArgs e) {}
     }
 }

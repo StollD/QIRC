@@ -41,6 +41,14 @@ namespace QIRC.Commands
         }
 
         /// <summary>
+        /// Alternative names
+        /// </summary>
+        public override String[] GetAlternativeNames()
+        {
+            return new[] { "c" };
+        }
+
+        /// <summary>
         /// Returns a description of the command
         /// </summary>
         public override String GetDescription()
@@ -445,17 +453,6 @@ namespace QIRC.Commands
                 output += result.ToString();
             }
             return output;
-        }
-    }
-
-    /// <summary>
-    /// An alias of CSharp to the shorter form c
-    /// </summary>
-    public class C : CSharp
-    {
-        public override String GetName()
-        {
-            return "c";
         }
     }
 }

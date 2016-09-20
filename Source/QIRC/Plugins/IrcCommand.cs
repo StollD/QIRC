@@ -7,6 +7,8 @@
 using ChatSharp;
 using QIRC.IRC;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -18,6 +20,7 @@ namespace QIRC.Plugins
     public abstract class IrcCommand : IrcPlugin
     {
         public virtual String GetName() { return ""; }
+        public virtual String[] GetAlternativeNames() { return new String[0]; }
         public virtual String GetDescription() { return ""; }
         public virtual Boolean IsSerious() { return false; }
         public virtual AccessLevel GetAccessLevel() { return AccessLevel.NORMAL; }
@@ -71,6 +74,18 @@ namespace QIRC.Plugins
                 return val;
             }
             return "";
+        }
+
+        /// <summary>
+        /// Checks if the supplied name should trigger this command
+        /// </summary>
+        public Boolean IsNamed(String name)
+        {
+            if (String.Equals(GetName(), name, StringComparison.InvariantCultureIgnoreCase))
+                return true;
+            if (GetAlternativeNames().Select(s => s.ToLower()).Contains(name.ToLower()))
+                return true;
+            return false;
         }
     }
 }

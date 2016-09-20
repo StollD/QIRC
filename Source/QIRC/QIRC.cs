@@ -392,7 +392,7 @@ namespace QIRC
             IrcUser user = client.Users[message.User];
 
             // We need to figure out of we know this user. Whois him.
-            client.WhoIs(user.Nick, (WhoIs whoIs) =>
+            client.WhoIs(user.Nick, whoIs =>
             {
                 try
                 {
@@ -401,7 +401,7 @@ namespace QIRC
                     {
                         // Get the name of the supplied command and continue if it doesn't matches
                         String cmd = message.Message.Split(' ')[0];
-                        if (String.Equals(command.GetName(), cmd, StringComparison.InvariantCultureIgnoreCase))
+                        if (command.IsNamed(cmd))
                         {
                             message.Message = message.Message.Remove(0, cmd.Length).Trim();
                             AccessLevel level = AccessLevel.NORMAL;

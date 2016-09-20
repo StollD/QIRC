@@ -9,6 +9,7 @@ using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace QIRC.Commands
@@ -67,7 +68,9 @@ namespace QIRC.Commands
         {
             if (String.IsNullOrWhiteSpace(message.Message))
             {
-                QIRC.SendMessage(client, "Commands I recognize: " + String.Join(", ", PluginManager.commands.Select(c => c.GetName()).OrderBy(x => x)), message.User, message.User, true);
+                List<String> commands = PluginManager.commands.Select(c => c.GetName()).ToList();
+                commands.AddRange(PluginManager.commands.SelectMany(s => s.GetAlternativeNames()));
+                QIRC.SendMessage(client, "Commands I recognize: " + String.Join(", ", commands.OrderBy(x => x)), message.User, message.User, true);
                 QIRC.SendMessage(client, "For additional help type \"" + Settings.Read<String>("control") + "help <command>\" where <command> is the name of the command you want help for.", message.User, message.User, true);
                 if (message.IsChannelMessage)
                     QIRC.SendMessage(client, "I sent you a private message with information about all my commands!", message.User, message.Source);
@@ -75,7 +78,7 @@ namespace QIRC.Commands
             else
             {
                 String name = message.Message;
-                IrcCommand command = PluginManager.commands.FirstOrDefault(c => String.Equals(c.GetName(), name, StringComparison.InvariantCultureIgnoreCase));
+                IrcCommand command = PluginManager.commands.FirstOrDefault(c => c.IsNamed(name));
                 if (command != null)
                 {
                     String description = command.GetDescription();

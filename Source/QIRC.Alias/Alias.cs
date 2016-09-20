@@ -335,6 +335,23 @@ namespace QIRC.Commands
         }
 
         /// <summary>
+        /// Load the definitions
+        /// </summary>
+        public override void OnLoad()
+        {
+            // Create the list
+            if (Alias.alias == null)
+                Alias.alias = new SerializeableList<Alias._Alias>("alias");
+
+            // Create them
+            foreach (Alias._Alias alias in Alias.alias)
+            {
+                IrcCommand command = Alias.CreateAlias(alias);
+                PluginManager.commands.Add(command);
+            }
+        }
+
+        /// <summary>
         /// Internal representation of an alias
         /// </summary>
         public struct _Alias
@@ -347,29 +364,6 @@ namespace QIRC.Commands
             public String command;
             public String regex;
             public Boolean escape;
-        }
-    }
-
-    /// <summary>
-    /// Loads the Alias definitions
-    /// </summary>
-    public class AliasLoader : IrcPlugin
-    {
-        /// <summary>
-        /// Load the definitions
-        /// </summary>
-        public override void OnLoad()
-        {
-            /// Create the list
-            if (Alias.alias == null)
-                Alias.alias = new SerializeableList<Alias._Alias>("alias");
-
-            /// Create them
-            foreach (Alias._Alias alias in Alias.alias)
-            {
-                IrcCommand command = Alias.CreateAlias(alias);
-                PluginManager.commands.Add(command);
-            }
         }
     }
 }

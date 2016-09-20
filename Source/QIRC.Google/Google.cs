@@ -38,6 +38,14 @@ namespace QIRC.Commands
         }
 
         /// <summary>
+        /// Alternative names
+        /// </summary>
+        public override String[] GetAlternativeNames()
+        {
+            return new[] { "g" };
+        }
+
+        /// <summary>
         /// Returns a description of the command
         /// </summary>
         public override String GetDescription()
