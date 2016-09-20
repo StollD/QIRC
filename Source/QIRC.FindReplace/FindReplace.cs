@@ -49,7 +49,7 @@ namespace QIRC.Addons
             // Find the message to edit
             ProtoIrcMessage new_msg = QIRC.messages.LastOrDefault(m => m.User == nick && Regex.IsMatch(m.Message, find, RegexOptions.IgnoreCase));
             Char[] flags = match.Groups[4].Success ? match.Groups[4].Value.ToCharArray() : new Char[0];
-            Console.WriteLine(new string(flags));
+            Console.WriteLine(new String(flags));
             if (new_msg == null)
                 return;
             if (new_msg.Message.StartsWith("ACTION"))

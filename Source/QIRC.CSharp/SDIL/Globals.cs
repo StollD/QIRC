@@ -111,7 +111,7 @@ namespace SDILReader
 
     public static class Globals
     {
-        public static Dictionary<int, object> Cache = new Dictionary<int, object>();
+        public static Dictionary<Int32, Object> Cache = new Dictionary<Int32, Object>();
 
         public static OpCode[] multiByteOpCodes;
         public static OpCode[] singleByteOpCodes;
@@ -122,16 +122,16 @@ namespace SDILReader
             singleByteOpCodes = new OpCode[0x100];
             multiByteOpCodes = new OpCode[0x100];
             FieldInfo[] infoArray1 = typeof(OpCodes).GetFields();
-            for (int num1 = 0; num1 < infoArray1.Length; num1++)
+            for (Int32 num1 = 0; num1 < infoArray1.Length; num1++)
             {
                 FieldInfo info1 = infoArray1[num1];
                 if (info1.FieldType == typeof(OpCode))
                 {
                     OpCode code1 = (OpCode)info1.GetValue(null);
-                    ushort num2 = (ushort)code1.Value;
+                    UInt16 num2 = (UInt16)code1.Value;
                     if (num2 < 0x100)
                     {
-                        singleByteOpCodes[(int)num2] = code1;
+                        singleByteOpCodes[(Int32)num2] = code1;
                     }
                     else
                     {
@@ -155,9 +155,9 @@ namespace SDILReader
         /// <returns>
         /// The simplified name of the type (i.e. "int" instead f System.Int32)
         /// </returns>
-        public static string ProcessSpecialTypes(string typeName)
+        public static String ProcessSpecialTypes(String typeName)
         {
-            string result = typeName;
+            String result = typeName;
             switch (typeName)
             {
                 case "System.string":

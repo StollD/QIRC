@@ -9,9 +9,9 @@ namespace SDILReader
     {
         // Fields
         private OpCode code;
-        private object operand;
-        private byte[] operandData;
-        private int offset;
+        private Object operand;
+        private Byte[] operandData;
+        private Int32 offset;
 
         // Properties
         public OpCode Code
@@ -20,19 +20,19 @@ namespace SDILReader
             set { code = value; }
         }
 
-        public object Operand
+        public Object Operand
         {
             get { return operand; }
             set { operand = value; }
         }
 
-        public byte[] OperandData
+        public Byte[] OperandData
         {
             get { return operandData; }
             set { operandData = value; }
         }
 
-        public int Offset
+        public Int32 Offset
         {
             get { return offset; }
             set { offset = value; }
@@ -42,9 +42,9 @@ namespace SDILReader
         /// Returns a friendly strign representation of this instruction
         /// </summary>
         /// <returns></returns>
-        public string GetCode()
+        public String GetCode()
         {
-            string result = "";
+            String result = "";
             result += GetExpandedOffset(offset) + " : " + code;
             if (operand != null)
             {
@@ -84,7 +84,7 @@ namespace SDILReader
                         break;
                     case OperandType.ShortInlineBrTarget:
                     case OperandType.InlineBrTarget:
-                        result += " " + GetExpandedOffset((int)operand);
+                        result += " " + GetExpandedOffset((Int32)operand);
                         break;
                     case OperandType.InlineType:
                         result += " " + Globals.ProcessSpecialTypes(operand.ToString());
@@ -125,10 +125,10 @@ namespace SDILReader
         /// </param>
         /// <returns>
         /// </returns>
-        private string GetExpandedOffset(long offset)
+        private String GetExpandedOffset(Int64 offset)
         {
-            string result = offset.ToString();
-            for (int i = 0; result.Length < 4; i++)
+            String result = offset.ToString();
+            for (Int32 i = 0; result.Length < 4; i++)
             {
                 result = "0" + result;
             }

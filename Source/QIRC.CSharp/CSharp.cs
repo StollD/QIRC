@@ -295,7 +295,7 @@ namespace QIRC.Commands
         /// <summary>
         /// Escapes a char. Ported from Mono REPL
         /// </summary>
-        protected static String EscapeChar(char c)
+        protected static String EscapeChar(Char c)
         {
             String output = "";
             if (c == '\'')
@@ -339,7 +339,7 @@ namespace QIRC.Commands
                     break;
 
                 default:
-                    output += $"'\\x{(int) c:x}";
+                    output += $"'\\x{(Int32) c:x}";
                     break;
             }
             return output;
@@ -349,7 +349,7 @@ namespace QIRC.Commands
         // IEnumerator and yet, throw an exception when we
         // try to use them, helper function to check for that
         // condition
-        protected static bool WorksAsEnumerable(Object obj)
+        protected static Boolean WorksAsEnumerable(Object obj)
         {
             IEnumerable enumerable = obj as IEnumerable;
             if (enumerable != null)
@@ -370,7 +370,7 @@ namespace QIRC.Commands
         /// <summary>
         /// Pretty prints an object. Ported from Mono REPL
         /// </summary>
-        protected static String PrettyPrint(object result)
+        protected static String PrettyPrint(Object result)
         {
             String output = "";
             if (result == null)
@@ -407,7 +407,7 @@ namespace QIRC.Commands
             else if (result is IDictionary)
             {
                 IDictionary dict = (IDictionary)result;
-                int top = dict.Count, count = 0;
+                Int32 top = dict.Count, count = 0;
 
                 output += "{";
                 foreach (DictionaryEntry entry in dict)

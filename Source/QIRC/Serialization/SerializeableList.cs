@@ -278,7 +278,7 @@ namespace QIRC.Serialization
             return data.GetEnumerator();
         }
 
-        public List<T> GetRange(int index, int count)
+        public List<T> GetRange(Int32 index, Int32 count)
         {
             return data.GetRange(index, count);
         }

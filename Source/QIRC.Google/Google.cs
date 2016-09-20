@@ -131,8 +131,8 @@ namespace QIRC.Commands
         // Config Class
         public class GoogleConfig
         {
-            public string searchEngine = "";
-            public string apiKey = "";
+            public String searchEngine = "";
+            public String apiKey = "";
         }
 
         /// Google API Classes

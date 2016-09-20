@@ -110,7 +110,7 @@ namespace QIRC.Commands
         }
 
         // Preparation for wide characters
-        public static IEnumerable<string> TextElements(string s)
+        public static IEnumerable<String> TextElements(String s)
         {
             var en = StringInfo.GetTextElementEnumerator(s);
             while (en.MoveNext())

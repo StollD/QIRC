@@ -417,9 +417,9 @@ namespace QIRC
                                     else if (user.ChannelModes[channel] == 'v' || user.ChannelModes[channel] == 'V')
                                         level = AccessLevel.VOICE;
                                 }
-                                catch (Exception e)
+                                catch
                                 {
-
+                                    // ignored
                                 }
                             }
 
@@ -428,9 +428,9 @@ namespace QIRC
                             if (admins.Count(a => String.Equals(a.name, whoIs.LoggedInAs, StringComparison.InvariantCultureIgnoreCase)) == 1)
                             {
                                 ProtoIrcAdmin admin = admins.FirstOrDefault(a => String.Equals(a.name, whoIs.LoggedInAs, StringComparison.InvariantCultureIgnoreCase));
-                                if (admin.root)
+                                if (admin != null && admin.root)
                                     level = AccessLevel.ROOT;
-                                else
+                                else if (admin != null)
                                     level = AccessLevel.ADMIN;
                             }
                             message.level = level;
@@ -469,14 +469,14 @@ namespace QIRC
                 }
 
                 // Run actions that should get executed after the WhoIs
-                if (afterWhoIs != null) afterWhoIs();
+                afterWhoIs?.Invoke();
             });
         }
 
         /// <summary>
         /// Sends a message to the IRC
         /// </summary>
-        public static ProtoIrcMessage SendMessage(IrcClient client, string message, string from, string to, bool noname = false)
+        public static ProtoIrcMessage SendMessage(IrcClient client, String message, String from, String to, Boolean noname = false)
         {
             // We don't need empty stuff
             if (String.IsNullOrWhiteSpace(message))
@@ -523,9 +523,9 @@ namespace QIRC
         protected static IEnumerable<String> SplitInParts(String s, Int32 partLength)
         {
             if (s == null)
-                throw new ArgumentNullException("s");
+                throw new ArgumentNullException(nameof(s));
             if (partLength <= 0)
-                throw new ArgumentException("Part length has to be positive.", "partLength");
+                throw new ArgumentException("Part length has to be positive.", nameof(partLength));
 
             for (Int32 i = 0; i < s.Length; i += partLength)
                 yield return s.Substring(i, Math.Min(partLength, s.Length - i));
@@ -534,7 +534,7 @@ namespace QIRC
         /// <summary>
         /// Sends an action to the IRC
         /// </summary>
-        public static ProtoIrcMessage SendAction(IrcClient client, string message, string to)
+        public static ProtoIrcMessage SendAction(IrcClient client, String message, String to)
         {
             message = Formatter.Format(message);
             client.SendAction(message, to);
@@ -552,7 +552,7 @@ namespace QIRC
         /// <summary>
         /// Checks if two Access Levels are compatible
         /// </summary>
-        public static bool CheckPermission(AccessLevel required, AccessLevel given)
+        public static Boolean CheckPermission(AccessLevel required, AccessLevel given)
         {
             if (required == AccessLevel.NORMAL)
                 return true;
