@@ -195,6 +195,10 @@ namespace QIRC
         private static void NetworkError(Object sender, SocketErrorEventArgs e)
         {
             PluginManager.Invoke("NetworkError", client, e);
+            
+            // Bye o/
+            client.Quit();
+            Environment.Exit((Int32)e.SocketError);
         }
 
         /// <summary>
