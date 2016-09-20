@@ -32,12 +32,13 @@
   <ItemGroup>
     <Reference Include="ChatSharp">
       <HintPath>..\..\Dependencies\ChatSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="UnicodeInformation, Version=2.0.0.10, Culture=neutral, PublicKeyToken=e54dbbddfea2ed0e, processorArchitecture=MSIL">
       <HintPath>..\..\packages\UnicodeInformation.2.0.0.10\lib\portable45-net45+win8\UnicodeInformation.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -48,6 +49,7 @@
     <ProjectReference Include="..\QIRC\QIRC.csproj">
       <Project>{3c25c49a-7ff1-43b9-b4da-bc9f81623d0b}</Project>
       <Name>QIRC</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
