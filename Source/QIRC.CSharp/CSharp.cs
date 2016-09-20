@@ -14,7 +14,9 @@ using System.Collections;
 using System.ComponentModel;
 using System.Threading;
 using System.Globalization;
+using System.Net;
 using Mono.CSharp;
+using Newtonsoft.Json.Linq;
 
 namespace QIRC.Commands
 {
@@ -139,10 +141,22 @@ namespace QIRC.Commands
             // Debugs the evaluator state
             if (StartsWithParam("state", message.Message))
             {
-                QIRC.SendMessage(client, "Using: " + evaluator.GetUsing().Replace("\n", ""), message.User, message.User, true);
-                QIRC.SendMessage(client, "Variables: " + evaluator.GetVars().Replace('\n', ';'), message.User, message.User, true);
-                for (Int32 i = 0; i < persistent.Count; i++)
-                    QIRC.SendMessage(client, "[" + i + "] " + persistent[i], message.User, message.User, true);
+                if (Settings.Read<CSharpSettings>("csharp").useHastebin)
+                {
+                    String content = "Using: \r\n" + evaluator.GetUsing().Replace("\r\n", " \r\n") + "\n";
+                    content += "Variables: \r\n" + evaluator.GetVars().Replace("\r\n", " \r\n") + "\n\n";
+                    for (Int32 i = 0; i < persistent.Count; i++)
+                        content += "[" + i + "] " + persistent[i] + "\n";
+                    String response = JObject.Parse(new WebClient().UploadString("http://hastebin.com/documents", content))["key"].ToString();
+                    QIRC.SendMessage(client, "State: http://hastebin.com/" + response, message.User, message.User, true);
+                }
+                else
+                {
+                    QIRC.SendMessage(client, "Using: " + evaluator.GetUsing().Replace("\r\n", " "), message.User, message.User, true);
+                    QIRC.SendMessage(client, "Variables: " + evaluator.GetVars().Replace("\r\n", ";"), message.User, message.User, true);
+                    for (Int32 i = 0; i < persistent.Count; i++)
+                        QIRC.SendMessage(client, "[" + i + "] " + persistent[i], message.User, message.User, true);
+                }
                 if (message.IsChannelMessage) QIRC.SendMessage(client, "I sent you the current state of the evaluator.", message.User, message.Source);
                 return;
             }
@@ -208,6 +222,18 @@ namespace QIRC.Commands
             }
             else
                 QIRC.SendMessage(client, "There is already an evaluation going on. Please wait until it terminates.", message.User, message.Source);
+        }
+
+
+        /// <summary>
+        /// Adds the C# Settings to the config
+        /// </summary>
+        /// IrcClient Functions
+        public override void OnLoad()
+        {
+            SettingsFile file = null;
+            Settings.GetFile("settings", ref file);
+            file.Add("csharp", new CSharpSettings());
         }
 
         /// <summary>
