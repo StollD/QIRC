@@ -134,7 +134,7 @@ namespace QIRC.Commands
                 {
                     PluginManager.commands.RemoveWhere(p => p.GetType() == type);
                 }
-                QIRC.SendMessage(client, "Unoaded the module \"" + module + "\"", message.User, message.Source);
+                QIRC.SendMessage(client, "Unloaded the module \"" + module + "\"", message.User, message.Source);
             }
         }
     }
