@@ -500,7 +500,7 @@ namespace QIRC.Serialization
         {
             while (true)
             {
-                Thread.Sleep(Settings.Read<Int32>("saveInterval") * 60 * 1000);
+                Thread.Sleep(10 * 60 * 1000);
                 lock (lockObj)
                 {
                     Directory.CreateDirectory(Paths.data + "shadow/");
