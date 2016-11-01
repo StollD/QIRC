@@ -102,7 +102,7 @@ namespace QIRC.Commands
                         channelName = target,
                         message = split[1],
                         pm = false,
-                        source = message.IsChannelMessage ? message.Source : "Private",
+                        source = message.IsChannelMessage && !QIRC.GetChannel(message.Source).secret ? message.Source : "Private",
                         time = DateTime.UtcNow,
                         to = wildcard,
                         user = message.User
@@ -113,7 +113,6 @@ namespace QIRC.Commands
             {
                 String text = message.Message;
                 Boolean pm = StartsWithParam("private", text);
-                Logging.Log(pm, Logging.Level.INFO);
                 StripParam("private", ref text);
                 String[] split = text.Trim().Split(new Char[] { ' ' }, 2);
                 foreach (String name in split[0].Split(','))
@@ -125,7 +124,7 @@ namespace QIRC.Commands
                         channelName = "",
                         message = split[1],
                         pm = pm,
-                        source = message.IsChannelMessage ? message.Source : "Private",
+                        source = message.IsChannelMessage && !QIRC.GetChannel(message.Source).secret ? message.Source : "Private",
                         time = DateTime.UtcNow,
                         to = wildcard,
                         user = message.User

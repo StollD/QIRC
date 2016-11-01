@@ -83,7 +83,7 @@ namespace QIRC.Commands
                 String text = message.Message;
                 String target = StripParam("channel", ref text);
                 String wildcard = "^" + Regex.Escape(text.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && p.Source == target).ToArray();
+                ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && p.Source == target && (!QIRC.GetChannel(p.Source).secret || message.Source == p.Source)).ToArray();
                 if (messages.Length == 0)
                 {
                     // User is MIA
@@ -97,7 +97,7 @@ namespace QIRC.Commands
             {
                 // Create a wildcard
                 String wildcard = "^" + Regex.Escape(message.Message.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage).ToArray();
+                ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && (!QIRC.GetChannel(p.Source).secret || message.Source == p.Source)).ToArray();
                 if (messages.Length == 0)
                 {
                     // User is MIA

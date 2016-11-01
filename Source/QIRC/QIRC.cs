@@ -566,6 +566,12 @@ namespace QIRC
                 return given == AccessLevel.ROOT;
             return false;
         }
+
+        public static ProtoIrcChannel GetChannel(String name)
+        {
+            List<ProtoIrcChannel> list = Settings.Read<List<ProtoIrcChannel>>("channels");
+            return list.Find(c => String.Equals(c.name, name, StringComparison.InvariantCultureIgnoreCase));
+        }
     }
 
     /// <summary>

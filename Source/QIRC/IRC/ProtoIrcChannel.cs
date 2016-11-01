@@ -27,5 +27,22 @@ namespace QIRC.IRC
         /// Whether this channel is a serious one
         /// </summary>
         public Boolean serious { get; set; }
+
+        /// <summary>
+        /// Whether this channel is private
+        /// </summary>
+        public Boolean secret { get; set; }
+
+        public override Boolean Equals(Object obj)
+        {
+            if (!(obj is ProtoIrcChannel))
+                return false;
+            return String.Equals(name, ((ProtoIrcChannel) obj).name, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public override Int32 GetHashCode()
+        {
+            return name.GetHashCode();
+        }
     }
 }
