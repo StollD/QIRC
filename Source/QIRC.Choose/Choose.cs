@@ -71,8 +71,8 @@ namespace QIRC.Commands
             }
             else
             {
-                String[] options = message.Message.Split('|').Select(s => s.Trim()).ToArray();
-                QIRC.SendMessage(client, "Your options are: " + String.Join(", ", options) + ". My choice: " + options[new Random().Next(0, options.Length)], message.User, message.Source);
+                String[] options = message.Message.Split('|', '/', '\\', ';', ',').Select(s => s.Trim()).ToArray();
+                QIRC.SendMessage(client, "Your options are: " + String.Join(", ", options) + ". My choice: " + options[new Random(options.GetHashCode()).Next(0, options.Length)], message.User, message.Source);
             }
         }
     }
