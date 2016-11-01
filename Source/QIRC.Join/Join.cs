@@ -53,6 +53,17 @@ namespace QIRC.Commands
         }
 
         /// <summary>
+        /// The Parameters of the Command
+        /// </summary>
+        public override String[] GetParameters()
+        {
+            return new String[]
+            {
+                "password", "The password for the channel"
+            };
+        }
+
+        /// <summary>
         /// An example for using the command.
         /// </summary>
         /// <returns></returns>
@@ -81,7 +92,9 @@ namespace QIRC.Commands
             else 
             {
                 String channel = message.Message;
-                ProtoIrcChannel proto = new ProtoIrcChannel() { name = channel, password = "", serious = true };
+                Boolean hasPW = StartsWithParam("password", message.Message);
+                String pw = hasPW ? StripParam("password", ref channel) : "";
+                ProtoIrcChannel proto = new ProtoIrcChannel() { name = channel, password = pw, serious = true, secret = hasPW };
                 QIRC.JoinChannel(proto);
                 QIRC.SendMessage(client, "I have joined " + channel + "!", message.User, message.Source);
             }
