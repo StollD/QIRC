@@ -7,8 +7,6 @@
 using ChatSharp;
 using QIRC.IRC;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -27,6 +25,11 @@ namespace QIRC.Plugins
         public virtual void RunCommand(IrcClient client, ProtoIrcMessage message) { }
         public virtual String[] GetParameters() { return new String[0]; }
         public virtual String GetExample() { return ""; }
+
+        /// <summary>
+        /// A checkhandler that ensures that the user can run the command
+        /// </summary>
+        public static CheckHandler ExecuteCheck = new CheckHandler();
 
         /// <summary>
         /// Whether the message contains the given parameter
