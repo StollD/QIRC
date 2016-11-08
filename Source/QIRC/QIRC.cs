@@ -450,7 +450,7 @@ namespace QIRC
                                 Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
                                 try
                                 {
-                                    if (IrcCommand.ExecuteCheck.And())
+                                    if (IrcCommand.ExecuteCheck.And(new Tuple<IrcUser, IrcCommand>(user, command)))
                                         command.RunCommand(client, message);
                                 }
                                 catch (Exception e)

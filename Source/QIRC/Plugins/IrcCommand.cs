@@ -29,7 +29,7 @@ namespace QIRC.Plugins
         /// <summary>
         /// A checkhandler that ensures that the user can run the command
         /// </summary>
-        public static CheckHandler ExecuteCheck = new CheckHandler();
+        public static CheckHandler<Tuple<IrcUser, IrcCommand>> ExecuteCheck = new CheckHandler<Tuple<IrcUser, IrcCommand>>();
 
         /// <summary>
         /// Whether the message contains the given parameter

@@ -13,25 +13,25 @@ namespace QIRC
     /// <summary>
     /// Class that combines checks (i.e. methods that return a boolean)
     /// </summary>
-    public class CheckHandler
+    public class CheckHandler<T>
     {
         /// <summary>
         /// The checks
         /// </summary>
-        private List<Func<Boolean>> checks { get; set; }
+        private List<Func<T, Boolean>> checks { get; set; }
 
         /// <summary>
         /// Creates a new instance
         /// </summary>
         public CheckHandler()
         {
-            checks = new List<Func<Boolean>>();
+            checks = new List<Func<T, Boolean>>();
         }
 
         /// <summary>
         /// Adds a check to the checker
         /// </summary>
-        public void Add(Func<Boolean> check)
+        public void Add(Func<T, Boolean> check)
         {
             checks.Add(check);
         }
@@ -39,7 +39,7 @@ namespace QIRC
         /// <summary>
         /// Removes a check from the checker
         /// </summary>
-        public void Remove(Func<Boolean> check)
+        public void Remove(Func<T, Boolean> check)
         {
             checks.Remove(check);
         }
@@ -47,14 +47,14 @@ namespace QIRC
         /// <summary>
         /// Returns all checks, combined with &&
         /// </summary>
-        public Boolean And()
+        public Boolean And(T value)
         {
             if (!checks.Any())
                 return true;
-            Boolean result = checks[0]();
+            Boolean result = checks[0](value);
             for (Int32 i = 1; i < checks.Count; i++)
             {
-                result &= checks[i]();
+                result &= checks[i](value);
             }
             return result;
         }
@@ -62,14 +62,14 @@ namespace QIRC
         /// <summary>
         /// Returns all checks, combined with ||
         /// </summary>
-        public Boolean Or()
+        public Boolean Or(T value)
         {
             if (!checks.Any())
                 return true;
-            Boolean result = checks[0]();
+            Boolean result = checks[0](value);
             for (Int32 i = 1; i < checks.Count; i++)
             {
-                result |= checks[i]();
+                result |= checks[i](value);
             }
             return result;
         }
