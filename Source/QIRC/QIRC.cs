@@ -493,7 +493,17 @@ namespace QIRC
 
             // Loop through theese parts and send them to the server
             if (!to.StartsWith("#")) to = from;
-            for (Int32 j = 0; j < splits.Length; j++)
+            Int32 maxMsgs = Settings.Read<Int32>("maxMessages");
+            
+            // Warning
+            if (splits.Length > maxMsgs)
+            {
+                String stateChan = Settings.Read<String>("stateChannel");
+                if (!String.IsNullOrWhiteSpace(stateChan))
+                    SendMessage(client, from + " issued a command that triggered a " + message.Length + " chars response.", "", stateChan, true);
+            } 
+
+            for (Int32 j = 0; j < Math.Min(maxMsgs, splits.Length); j++)
             {
                 try
                 {

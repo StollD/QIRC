@@ -190,7 +190,9 @@ namespace QIRC.Configuration
                 new SettingsFile("settings",
                     "name", "QIRC-Bot",
                     "control", "!",
-                    "saveInterval", 10
+                    "saveInterval", 10,
+                    "maxMessages", 4,
+                    "stateChannel", ""
                 ),
                 new SettingsFile("connection",
                     "host", "",
