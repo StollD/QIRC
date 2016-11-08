@@ -442,7 +442,7 @@ namespace QIRC
                                 if (message.IsChannelMessage)
                                 {
                                     List<ProtoIrcChannel> channels = Settings.Read<List<ProtoIrcChannel>>("channels");
-                                    ProtoIrcChannel channel = channels.FirstOrDefault(c => String.Equals(c.name, message.Source));
+                                    ProtoIrcChannel channel = channels.FirstOrDefault(c => String.Equals(c.name, message.Source, StringComparison.InvariantCultureIgnoreCase));
                                     if (channel.serious && !command.IsSerious()) return;
                                 }
 
