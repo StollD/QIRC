@@ -456,6 +456,7 @@ namespace QIRC
                                 catch (Exception e)
                                 {
                                     SendMessage(client, e.Message, message.User, message.Source);
+                                    Logging.Log(e, Logging.Level.ERROR);
                                 }
                             }
                             else
@@ -464,9 +465,10 @@ namespace QIRC
                         }
                     }
                 }
-                catch
+                catch (Exception e)
                 {
                     SendMessage(client, "ChatSharp broke. Please contact your local doctor.", message.User, message.Source);
+                    Logging.Log(e, Logging.Level.ERROR);
                 }
 
                 // Run actions that should get executed after the WhoIs
