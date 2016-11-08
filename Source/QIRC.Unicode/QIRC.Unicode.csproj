@@ -38,7 +38,7 @@
     <Reference Include="System.Core" />
     <Reference Include="UnicodeInformation, Version=2.0.0.10, Culture=neutral, PublicKeyToken=e54dbbddfea2ed0e, processorArchitecture=MSIL">
       <HintPath>..\..\packages\UnicodeInformation.2.0.0.10\lib\portable45-net45+win8\UnicodeInformation.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
