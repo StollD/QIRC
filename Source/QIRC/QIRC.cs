@@ -450,7 +450,7 @@ namespace QIRC
                                 Thread.CurrentThread.CurrentCulture = Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
                                 try
                                 {
-                                    if (IrcCommand.ExecuteCheck.And(new Tuple<IrcUser, IrcCommand>(user, command)))
+                                    if (IrcCommand.ExecuteCheck.And(new Tuple<IrcUser, IrcCommand>(user, command)) || CheckPermission(AccessLevel.ADMIN, level))
                                         command.RunCommand(client, message);
                                 }
                                 catch (Exception e)
