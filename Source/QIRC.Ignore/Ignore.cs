@@ -121,8 +121,6 @@ namespace QIRC.Commands
             IrcCommand.ExecuteCheck.Add(val =>
             {
                 IrcUser user = val.Item1;
-                Logging.Log(user.Hostmask, Logging.Level.INFO);
-                Logging.Log("", Logging.Level.INFO);
                 return !ignores.Any(s => Regex.IsMatch(user.Hostmask, s, RegexOptions.Compiled | RegexOptions.IgnoreCase));
             });
         }
