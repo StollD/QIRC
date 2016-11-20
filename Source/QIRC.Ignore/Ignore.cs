@@ -90,7 +90,7 @@ namespace QIRC.Commands
             {
                 String msg = message.Message;
                 StripParam("remove", ref msg);
-                String w = "^" + Regex.Escape(message.Message.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
+                String w = "^" + Regex.Escape(msg.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
                 if (!ignores.Contains(w))
                 {
                     QIRC.SendMessage(client, "This hostmask isn't ignored!", message.User, message.Source);
