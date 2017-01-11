@@ -39,16 +39,9 @@ namespace QIRC.Plugins
         /// <returns></returns>
         protected Boolean StartsWithParam(String param, String message)
         {
-            String[] arguments = new String[GetParameters().Length];
-            Int32 i = 0;
-            foreach (String s in message.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                if (!s.StartsWith("-"))
-                    break;
-                arguments[i] = s.Remove(0, 1).Split(':', '=')[0];
-                i++;
-            }
-            return arguments.Contains(param);
+            String escaped = Regex.Replace(message, @"\\(?<!\\\\)(-([^:= ]*)(?:[:=](?:([^ ""]+)|""([^""]*)""))?)", "");
+            MatchCollection matches = Regex.Matches(escaped, @"-([^:= ]+)(?:[:=](?:([^ ""]+)|""([^""]*)""))?");
+            return matches.OfType<Match>().Any(m => String.Equals(m.Groups[1].Value.Trim(), param, StringComparison.InvariantCultureIgnoreCase));
         }
 
         /// <summary>
@@ -59,24 +52,17 @@ namespace QIRC.Plugins
         /// <returns></returns>
         protected String StripParam(String param, ref String message)
         {
-            String msg = String.Copy(message);
-            Regex regex = new Regex(@"-([^-\s:=]+)([:=])?([^\s]+)?");
-            while (regex.IsMatch(msg))
-            {
-                Match match = regex.Match(msg);
-                msg = msg.Remove(msg.IndexOf(match.ToString()), match.ToString().Length);
-                if (!String.Equals(match.Groups[1].Value, param, StringComparison.InvariantCultureIgnoreCase)) continue;
-                String val = "";
-                String replace = "-" + param;
-                if (match.Groups[2].Success && match.Groups[3].Success)
-                {
-                    replace += match.Groups[2].Value + match.Groups[3].Value;
-                    val = match.Groups[3].Value;
-                }
-                message = message.Replace(replace + " ", "").Trim();
-                return val;
-            }
-            return "";
+            String escaped = Regex.Replace(message, @"\\(?<!\\\\)(-([^:= ]*)(?:[:=](?:([^ ""]+)|""([^""]*)""))?)", "");
+            MatchCollection matches = Regex.Matches(escaped, @"-([^:= ]+)(?:[:=](?:([^ ""]+)|""([^""]*)""))?");
+            Match firstMatch = matches.OfType<Match>().FirstOrDefault(m => String.Equals(m.Groups[1].Value.Trim(), param, StringComparison.InvariantCultureIgnoreCase));
+            if (firstMatch == null)
+                return "";
+
+            String value = "";
+            if (firstMatch.Groups.Count > 2)
+                value = firstMatch.Groups[2].Value;
+            message = Regex.Replace(message, @"(" + firstMatch.Value + ")?", "");
+            return value;
         }
 
         /// <summary>
