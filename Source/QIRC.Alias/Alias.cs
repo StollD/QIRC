@@ -12,6 +12,7 @@ using QIRC.Serialization;
 using System;
 using System.Collections.Generic;
 using System.CodeDom.Compiler;
+using System.Linq;
 using System.Security.Cryptography;
 using Microsoft.CSharp;
 
@@ -308,7 +309,7 @@ namespace QIRC.Commands
                     return;
                 }
             }
-            QIRC.HandleCommand(message, client, false);
+            BotController.HandleCommand(message, client, false);
         }
     }
 }
@@ -323,7 +324,7 @@ namespace QIRC.Commands
         public override void OnLoad()
         {
             // Create them
-            foreach (AliasData alias in AliasData.Query)
+            foreach (AliasData alias in AliasData.Query.ToList())
             {
                 IrcCommand command = CreateAlias(alias);
                 PluginManager.commands.Add(command);

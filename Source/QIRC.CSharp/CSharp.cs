@@ -14,6 +14,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Threading;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using Mono.CSharp;
 using Newtonsoft.Json.Linq;
@@ -123,7 +124,7 @@ namespace QIRC.Commands
             {
                 evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) BotController.SendMessage(BotController.client, s, msg.User, msg.Source, true); })));
                 Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, true);
-                foreach (String s in CSharpData.Query.Select(c => c.Expression))
+                foreach (String s in CSharpData.Query.ToList().Select(e => e.Expression))
                     Evaluate(client, s, message.User, message.Source, BotController.CheckPermission(AccessLevel.ADMIN, message.level), true);
                 BotController.SendMessage(client, "Cleared the C# Evaluator.", message.User, message.Source);
                 return;
@@ -195,7 +196,7 @@ namespace QIRC.Commands
             {
                 evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) BotController.SendMessage(BotController.client, s, msg.User, msg.Source, true); })));
                 Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, BotController.CheckPermission(AccessLevel.ADMIN, message.level), true);
-                foreach (String s in CSharpData.Query.Select(e => e.Expression))
+                foreach (String s in CSharpData.Query.ToList().Select(e => e.Expression))
                     Evaluate(client, s, message.User, message.Source, true);
             }
 

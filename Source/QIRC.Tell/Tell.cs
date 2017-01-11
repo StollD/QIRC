@@ -133,7 +133,7 @@ namespace QIRC.Commands
         public override void OnPrivateMessageRecieved(IrcClient client, PrivateMessageEventArgs e)
         {
             List<TellData> toDelete = new List<TellData>();
-            foreach (TellData tell in TellData.Query)
+            foreach (TellData tell in TellData.Query.ToList())
             {
                 if (!Regex.IsMatch(e.PrivateMessage.User.Nick, tell.to, RegexOptions.IgnoreCase))
                     continue;
