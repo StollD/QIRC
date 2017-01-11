@@ -44,13 +44,13 @@ namespace QIRC.Commands
                         String repo = GitHubAlias.alias.Count(r => r.Key == match.Groups[1].Value) > 0 ? GitHubAlias.alias.First(r => r.Key == match.Groups[1].Value).Value : match.Groups[1].Value;
                         String info = GetInfoIssue(repo, id);
                         if (!String.IsNullOrWhiteSpace(info))
-                            QIRC.SendMessage(client, info, message.User, message.Source, true);
+                            BotController.SendMessage(client, info, message.User, message.Source, true);
                     }
                     else
                     {
                         String info = GetInfoIssue(GitHubRepo.repos.FirstOrDefault(r => r.Key == message.Source).Value, id);
                         if (!String.IsNullOrWhiteSpace(info))
-                            QIRC.SendMessage(client, info, message.User, message.Source, true);
+                            BotController.SendMessage(client, info, message.User, message.Source, true);
                     }
                 }
             }
@@ -65,14 +65,14 @@ namespace QIRC.Commands
                         String repo = GitHubAlias.alias.Count(r => r.Key == match.Groups[1].Value) > 0 ? GitHubAlias.alias.First(r => r.Key == match.Groups[1].Value).Value : match.Groups[1].Value;
                         String info = GetInfoCommit(repo, id);
                         if (!String.IsNullOrWhiteSpace(info))
-                            QIRC.SendMessage(client, info, message.User, message.Source, true);
+                            BotController.SendMessage(client, info, message.User, message.Source, true);
                     }
                     else
                     {
                         String info = GetInfoCommit(GitHubRepo.repos.FirstOrDefault(r => r.Key == message.Source).Value, id);
                         Console.WriteLine(info);
                         if (!String.IsNullOrWhiteSpace(info))
-                            QIRC.SendMessage(client, info, message.User, message.Source, true);
+                            BotController.SendMessage(client, info, message.User, message.Source, true);
                     }
                 }
             }

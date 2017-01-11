@@ -81,7 +81,7 @@ namespace QIRC.Commands
             // Check if this is a private message
             if (!message.IsChannelMessage)
             {
-                QIRC.SendMessage(client, "This command doesn't work in PM", message.User, message.Source, true);
+                BotController.SendMessage(client, "This command doesn't work in PM", message.User, message.Source, true);
                 return;
             }
 
@@ -99,7 +99,7 @@ namespace QIRC.Commands
             }
             if (StartsWithParam("state", msg))
             {
-                QIRC.SendMessage(client, $"Serious: {channel.serious}, Secret: {channel.secret}", message.User, message.Source);
+                BotController.SendMessage(client, $"Serious: {channel.serious}, Secret: {channel.secret}", message.User, message.Source);
             }
             list[list.IndexOf(channel)] = channel;
             Settings.Write("channels", list);

@@ -23,7 +23,7 @@ namespace QIRC
     /// This is the main Bot Controller. It loads the Bot and creates the <see cref="IrcClient"/>.
     /// After this is done, it is responsible for Comandline Access. 
     /// </summary>
-    public class QIRC
+    public class BotController
     {
         /// <summary>
         /// The connection to the IRC Server. It handles the protocol

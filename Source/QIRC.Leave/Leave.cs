@@ -68,24 +68,24 @@ namespace QIRC.Commands
             {
                 if (message.IsChannelMessage)
                 {
-                    QIRC.SendMessage(client, "I will leave this channel now.", message.User, message.Source);
-                    QIRC.LeaveChannel(message.Source);
+                    BotController.SendMessage(client, "I will leave this channel now.", message.User, message.Source);
+                    BotController.LeaveChannel(message.Source);
                 }
                 else
                 {
-                    QIRC.SendMessage(client, "You have to submit a channel name in a private message!", message.User, message.Source);
+                    BotController.SendMessage(client, "You have to submit a channel name in a private message!", message.User, message.Source);
                 }
             }
             else
             {
                 if (!message.Message.StartsWith("#"))
                 {
-                    QIRC.SendMessage(client, "Invalid channel name!", message.User, message.Source);
+                    BotController.SendMessage(client, "Invalid channel name!", message.User, message.Source);
                 }
                 else
                 {
-                    QIRC.SendMessage(client, "I will leave the channel " + message.Message + " now.", message.User, message.Source);
-                    QIRC.LeaveChannel(message.Message);
+                    BotController.SendMessage(client, "I will leave the channel " + message.Message + " now.", message.User, message.Source);
+                    BotController.LeaveChannel(message.Message);
                 }
             }
         }

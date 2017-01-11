@@ -83,29 +83,29 @@ namespace QIRC.Commands
                 String text = message.Message;
                 String target = StripParam("channel", ref text);
                 String wildcard = "^" + Regex.Escape(text.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && p.Source == target && (!QIRC.GetChannel(p.Source).secret || message.Source == p.Source)).ToArray();
+                ProtoIrcMessage[] messages = BotController.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && p.Source == target && (!BotController.GetChannel(p.Source).secret || message.Source == p.Source)).ToArray();
                 if (messages.Length == 0)
                 {
                     // User is MIA
-                    QIRC.SendMessage(client, "I haven't seen the user [b]" + text.Trim() + "[/b] in the channel [b]" + target + "[/b] yet.", message.User, message.Source);
+                    BotController.SendMessage(client, "I haven't seen the user [b]" + text.Trim() + "[/b] in the channel [b]" + target + "[/b] yet.", message.User, message.Source);
                     return;
                 }
                 ProtoIrcMessage lastMsg = messages.OrderBy(p => p.Time.Ticks).Last();
-                QIRC.SendMessage(client, "I last saw [b]" + lastMsg.User + "[/b] on [b][" + lastMsg.Time.ToString("dd.MM.yyyy HH:mm:ss") + "][/b] in [b]" + target + "[/b] saying: \"" + lastMsg.Message + "\"", message.User, message.Source);
+                BotController.SendMessage(client, "I last saw [b]" + lastMsg.User + "[/b] on [b][" + lastMsg.Time.ToString("dd.MM.yyyy HH:mm:ss") + "][/b] in [b]" + target + "[/b] saying: \"" + lastMsg.Message + "\"", message.User, message.Source);
             }
             else
             {
                 // Create a wildcard
                 String wildcard = "^" + Regex.Escape(message.Message.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                ProtoIrcMessage[] messages = QIRC.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && (!QIRC.GetChannel(p.Source).secret || message.Source == p.Source)).ToArray();
+                ProtoIrcMessage[] messages = BotController.messages.Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && (!BotController.GetChannel(p.Source).secret || message.Source == p.Source)).ToArray();
                 if (messages.Length == 0)
                 {
                     // User is MIA
-                    QIRC.SendMessage(client, "I haven't seen the user [b]" + message.Message.Trim() + "[/b] yet.", message.User, message.Source);
+                    BotController.SendMessage(client, "I haven't seen the user [b]" + message.Message.Trim() + "[/b] yet.", message.User, message.Source);
                     return;
                 }
                 ProtoIrcMessage lastMsg = messages.OrderBy(p => p.Time.Ticks).Last();
-                QIRC.SendMessage(client, "I last saw [b]" + lastMsg.User + "[/b] on [b][" + lastMsg.Time.ToString("dd.MM.yyyy HH:mm:ss") + "][/b] in [b]" + lastMsg.Source + "[/b] saying: \"" + lastMsg.Message + "\"", message.User, message.Source);
+                BotController.SendMessage(client, "I last saw [b]" + lastMsg.User + "[/b] on [b][" + lastMsg.Time.ToString("dd.MM.yyyy HH:mm:ss") + "][/b] in [b]" + lastMsg.Source + "[/b] saying: \"" + lastMsg.Message + "\"", message.User, message.Source);
             }
         }
     }

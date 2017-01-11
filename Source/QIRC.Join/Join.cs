@@ -79,15 +79,15 @@ namespace QIRC.Commands
         {
             if (String.IsNullOrWhiteSpace(message.Message))
             {
-                QIRC.SendAction(client, "tries to unlock the tremendous energy of the vacuum", message.Source);
+                BotController.SendAction(client, "tries to unlock the tremendous energy of the vacuum", message.Source);
             }
             else if(!message.Message.StartsWith("#"))
             {
-                QIRC.SendMessage(client, "Invalid channel name!", message.User, message.Source);
+                BotController.SendMessage(client, "Invalid channel name!", message.User, message.Source);
             }
             else if (Settings.Read<List<ProtoIrcChannel>>("channels").Count(c => String.Equals(c.name, message.Message, StringComparison.InvariantCultureIgnoreCase)) > 0)
             {
-                QIRC.SendMessage(client, "I am already active in " + message.Message + ".", message.User, message.Source);
+                BotController.SendMessage(client, "I am already active in " + message.Message + ".", message.User, message.Source);
             }
             else 
             {
@@ -95,8 +95,8 @@ namespace QIRC.Commands
                 Boolean hasPW = StartsWithParam("password", message.Message);
                 String pw = hasPW ? StripParam("password", ref channel) : "";
                 ProtoIrcChannel proto = new ProtoIrcChannel() { name = channel, password = pw, serious = true, secret = hasPW };
-                QIRC.JoinChannel(proto);
-                QIRC.SendMessage(client, "I have joined " + channel + "!", message.User, message.Source);
+                BotController.JoinChannel(proto);
+                BotController.SendMessage(client, "I have joined " + channel + "!", message.User, message.Source);
             }
         }
     }

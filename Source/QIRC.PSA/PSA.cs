@@ -66,7 +66,7 @@ namespace QIRC.Commands
         {
             foreach (IrcChannel channel in client.Channels)
             {
-                QIRC.SendMessage(client, "[PSA] " + message.Message, Settings.Read<String>("name"), channel.Name, true);
+                BotController.SendMessage(client, "[PSA] " + message.Message, Settings.Read<String>("name"), channel.Name, true);
             }
         }
     }

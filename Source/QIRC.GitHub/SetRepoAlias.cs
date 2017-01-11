@@ -77,7 +77,7 @@ namespace QIRC.Commands
                 alias.Add(new KeyValuePair<String, String>(message.Message.Split(' ')[0].Trim(), message.Message.Split(' ')[1].Trim()));
             else
                 alias[alias.IndexOf(alias.First(r => r.Key == message.Message.Split(' ')[0].Trim()))] = new KeyValuePair<String, String>(message.Message.Split(' ')[0].Trim(), message.Message.Split(' ')[1].Trim());
-            QIRC.SendMessage(client, "Set alias for https://github.com/" + message.Message.Split(' ')[1].Trim() + "/ to " + message.Message.Split(' ')[0].Trim(), message.User, message.Source);
+            BotController.SendMessage(client, "Set alias for https://github.com/" + message.Message.Split(' ')[1].Trim() + "/ to " + message.Message.Split(' ')[0].Trim(), message.User, message.Source);
         }
     }
 }

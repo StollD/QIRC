@@ -67,12 +67,12 @@ namespace QIRC.Commands
         {
             if (String.IsNullOrWhiteSpace(message.Message))
             {
-                QIRC.SendMessage(client, "You have to submit at least two options!", message.User, message.Source);
+                BotController.SendMessage(client, "You have to submit at least two options!", message.User, message.Source);
             }
             else
             {
                 String[] options = message.Message.Split('|', '/', '\\', ';', ',').Select(s => s.Trim()).ToArray();
-                QIRC.SendMessage(client, "Your options are: " + String.Join(", ", options) + ". My choice: " + options[new Random(options.GetHashCode()).Next(0, options.Length)], message.User, message.Source);
+                BotController.SendMessage(client, "Your options are: " + String.Join(", ", options) + ". My choice: " + options[new Random(options.GetHashCode()).Next(0, options.Length)], message.User, message.Source);
             }
         }
     }

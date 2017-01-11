@@ -89,7 +89,7 @@ namespace QIRC.Commands
                 Int32[] results = new Int32[numbers[0]];
                 for (Int32 i = 0; i < results.Length; i++)
                     results[i] = random.Next(1, numbers[1]);
-                QIRC.SendMessage(client, String.Join(", ", results), message.User, message.Source);
+                BotController.SendMessage(client, String.Join(", ", results), message.User, message.Source);
             }
             else
             {
@@ -102,7 +102,7 @@ namespace QIRC.Commands
                 Int32[] results = new Int32[numbers[0]];
                 for (Int32 i = 0; i < results.Length; i++)
                     results[i] = random.Next(1, numbers[1]);
-                QIRC.SendMessage(client, String.Join(", ", results), message.User, message.Source);
+                BotController.SendMessage(client, String.Join(", ", results), message.User, message.Source);
             }
         }
     }

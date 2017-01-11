@@ -102,7 +102,7 @@ namespace QIRC.Commands
                         channelName = target,
                         message = split[1],
                         pm = false,
-                        source = message.IsChannelMessage && !QIRC.GetChannel(message.Source).secret ? message.Source : "Private",
+                        source = message.IsChannelMessage && !BotController.GetChannel(message.Source).secret ? message.Source : "Private",
                         time = DateTime.UtcNow,
                         to = wildcard,
                         user = message.User
@@ -124,14 +124,14 @@ namespace QIRC.Commands
                         channelName = "",
                         message = split[1],
                         pm = pm,
-                        source = message.IsChannelMessage && !QIRC.GetChannel(message.Source).secret ? message.Source : "Private",
+                        source = message.IsChannelMessage && !BotController.GetChannel(message.Source).secret ? message.Source : "Private",
                         time = DateTime.UtcNow,
                         to = wildcard,
                         user = message.User
                     });
                 }
             }
-            QIRC.SendMessage(client, "I'll redirect this as soon as they are around.", message.User, message.Source);
+            BotController.SendMessage(client, "I'll redirect this as soon as they are around.", message.User, message.Source);
         }
     
         /// <summary>
@@ -150,9 +150,9 @@ namespace QIRC.Commands
                     continue;
                 String message = "[b]" + tell.user + "[/b] left a message for you in [b]" + tell.source + " [" + tell.time.ToString("dd.MM.yyyy HH:mm:ss") + "][/b]: \"" + tell.message + "\"";
                 if (tell.pm)
-                    QIRC.SendMessage(client, message, e.PrivateMessage.User.Nick, e.PrivateMessage.User.Nick, true);
+                    BotController.SendMessage(client, message, e.PrivateMessage.User.Nick, e.PrivateMessage.User.Nick, true);
                 else
-                    QIRC.SendMessage(client, message, e.PrivateMessage.User.Nick, e.PrivateMessage.Source);
+                    BotController.SendMessage(client, message, e.PrivateMessage.User.Nick, e.PrivateMessage.Source);
                 toDelete.Add(tell);
             }
             toDelete.ForEach(t => tells.Remove(t));

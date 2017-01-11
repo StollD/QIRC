@@ -77,7 +77,7 @@ namespace QIRC.Commands
                 repos.Add(new KeyValuePair<String, String>(message.Source, message.Message.Trim()));
             else
                 repos[repos.IndexOf(repos.First(r => r.Key == message.Source))] = new KeyValuePair<String, String>(message.Source, message.Message.Trim());
-            QIRC.SendMessage(client, "Set default repository for " + message.Source + " to " + message.Message.Trim(), message.User, message.Source);
+            BotController.SendMessage(client, "Set default repository for " + message.Source + " to " + message.Message.Trim(), message.User, message.Source);
         }
     }
 }

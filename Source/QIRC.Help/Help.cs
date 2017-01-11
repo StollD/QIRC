@@ -70,10 +70,10 @@ namespace QIRC.Commands
             {
                 List<String> commands = PluginManager.commands.Select(c => c.GetName()).ToList();
                 commands.AddRange(PluginManager.commands.SelectMany(s => s.GetAlternativeNames()));
-                QIRC.SendMessage(client, "Commands I recognize: " + String.Join(", ", commands.OrderBy(x => x)), message.User, message.User, true);
-                QIRC.SendMessage(client, "For additional help type \"" + Settings.Read<String>("control") + "help <command>\" where <command> is the name of the command you want help for.", message.User, message.User, true);
+                BotController.SendMessage(client, "Commands I recognize: " + String.Join(", ", commands.OrderBy(x => x)), message.User, message.User, true);
+                BotController.SendMessage(client, "For additional help type \"" + Settings.Read<String>("control") + "help <command>\" where <command> is the name of the command you want help for.", message.User, message.User, true);
                 if (message.IsChannelMessage)
-                    QIRC.SendMessage(client, "I sent you a private message with information about all my commands!", message.User, message.Source);
+                    BotController.SendMessage(client, "I sent you a private message with information about all my commands!", message.User, message.Source);
             }
             else
             {
@@ -82,7 +82,7 @@ namespace QIRC.Commands
                 if (command != null)
                 {
                     String description = command.GetDescription();
-                    QIRC.SendMessage(client, name + ": " + (String.IsNullOrWhiteSpace(description) ? "No description available." : description), message.User, message.Source, true);
+                    BotController.SendMessage(client, name + ": " + (String.IsNullOrWhiteSpace(description) ? "No description available." : description), message.User, message.Source, true);
                     String[] parameters = new String[command.GetParameters().Length / 2];
                     for (Int32 i = 0; i < parameters.Length * 2; i += 2)
                     {
@@ -91,9 +91,9 @@ namespace QIRC.Commands
                         parameters[i == 0 ? 0 : i / 2] += "-" + param + " (" + descr + ")";
                     }
                     if (parameters.Length != 0)
-                        QIRC.SendMessage(client, "parameters: " + String.Join(", ", parameters), message.User, message.Source, true);
+                        BotController.SendMessage(client, "parameters: " + String.Join(", ", parameters), message.User, message.Source, true);
                     if (!String.IsNullOrWhiteSpace(command.GetExample()))
-                        QIRC.SendMessage(client, "example: " + command.GetExample(), message.User, message.Source, true);
+                        BotController.SendMessage(client, "example: " + command.GetExample(), message.User, message.Source, true);
                 }
             }
         }

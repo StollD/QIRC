@@ -130,11 +130,11 @@ namespace QIRC.Commands
             // Reset the evaluator
             if (StartsWithParam("reset", message.Message))
             {
-                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); })));
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) BotController.SendMessage(BotController.client, s, msg.User, msg.Source, true); })));
                 Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, true);
                 foreach (String s in persistent)
-                    Evaluate(client, s, message.User, message.Source, QIRC.CheckPermission(AccessLevel.ADMIN, message.level), true);
-                QIRC.SendMessage(client, "Cleared the C# Evaluator.", message.User, message.Source);
+                    Evaluate(client, s, message.User, message.Source, BotController.CheckPermission(AccessLevel.ADMIN, message.level), true);
+                BotController.SendMessage(client, "Cleared the C# Evaluator.", message.User, message.Source);
                 return;
             }
 
@@ -148,16 +148,16 @@ namespace QIRC.Commands
                     for (Int32 i = 0; i < persistent.Count; i++)
                         content += "[" + i + "] " + persistent[i] + "\n";
                     String response = JObject.Parse(new WebClient().UploadString("http://hastebin.com/documents", content))["key"].ToString();
-                    QIRC.SendMessage(client, "State: http://hastebin.com/" + response, message.User, message.User, true);
+                    BotController.SendMessage(client, "State: http://hastebin.com/" + response, message.User, message.User, true);
                 }
                 else
                 {
-                    QIRC.SendMessage(client, "Using: " + evaluator.GetUsing().Replace("\r\n", " "), message.User, message.User, true);
-                    QIRC.SendMessage(client, "Variables: " + evaluator.GetVars().Replace("\r\n", ";"), message.User, message.User, true);
+                    BotController.SendMessage(client, "Using: " + evaluator.GetUsing().Replace("\r\n", " "), message.User, message.User, true);
+                    BotController.SendMessage(client, "Variables: " + evaluator.GetVars().Replace("\r\n", ";"), message.User, message.User, true);
                     for (Int32 i = 0; i < persistent.Count; i++)
-                        QIRC.SendMessage(client, "[" + i + "] " + persistent[i], message.User, message.User, true);
+                        BotController.SendMessage(client, "[" + i + "] " + persistent[i], message.User, message.User, true);
                 }
-                if (message.IsChannelMessage) QIRC.SendMessage(client, "I sent you the current state of the evaluator.", message.User, message.Source);
+                if (message.IsChannelMessage) BotController.SendMessage(client, "I sent you the current state of the evaluator.", message.User, message.Source);
                 return;
             }
 
@@ -168,9 +168,9 @@ namespace QIRC.Commands
                 String nr = StripParam("remove", ref text);
                 Int32 index = 0;
                 if (!Int32.TryParse(nr, out index))
-                    QIRC.SendMessage(client, "Please enter a valid index!", message.User, message.Source);
+                    BotController.SendMessage(client, "Please enter a valid index!", message.User, message.Source);
                 if (!(persistent.Count > index))
-                    QIRC.SendMessage(client, "Please enter a valid index!", message.User, message.Source);
+                    BotController.SendMessage(client, "Please enter a valid index!", message.User, message.Source);
                 persistent.RemoveAt(index);
                 return;
             }
@@ -189,21 +189,21 @@ namespace QIRC.Commands
             {
                 if (worker == null || !worker.IsBusy)
                 {
-                    QIRC.SendMessage(client, "No evaluation running!", message.User, message.Source);
+                    BotController.SendMessage(client, "No evaluation running!", message.User, message.Source);
                     return;
                 }
                 worker.Dispose();
                 worker = new BackgroundWorker();
                 worker.WorkerSupportsCancellation = true;
-                QIRC.SendMessage(client, "Aborted the evaluation that was currently running.", message.User, message.Source);
+                BotController.SendMessage(client, "Aborted the evaluation that was currently running.", message.User, message.Source);
                 return;
             }
 
             // Create the Evaluator
             if (evaluator == null)
             {
-                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) QIRC.SendMessage(QIRC.client, s, msg.User, msg.Source, true); })));
-                Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, QIRC.CheckPermission(AccessLevel.ADMIN, message.level), true);
+                evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) BotController.SendMessage(BotController.client, s, msg.User, msg.Source, true); })));
+                Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, BotController.CheckPermission(AccessLevel.ADMIN, message.level), true);
                 foreach (String s in persistent)
                     Evaluate(client, s, message.User, message.Source, true);
             }
@@ -216,12 +216,12 @@ namespace QIRC.Commands
                 worker.DoWork += delegate(Object sender, DoWorkEventArgs e)
                 {
                     Evaluate(client, message.Message, message.User, message.Source,
-                        QIRC.CheckPermission(AccessLevel.ADMIN, message.level));
+                        BotController.CheckPermission(AccessLevel.ADMIN, message.level));
                 };
                 worker.RunWorkerAsync();
             }
             else
-                QIRC.SendMessage(client, "There is already an evaluation going on. Please wait until it terminates.", message.User, message.Source);
+                BotController.SendMessage(client, "There is already an evaluation going on. Please wait until it terminates.", message.User, message.Source);
         }
 
 
@@ -261,17 +261,17 @@ namespace QIRC.Commands
                     il.Contains("System.Environment::FailFast") ||
                     il.Contains("System.Environment::SetEnvironmentVariable")) && !admin)
                 {
-                    QIRC.SendMessage(client, "You tried to use a forbidden type, method or namespace!", user, source);
+                    BotController.SendMessage(client, "You tried to use a forbidden type, method or namespace!", user, source);
                     return "";
                 }
                 input = evaluator.Evaluate(input, out result, out result_set);
                 if (result_set && !quite)
-                    QIRC.SendMessage(client, PrettyPrint(result), user, source, true);
+                    BotController.SendMessage(client, PrettyPrint(result), user, source, true);
             }
             catch (Exception e)
             {
                 if (!quite)
-                    QIRC.SendMessage(client, e.ToString().Replace('\n', ' '), user, source, true);
+                    BotController.SendMessage(client, e.ToString().Replace('\n', ' '), user, source, true);
                 return null;
             }
             return input;

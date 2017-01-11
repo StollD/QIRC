@@ -84,13 +84,13 @@ namespace QIRC.Commands
                 String module = StripParam("load", ref text);
                 if (PluginManager.commands.Count(c => c.GetType().Name == module) > 0 || PluginManager.plugins.Count(p => p.GetType().Name == module) > 0)
                 {
-                    QIRC.SendMessage(client, "This module is already loaded.", message.User, message.Source);
+                    BotController.SendMessage(client, "This module is already loaded.", message.User, message.Source);
                     return;
                 }
                 Type[] types = PluginManager.assemblies.SelectMany(a => a.GetTypes()).ToArray();
                 if (types.Count(t => t.Name == module) == 0)
                 {
-                    QIRC.SendMessage(client, "This module doesn't exist.", message.User, message.Source);
+                    BotController.SendMessage(client, "This module doesn't exist.", message.User, message.Source);
                     return;
                 }
                 Type type = types.First(t => t.Name == module);
@@ -106,7 +106,7 @@ namespace QIRC.Commands
                     IrcCommand command = (IrcCommand)Activator.CreateInstance(type);
                     PluginManager.commands.Add(command);
                 }
-                QIRC.SendMessage(client, "Loaded the module \"" + module + "\"", message.User, message.Source);
+                BotController.SendMessage(client, "Loaded the module \"" + module + "\"", message.User, message.Source);
             }
 
             // Unload a module
@@ -116,13 +116,13 @@ namespace QIRC.Commands
                 String module = StripParam("unload", ref text);
                 if (PluginManager.commands.Count(c => c.GetType().Name == module) == 0 && PluginManager.plugins.Count(p => p.GetType().Name == module) == 0)
                 {
-                    QIRC.SendMessage(client, "This module is already unloaded.", message.User, message.Source);
+                    BotController.SendMessage(client, "This module is already unloaded.", message.User, message.Source);
                     return;
                 }
                 Type[] types = PluginManager.assemblies.SelectMany(a => a.GetTypes()).ToArray();
                 if (types.Count(t => t.Name == module) == 0)
                 {
-                    QIRC.SendMessage(client, "This module doesn't exist.", message.User, message.Source);
+                    BotController.SendMessage(client, "This module doesn't exist.", message.User, message.Source);
                     return;
                 }
                 Type type = types.First(t => t.Name == module);
@@ -134,7 +134,7 @@ namespace QIRC.Commands
                 {
                     PluginManager.commands.RemoveWhere(p => p.GetType() == type);
                 }
-                QIRC.SendMessage(client, "Unloaded the module \"" + module + "\"", message.User, message.Source);
+                BotController.SendMessage(client, "Unloaded the module \"" + module + "\"", message.User, message.Source);
             }
         }
     }

@@ -89,7 +89,7 @@ namespace QIRC.Commands
             String success = document.DocumentElement.Attributes["success"].Value;
             if (success != "true")
             {
-                QIRC.SendMessage(client, "Seems that Wolfram is unable to understand that.", message.User, message.Source);
+                BotController.SendMessage(client, "Seems that Wolfram is unable to understand that.", message.User, message.Source);
                 return;
             }
             String wolframOutput = "";
@@ -112,7 +112,7 @@ namespace QIRC.Commands
                 else
                     wolframOutput += subpod;
             }
-            QIRC.SendMessage(client, wolframOutput, message.User, message.Source);
+            BotController.SendMessage(client, wolframOutput, message.User, message.Source);
         }
 
         /// <summary>

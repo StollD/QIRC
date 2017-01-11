@@ -97,7 +97,7 @@ namespace QIRC.Commands
                 GoogleResults result = JsonConvert.DeserializeObject<GoogleResults>(new WebClient().DownloadString("https://www.googleapis.com/customsearch/v1?num=8&q=" + query + "&hl=en&cx=" + config.searchEngine + "&key=" + config.apiKey));
                 if (result.searchInformation.totalResults == "0")
                 {
-                    QIRC.SendMessage(client, "No results found for \"" + query + "\"", message.User, message.Source);
+                    BotController.SendMessage(client, "No results found for \"" + query + "\"", message.User, message.Source);
                     return;
                 }
                 Int32 start = 7;
@@ -106,10 +106,10 @@ namespace QIRC.Commands
                     result.items.AddRange(JsonConvert.DeserializeObject<GoogleResults>(new WebClient().DownloadString("https://www.googleapis.com/customsearch/v1?num=8&start=" + start + "&q=" + query + "&hl=en&cx=" + config.searchEngine + "&key=" + config.apiKey)).items);
                     start += 8;
                 }
-                if (message.IsChannelMessage) QIRC.SendMessage(client, "Writing you a PM with the first " + results + " search results for \"" + query + "\"", message.User, message.Source);
+                if (message.IsChannelMessage) BotController.SendMessage(client, "Writing you a PM with the first " + results + " search results for \"" + query + "\"", message.User, message.Source);
                 for (Int32 i = 0; i < results; i++)
                 {
-                    QIRC.SendMessage(client, result.items[i].link + " [" + result.items[i].title + "]", message.User, message.User, true);
+                    BotController.SendMessage(client, result.items[i].link + " [" + result.items[i].title + "]", message.User, message.User, true);
                 }
             }
             else
@@ -118,10 +118,10 @@ namespace QIRC.Commands
                 GoogleResults result = JsonConvert.DeserializeObject<GoogleResults>(new WebClient().DownloadString("https://www.googleapis.com/customsearch/v1?num=8&q=" + query + "&hl=en&cx=" + config.searchEngine + "&key=" + config.apiKey));
                 if (result.searchInformation.totalResults == "0") // Why Google, why...
                 {
-                    QIRC.SendMessage(client, "No results found for \"" + query + "\"", message.User, message.Source);
+                    BotController.SendMessage(client, "No results found for \"" + query + "\"", message.User, message.Source);
                     return;
                 }
-                QIRC.SendMessage(client, result.items[0].link + " [" + result.items[0].title + "] (" + result.searchInformation.totalResults + " results found, took " + result.searchInformation.formattedSearchTime + "s)", message.User, message.Source, !message.IsChannelMessage);
+                BotController.SendMessage(client, result.items[0].link + " [" + result.items[0].title + "] (" + result.searchInformation.totalResults + " results found, took " + result.searchInformation.formattedSearchTime + "s)", message.User, message.Source, !message.IsChannelMessage);
             }
         }
 

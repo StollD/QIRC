@@ -82,7 +82,7 @@ namespace QIRC.Commands
         {
             if (String.IsNullOrWhiteSpace(message.Message))
             {
-                QIRC.SendMessage(client, "Invalid hostmask!", message.User, message.Source);
+                BotController.SendMessage(client, "Invalid hostmask!", message.User, message.Source);
                 return;
             }
 
@@ -93,27 +93,27 @@ namespace QIRC.Commands
                 String w = "^" + Regex.Escape(msg.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
                 if (!ignores.Contains(w))
                 {
-                    QIRC.SendMessage(client, "This hostmask isn't ignored!", message.User, message.Source);
+                    BotController.SendMessage(client, "This hostmask isn't ignored!", message.User, message.Source);
                     return;
                 }
                 ignores.Remove(w);
-                QIRC.SendMessage(client, "Unignored \"" + msg.Trim() + "\"", message.User, message.Source);
+                BotController.SendMessage(client, "Unignored \"" + msg.Trim() + "\"", message.User, message.Source);
                 return;
             }
 
             if (StartsWithParam("list", message.Message))
             {
-                QIRC.SendMessage(client, String.Join("; ", ignores), message.User, message.User, true);
+                BotController.SendMessage(client, String.Join("; ", ignores), message.User, message.User, true);
                 return;
             }
             String wildcard = "^" + Regex.Escape(message.Message.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
             if (ignores.Contains(wildcard))
             {
-                QIRC.SendMessage(client, "This hostmask is already ignored!", message.User, message.Source);
+                BotController.SendMessage(client, "This hostmask is already ignored!", message.User, message.Source);
                 return;
             }
             ignores.Add(wildcard);
-            QIRC.SendMessage(client, "Ignored \"" + message.Message + "\"", message.User, message.Source);
+            BotController.SendMessage(client, "Ignored \"" + message.Message + "\"", message.User, message.Source);
         }
 
         public override void OnLoad()

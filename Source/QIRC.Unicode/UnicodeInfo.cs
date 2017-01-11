@@ -70,7 +70,7 @@ namespace QIRC.Commands
         {
             if (String.IsNullOrWhiteSpace(message.Message))
             {
-                QIRC.SendMessage(client, "What code point do you want me to look up?", message.User, message.Source, true);
+                BotController.SendMessage(client, "What code point do you want me to look up?", message.User, message.Source, true);
                 return;
             }
 
@@ -81,7 +81,7 @@ namespace QIRC.Commands
                 if (Int32.TryParse(message.Message.Substring(2), NumberStyles.HexNumber, new NumberFormatInfo(), out codePoint))
                     characters = new List<UnicodeCharInfo> { UnicodeInfo.GetCharInfo(codePoint) };
                 else
-                    QIRC.SendMessage(client, "That's not a valid code point.", message.User, message.Source, true);
+                    BotController.SendMessage(client, "That's not a valid code point.", message.User, message.Source, true);
             }
             else
             {
@@ -98,7 +98,7 @@ namespace QIRC.Commands
                 String number = characters[i].CodePoint.ToString("X");
                 while (number.Length < 4) number = "0" + number;
                 String reply = $"U+{number} {characters[i].Name} ({UnicodeInfo.GetDisplayText(characters[i])})";
-                QIRC.SendMessage(client, reply, message.User, message.Source, true);
+                BotController.SendMessage(client, reply, message.User, message.Source, true);
             }
         }
 

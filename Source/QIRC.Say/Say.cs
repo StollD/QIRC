@@ -79,11 +79,11 @@ namespace QIRC.Commands
             {
                 String text = message.Message;
                 String target = StripParam("to", ref text);
-                QIRC.SendMessage(client, text, target, target, true);
+                BotController.SendMessage(client, text, target, target, true);
             }
             else
             {
-                QIRC.SendMessage(client, message.Message, message.User, message.Source, true);
+                BotController.SendMessage(client, message.Message, message.User, message.Source, true);
             }
         }
     }

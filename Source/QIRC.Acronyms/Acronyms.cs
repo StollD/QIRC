@@ -102,7 +102,7 @@ namespace QIRC.Commands
             if (message.Message.Length == 0)
             {
                 // Response
-                QIRC.SendMessage(client, "I have " + acronyms.Count + " explanations for acronyms stored", message.User, message.Source);
+                BotController.SendMessage(client, "I have " + acronyms.Count + " explanations for acronyms stored", message.User, message.Source);
             }
             else
             {
@@ -116,7 +116,7 @@ namespace QIRC.Commands
                     // Error out
                     if (String.IsNullOrWhiteSpace(ident))
                     {
-                        QIRC.SendMessage(client, "Invalid key!", message.User, message.Source);
+                        BotController.SendMessage(client, "Invalid key!", message.User, message.Source);
                         return;
                     }
 
@@ -126,11 +126,11 @@ namespace QIRC.Commands
                     /// Add it
                     if (acronyms.Count(t => t.Item1 == ident) != 0)
                     {
-                        QIRC.SendMessage(client, "I already know an explanation for " + ident + "! (Update it with " + Settings.Read<String>("control") + GetName() + " -update:" + ident + " " + text + ")", message.User, message.Source);
+                        BotController.SendMessage(client, "I already know an explanation for " + ident + "! (Update it with " + Settings.Read<String>("control") + GetName() + " -update:" + ident + " " + text + ")", message.User, message.Source);
                         return;
                     }
                     acronyms.Add(new Tuple<String, String>(ident, text.Trim()));
-                    QIRC.SendMessage(client, "I added the explanation for this acronym.", message.User, message.Source);
+                    BotController.SendMessage(client, "I added the explanation for this acronym.", message.User, message.Source);
                 }
                 else if (StartsWithParam("remove", message.Message))
                 {
@@ -141,11 +141,11 @@ namespace QIRC.Commands
                     // If we don't know this
                     if (acronyms.Count(t => t.Item1 == ident) == 0)
                     {
-                        QIRC.SendMessage(client, "This key is not registered!", message.User, message.Source);
+                        BotController.SendMessage(client, "This key is not registered!", message.User, message.Source);
                         return;
                     }
                     acronyms.RemoveAll(t => t.Item1 == ident);
-                    QIRC.SendMessage(client, "I removed the explanation for " + ident, message.User, message.Source);
+                    BotController.SendMessage(client, "I removed the explanation for " + ident, message.User, message.Source);
                 }
                 else if (StartsWithParam("update", message.Message))
                 {
@@ -156,28 +156,28 @@ namespace QIRC.Commands
                     // If we don't know this
                     if (acronyms.Count(t => t.Item1 == ident) == 0)
                     {
-                        QIRC.SendMessage(client, "This key is not registered!", message.User, message.Source);
+                        BotController.SendMessage(client, "This key is not registered!", message.User, message.Source);
                         return;
                     }
                     acronyms.RemoveAll(t => t.Item1 == ident);
                     acronyms.Add(new Tuple<String, String>(ident, text));
-                    QIRC.SendMessage(client, "I updated the explanation for " + ident, message.User, message.Source);
+                    BotController.SendMessage(client, "I updated the explanation for " + ident, message.User, message.Source);
                 }
                 else if (StartsWithParam("list", message.Message))
                 {
                     // Announce it
-                    if (message.IsChannelMessage) QIRC.SendMessage(client, "I will send you a list of my acronyms!", message.User, message.Source);
-                    QIRC.SendMessage(client, "Here is a list of all my acronyms: " + String.Join(", ", acronyms.Select(t => t.Item1)), message.User, message.User, true);
+                    if (message.IsChannelMessage) BotController.SendMessage(client, "I will send you a list of my acronyms!", message.User, message.Source);
+                    BotController.SendMessage(client, "Here is a list of all my acronyms: " + String.Join(", ", acronyms.Select(t => t.Item1)), message.User, message.User, true);
                 }
                 else
                 {
                     // If we don't know this
                     if (acronyms.Count(t => t.Item1 == message.Message.Trim()) == 0)
                     {
-                        QIRC.SendMessage(client, "This key is not registered!", message.User, message.Source);
+                        BotController.SendMessage(client, "This key is not registered!", message.User, message.Source);
                         return;
                     }
-                    QIRC.SendMessage(client, "[" + message.Message.Trim() + "] => " + acronyms.First(t => t.Item1 == message.Message.Trim()).Item2, message.User, message.Source);
+                    BotController.SendMessage(client, "[" + message.Message.Trim() + "] => " + acronyms.First(t => t.Item1 == message.Message.Trim()).Item2, message.User, message.Source);
                 }
             }
         }
