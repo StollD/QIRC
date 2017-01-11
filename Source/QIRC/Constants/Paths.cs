@@ -33,6 +33,6 @@ namespace QIRC.Constants
         /// The Directory where the persistent data is stored.
         /// This is relative to the location of the main executable.
         /// </summary>
-        public static readonly Path data = "data/";
+        public static readonly Path data = "storage.db";
     }
 }

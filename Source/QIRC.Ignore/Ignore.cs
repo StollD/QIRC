@@ -20,8 +20,6 @@ namespace QIRC.Commands
     /// </summary>
     public class Ignore : IrcCommand
     {
-        public static SerializeableList<String> ignores = new SerializeableList<String>("ignores");
-
         /// <summary>
         /// The Access Level that is needed to execute the command
         /// </summary>
@@ -91,28 +89,28 @@ namespace QIRC.Commands
                 String msg = message.Message;
                 StripParam("remove", ref msg);
                 String w = "^" + Regex.Escape(msg.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                if (!ignores.Contains(w))
+                if (IgnoreData.Query.All(i => i.Host != w))
                 {
                     BotController.SendMessage(client, "This hostmask isn't ignored!", message.User, message.Source);
                     return;
                 }
-                ignores.Remove(w);
+                IgnoreData.Query.Delete(i => i.Host != w);
                 BotController.SendMessage(client, "Unignored \"" + msg.Trim() + "\"", message.User, message.Source);
                 return;
             }
 
             if (StartsWithParam("list", message.Message))
             {
-                BotController.SendMessage(client, String.Join("; ", ignores), message.User, message.User, true);
+                BotController.SendMessage(client, String.Join("; ", IgnoreData.Query.Select(i => i.Host)), message.User, message.User, true);
                 return;
             }
             String wildcard = "^" + Regex.Escape(message.Message.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-            if (ignores.Contains(wildcard))
+            if (IgnoreData.Query.All(i => i.Host != wildcard))
             {
                 BotController.SendMessage(client, "This hostmask is already ignored!", message.User, message.Source);
                 return;
             }
-            ignores.Add(wildcard);
+            IgnoreData.Query.Insert(wildcard);
             BotController.SendMessage(client, "Ignored \"" + message.Message + "\"", message.User, message.Source);
         }
 
@@ -121,7 +119,7 @@ namespace QIRC.Commands
             IrcCommand.ExecuteCheck.Add(val =>
             {
                 IrcUser user = val.Item1;
-                return !ignores.Any(s => Regex.IsMatch(user.Hostmask, s, RegexOptions.Compiled | RegexOptions.IgnoreCase));
+                return !IgnoreData.Query.Any(s => Regex.IsMatch(user.Hostmask, s.Host, RegexOptions.Compiled | RegexOptions.IgnoreCase));
             });
         }
     }

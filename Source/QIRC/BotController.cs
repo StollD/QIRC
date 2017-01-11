@@ -16,6 +16,8 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using QIRC.Constants;
+using SQLite;
 
 namespace QIRC
 {
@@ -47,9 +49,9 @@ namespace QIRC
         public static Thread ircThread { get; protected set; }
 
         /// <summary>
-        /// All the messages that were recieved on IRC, stored as BSON
+        /// The persistent data storage for the bot.
         /// </summary>
-        public static SerializeableList<ProtoIrcMessage> messages = new SerializeableList<ProtoIrcMessage>("messages");
+        public static SQLiteConnection Database { get; set; }
 
         /// <summary>
         /// This function is executed when the Program starts.
@@ -60,6 +62,9 @@ namespace QIRC
         {
             // We are alive
             isAlive = true;
+
+            // Load the database
+            Database = new SQLiteConnection(Paths.data);
 
             // Load the settings of the Bot
             PluginManager.Load();

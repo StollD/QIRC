@@ -47,7 +47,7 @@ namespace QIRC.Addons
             String repl = match.Groups[3].Value.Replace(@"\/", "/");
 
             // Find the message to edit
-            ProtoIrcMessage new_msg = BotController.messages.LastOrDefault(m => m.User == nick && Regex.IsMatch(m.Message, find, RegexOptions.IgnoreCase));
+            ProtoIrcMessage new_msg = ProtoIrcMessage.Query.LastOrDefault(m => m.User == nick && Regex.IsMatch(m.Message, find, RegexOptions.IgnoreCase) && !Regex.IsMatch(m.Message, regex, RegexOptions.IgnoreCase));
             Char[] flags = match.Groups[4].Success ? match.Groups[4].Value.ToCharArray() : new Char[0];
             Console.WriteLine(new String(flags));
             if (new_msg == null)

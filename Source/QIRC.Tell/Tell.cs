@@ -13,6 +13,7 @@ using QIRC.Serialization;
 using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QIRC.Commands
 {
@@ -22,11 +23,6 @@ namespace QIRC.Commands
     /// </summary>
     public class Tell : IrcCommand
     {
-        /// <summary>
-        /// The messages that should be delivered
-        /// </summary>
-        public static SerializeableList<Msg> tells { get; set; }
-
         /// <summary>
         /// The Access Level that is needed to execute the command
         /// </summary>
@@ -85,9 +81,6 @@ namespace QIRC.Commands
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
-            if (tells == null)
-                tells = new SerializeableList<Msg>("tell");
-
             if (StartsWithParam("channel", message.Message))
             {
                 String text = message.Message;
@@ -96,7 +89,7 @@ namespace QIRC.Commands
                 foreach (String name in split[0].Split(','))
                 {
                     String wildcard = "^" + Regex.Escape(name.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                    tells.Add(new Msg
+                    TellData.Query.Connection.Insert(new TellData
                     {
                         channel = true,
                         channelName = target,
@@ -118,7 +111,7 @@ namespace QIRC.Commands
                 foreach (String name in split[0].Split(','))
                 {
                     String wildcard = "^" + Regex.Escape(name.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                    tells.Add(new Msg
+                    TellData.Query.Connection.Insert(new TellData
                     {
                         channel = false,
                         channelName = "",
@@ -139,10 +132,8 @@ namespace QIRC.Commands
         /// </summary>
         public override void OnPrivateMessageRecieved(IrcClient client, PrivateMessageEventArgs e)
         {
-            if (tells == null)
-                tells = new SerializeableList<Msg>("tell");
-            List<Msg> toDelete = new List<Msg>();
-            foreach (Msg tell in tells)
+            List<TellData> toDelete = new List<TellData>();
+            foreach (TellData tell in TellData.Query)
             {
                 if (!Regex.IsMatch(e.PrivateMessage.User.Nick, tell.to, RegexOptions.IgnoreCase))
                     continue;
@@ -155,7 +146,7 @@ namespace QIRC.Commands
                     BotController.SendMessage(client, message, e.PrivateMessage.User.Nick, e.PrivateMessage.Source);
                 toDelete.Add(tell);
             }
-            toDelete.ForEach(t => tells.Remove(t));
+            toDelete.ForEach(t => TellData.Query.Delete(t2 => t2.Index == t.Index));
         }
     }
 }

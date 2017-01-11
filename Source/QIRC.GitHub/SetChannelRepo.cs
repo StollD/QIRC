@@ -61,22 +61,22 @@ namespace QIRC.Commands
         {
             return Settings.Read<String>("control") + GetName() + " ThomasKerman/QIRC";
         }
-
-        public static SerializeableList<KeyValuePair<String, String>> repos { get; set; }
-
+        
         /// <summary>
         /// Here we run the command and evaluate the parameters
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
-            if (repos == null)
-                repos = new SerializeableList<KeyValuePair<String, String>>("repos");
             if (!message.IsChannelMessage)
                 return;
-            if (repos.Count(r => r.Key == message.Source) == 0)
-                repos.Add(new KeyValuePair<String, String>(message.Source, message.Message.Trim()));
+            if (ChannelRepo.Query.Count(r => r.Channel == message.Source) == 0)
+                ChannelRepo.Query.Insert(message.Source, message.Message.Trim());
             else
-                repos[repos.IndexOf(repos.First(r => r.Key == message.Source))] = new KeyValuePair<String, String>(message.Source, message.Message.Trim());
+            {
+                ChannelRepo repo = ChannelRepo.Query.First(r => r.Channel == message.Source);
+                repo.Repository = message.Message.Trim();
+                BotController.Database.Update(repo);
+            }
             BotController.SendMessage(client, "Set default repository for " + message.Source + " to " + message.Message.Trim(), message.User, message.Source);
         }
     }

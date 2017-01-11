@@ -8,14 +8,22 @@ using ChatSharp;
 using ChatSharp.Events;
 using Newtonsoft.Json;
 using System;
+using QIRC.Serialization;
+using SQLite;
 
 namespace QIRC.IRC
 {
     /// <summary>
     /// The saveable definitions for an IRC message
     /// </summary>
-    public class ProtoIrcMessage
+    public class ProtoIrcMessage : Storage<ProtoIrcMessage>
     {
+        /// <summary>
+        /// The index of the message
+        /// </summary>
+        [PrimaryKey, NotNull, AutoIncrement, Unique]
+        public Int32 Index { get; set; }
+
         /// <summary>
         /// Whether the Message was sent in a channel or via. /query
         /// </summary>
@@ -68,7 +76,7 @@ namespace QIRC.IRC
         /// </summary>
         public ProtoIrcMessage(IrcNoticeEventArgs e)
         {
-            IsChannelMessage = true;
+            IsChannelMessage = false;
             Message = e.Notice;
             Source = User = e.Source;
             Time = DateTime.UtcNow;
@@ -78,7 +86,7 @@ namespace QIRC.IRC
         /// JsonConstructor
         /// </summary>
         [JsonConstructor]
-        internal ProtoIrcMessage()
+        public ProtoIrcMessage()
         {
             IsChannelMessage = false;
             Message = Source = User = "";

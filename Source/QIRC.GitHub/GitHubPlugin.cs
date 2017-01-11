@@ -28,10 +28,6 @@ namespace QIRC.Commands
 
         public override void OnChannelMessageRecieved(IrcClient client, PrivateMessageEventArgs e)
         {
-            if (GitHubRepo.repos == null)
-                GitHubRepo.repos = new SerializeableList<KeyValuePair<String, String>>("repos");
-            if (GitHubAlias.alias == null)
-                GitHubAlias.alias = new SerializeableList<KeyValuePair<String, String>>("repoalias");
             ProtoIrcMessage message = new ProtoIrcMessage(e);
 
             if (Regex.IsMatch(message.Message, issueURL))
@@ -41,14 +37,14 @@ namespace QIRC.Commands
                     String id = match.Groups[5].Value;
                     if (match.Groups[1].Success)
                     {
-                        String repo = GitHubAlias.alias.Count(r => r.Key == match.Groups[1].Value) > 0 ? GitHubAlias.alias.First(r => r.Key == match.Groups[1].Value).Value : match.Groups[1].Value;
+                        String repo = RepoAlias.Query.Count(r => r.Alias == match.Groups[1].Value) > 0 ? RepoAlias.Query.First(r => r.Alias == match.Groups[1].Value).Repository : match.Groups[1].Value;
                         String info = GetInfoIssue(repo, id);
                         if (!String.IsNullOrWhiteSpace(info))
                             BotController.SendMessage(client, info, message.User, message.Source, true);
                     }
                     else
                     {
-                        String info = GetInfoIssue(GitHubRepo.repos.FirstOrDefault(r => r.Key == message.Source).Value, id);
+                        String info = GetInfoIssue(ChannelRepo.Query.FirstOrDefault(r => r.Channel == message.Source).Repository, id);
                         if (!String.IsNullOrWhiteSpace(info))
                             BotController.SendMessage(client, info, message.User, message.Source, true);
                     }
@@ -62,14 +58,14 @@ namespace QIRC.Commands
                     Console.WriteLine(id);
                     if (match.Groups[1].Success)
                     {
-                        String repo = GitHubAlias.alias.Count(r => r.Key == match.Groups[1].Value) > 0 ? GitHubAlias.alias.First(r => r.Key == match.Groups[1].Value).Value : match.Groups[1].Value;
+                        String repo = RepoAlias.Query.Count(r => r.Alias == match.Groups[1].Value) > 0 ? RepoAlias.Query.First(r => r.Alias == match.Groups[1].Value).Repository : match.Groups[1].Value;
                         String info = GetInfoCommit(repo, id);
                         if (!String.IsNullOrWhiteSpace(info))
                             BotController.SendMessage(client, info, message.User, message.Source, true);
                     }
                     else
                     {
-                        String info = GetInfoCommit(GitHubRepo.repos.FirstOrDefault(r => r.Key == message.Source).Value, id);
+                        String info = GetInfoCommit(ChannelRepo.Query.FirstOrDefault(r => r.Channel == message.Source).Repository, id);
                         Console.WriteLine(info);
                         if (!String.IsNullOrWhiteSpace(info))
                             BotController.SendMessage(client, info, message.User, message.Source, true);

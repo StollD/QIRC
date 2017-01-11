@@ -47,7 +47,7 @@ namespace QIRC.Commands
         /// </summary>
         public override String[] GetParameters()
         {
-            return new String[]
+            return new []
             {
                 "to", "The Channel where the bot should send the action to."
             };

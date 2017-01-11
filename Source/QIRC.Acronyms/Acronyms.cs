@@ -22,11 +22,6 @@ namespace QIRC.Commands
     public class Acronym : IrcCommand
     {
         /// <summary>
-        /// The persistent List of Acronyms
-        /// </summary>
-        public SerializeableList<Tuple<String, String>> acronyms { get; set; }
-
-        /// <summary>
         /// The Access Level that is needed to execute the command
         /// </summary>
         public override AccessLevel GetAccessLevel()
@@ -63,7 +58,7 @@ namespace QIRC.Commands
         /// </summary>
         public override String[] GetParameters()
         {
-            return new String[]
+            return new []
             {
                 "add", "Adds an explanation",
                 "remove", "Removes an explanation",
@@ -94,15 +89,11 @@ namespace QIRC.Commands
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
-            // Null Check
-            if (acronyms == null)
-                acronyms = new SerializeableList<Tuple<String, String>>("acronyms");
-
             // If we have no additional commands
             if (message.Message.Length == 0)
             {
                 // Response
-                BotController.SendMessage(client, "I have " + acronyms.Count + " explanations for acronyms stored", message.User, message.Source);
+                BotController.SendMessage(client, "I have " + AcronymData.Query.Count() + " explanations for acronyms stored", message.User, message.Source);
             }
             else
             {
@@ -123,13 +114,13 @@ namespace QIRC.Commands
                     // Get the text
                     message.Message = message.Message.Remove(0, ("[" + ident + "]").Length).Trim();
 
-                    /// Add it
-                    if (acronyms.Count(t => t.Item1 == ident) != 0)
+                    // Add it
+                    if (AcronymData.Query.Count(t => t.Short == ident) != 0)
                     {
                         BotController.SendMessage(client, "I already know an explanation for " + ident + "! (Update it with " + Settings.Read<String>("control") + GetName() + " -update:" + ident + " " + text + ")", message.User, message.Source);
                         return;
                     }
-                    acronyms.Add(new Tuple<String, String>(ident, text.Trim()));
+                    AcronymData.Query.Insert(ident, text.Trim());
                     BotController.SendMessage(client, "I added the explanation for this acronym.", message.User, message.Source);
                 }
                 else if (StartsWithParam("remove", message.Message))
@@ -139,12 +130,12 @@ namespace QIRC.Commands
                     String ident = StripParam("remove", ref text);
 
                     // If we don't know this
-                    if (acronyms.Count(t => t.Item1 == ident) == 0)
+                    if (AcronymData.Query.Count(t => t.Short == ident) == 0)
                     {
                         BotController.SendMessage(client, "This key is not registered!", message.User, message.Source);
                         return;
                     }
-                    acronyms.RemoveAll(t => t.Item1 == ident);
+                    AcronymData.Query.Delete(t => t.Short == ident);
                     BotController.SendMessage(client, "I removed the explanation for " + ident, message.User, message.Source);
                 }
                 else if (StartsWithParam("update", message.Message))
@@ -154,30 +145,31 @@ namespace QIRC.Commands
                     String ident = StripParam("update", ref text);
 
                     // If we don't know this
-                    if (acronyms.Count(t => t.Item1 == ident) == 0)
+                    if (AcronymData.Query.Count(t => t.Short == ident) == 0)
                     {
                         BotController.SendMessage(client, "This key is not registered!", message.User, message.Source);
                         return;
                     }
-                    acronyms.RemoveAll(t => t.Item1 == ident);
-                    acronyms.Add(new Tuple<String, String>(ident, text));
+                    AcronymData.Query.Delete(t => t.Short == ident);
+                    AcronymData.Query.Insert(ident, text.Trim());
                     BotController.SendMessage(client, "I updated the explanation for " + ident, message.User, message.Source);
                 }
                 else if (StartsWithParam("list", message.Message))
                 {
                     // Announce it
                     if (message.IsChannelMessage) BotController.SendMessage(client, "I will send you a list of my acronyms!", message.User, message.Source);
-                    BotController.SendMessage(client, "Here is a list of all my acronyms: " + String.Join(", ", acronyms.Select(t => t.Item1)), message.User, message.User, true);
+                    BotController.SendMessage(client, "Here is a list of all my acronyms: " + String.Join(", ", AcronymData.Query.Select(s => s.Short)), message.User, message.User, true);
                 }
                 else
                 {
                     // If we don't know this
-                    if (acronyms.Count(t => t.Item1 == message.Message.Trim()) == 0)
+                    String temp = message.Message.Trim();
+                    if (AcronymData.Query.Count(t => t.Short == temp) == 0)
                     {
                         BotController.SendMessage(client, "This key is not registered!", message.User, message.Source);
                         return;
                     }
-                    BotController.SendMessage(client, "[" + message.Message.Trim() + "] => " + acronyms.First(t => t.Item1 == message.Message.Trim()).Item2, message.User, message.Source);
+                    BotController.SendMessage(client, "[" + message.Message.Trim() + "] => " + AcronymData.Query.First(t => t.Short == temp).Explanation, message.User, message.Source);
                 }
             }
         }
@@ -187,13 +179,10 @@ namespace QIRC.Commands
         /// </summary>
         public override void OnPrivateMessageRecieved(IrcClient client, PrivateMessageEventArgs e)
         {            
-            // Null Check
-            if (acronyms == null)
-                acronyms = new SerializeableList<Tuple<String, String>>("acronyms");
             if (e.PrivateMessage.Message.EndsWith("?", StringComparison.InvariantCultureIgnoreCase))
             {
-                String message = e.PrivateMessage.Message.Remove(e.PrivateMessage.Message.Length - 1);
-                if (acronyms.Count(t => t.Item1 == message) > 0)
+                String message = e.PrivateMessage.Message.Remove(e.PrivateMessage.Message.Length - 1).Trim();
+                if (AcronymData.Query.Count(t => t.Short == message) > 0)
                     RunCommand(client, new ProtoIrcMessage(e) {Message = message});
             }
         }

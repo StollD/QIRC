@@ -10,7 +10,6 @@ using QIRC.IRC;
 using QIRC.Plugins;
 using QIRC.Serialization;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.CodeDom.Compiler;
 using System.Security.Cryptography;
@@ -23,11 +22,6 @@ namespace QIRC.Commands
     /// </summary>
     public class Alias : IrcCommand
     {
-        /// <summary>
-        /// A list that stores all aliases
-        /// </summary>
-        public static SerializeableList<_Alias> alias { get; set; }
-
         /// <summary>
         /// The Access Level that is needed to execute the command
         /// </summary>
@@ -57,7 +51,7 @@ namespace QIRC.Commands
         /// </summary>
         public override String[] GetParameters()
         {
-            return new String[]
+            return new []
             {
                 "create", "Creates an alias with the given name",
                 "remove", "Removes the alias with the given name",
@@ -91,24 +85,20 @@ namespace QIRC.Commands
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
-            // Create the list
-            if (alias == null)
-                alias = new SerializeableList<_Alias>("alias");
-
             // Remove an alias
             if (StartsWithParam("remove", message.Message))
             {
                 String text = message.Message;
                 String id = StripParam("remove", ref text).ToLower();
-                if (alias.Count(s => s.name == id) == 1)
+                if (AliasData.Query.Count(s => s.Name == id) == 1)
                 {
-                    _Alias a = alias.Find(s => s.name == id);
-                    if (!BotController.CheckPermission(a.level, message.level))
+                    AliasData a = AliasData.Query.First(s => s.Name == id);
+                    if (!BotController.CheckPermission(a.Level, message.level))
                     {
-                        BotController.SendMessage(client, "You don't have the permission to remove this alias! Only " + a.level + " can remove this alias! You are " + message.level + ".", message.User, message.Source);
+                        BotController.SendMessage(client, "You don't have the permission to remove this alias! Only " + a.Level + " can remove this alias! You are " + message.level + ".", message.User, message.Source);
                         return;
                     }
-                    alias.RemoveAll(s => s.name == id);
+                    AliasData.Query.Delete(s => s.Name == id);
                     PluginManager.commands.RemoveWhere(i => i.GetName() == id);
                     BotController.SendMessage(client, "Removed the alias \"" + id + "\"", message.User, message.Source);
                 }
@@ -122,16 +112,14 @@ namespace QIRC.Commands
             {
                 String text = message.Message;
                 String name = StripParam("create", ref text).ToLower();
-                if (alias.Count(a => a.name == name) != 0)
+                if (AliasData.Query.Count(a => a.Name == name) != 0)
                 {
                     BotController.SendMessage(client, "This alias does already exist!", message.User, message.Source);
                     return;
                 }
                 if (!StartsWithParam("structure", text))
                 {
-                    _Alias alias_ = new _Alias { name = name, command = text.Trim(), level = AccessLevel.NORMAL, example = Settings.Read<String>("control") + name, serious = true };
-                    IrcCommand command = CreateAlias(alias_);
-                    Alias.alias.Add(alias_);
+                    IrcCommand command = CreateAlias(AliasData.Query.Insert(name, text.Trim(), null, false));
                     PluginManager.commands.Add(command);
                 }
                 else
@@ -140,9 +128,7 @@ namespace QIRC.Commands
                     Boolean escape = StartsWithParam("escape", text);
                     if (escape)
                         StripParam("escape", ref text);
-                    _Alias alias_ = new _Alias { name = name, command = text.Trim(), level = AccessLevel.NORMAL, example = Settings.Read<String>("control") + name, serious = true, regex = regex, escape = escape };
-                    IrcCommand command = CreateAlias(alias_);
-                    Alias.alias.Add(alias_);
+                    IrcCommand command = CreateAlias(AliasData.Query.Insert(name, text.Trim(), regex, escape));
                     PluginManager.commands.Add(command);
                 }
                 BotController.SendMessage(client, "Aliased \"" + text.Trim() + "\" to \"" + Settings.Read<String>("control") + name + "\"", message.User, message.Source);
@@ -154,23 +140,22 @@ namespace QIRC.Commands
             {
                 String text = message.Message;
                 String id = StripParam("description", ref text);
-                if (alias.Count(a => a.name == id) == 0)
+                if (AliasData.Query.Count(a => a.Name == id) == 0)
                 {
                     BotController.SendMessage(client, "This alias doesn't exist! You can add it using the -create attribute.", message.User, message.Source);
                     return;
                 }
-                Int32 index = alias.IndexOf(alias.Find(a => a.name == id));
-                _Alias al = alias[index];
-                if (!BotController.CheckPermission(al.level, message.level))
+                AliasData al = AliasData.Query.First(a => a.Name == id);
+                if (!BotController.CheckPermission(al.Level, message.level))
                 {
-                    BotController.SendMessage(client, "You don't have the permission to edit this alias! Only " + al.level + " can edit this alias! You are " + message.level + ".", message.User, message.Source);
+                    BotController.SendMessage(client, "You don't have the permission to edit this alias! Only " + al.Level + " can edit this alias! You are " + message.level + ".", message.User, message.Source);
                     return;
                 }
-                al.description = text.Trim();
-                alias[index] = al;
+                al.Description = text.Trim();
+                BotController.Database.Update(al);
                 PluginManager.commands.RemoveWhere(a => a.GetName() == id);
                 PluginManager.commands.Add(CreateAlias(al));
-                BotController.SendMessage(client, "Updated the description for \"" + Settings.Read<String>("control") + alias[index].name + "\"", message.User, message.Source);
+                BotController.SendMessage(client, "Updated the description for \"" + Settings.Read<String>("control") + al.Name + "\"", message.User, message.Source);
                 return;
             }
 
@@ -185,23 +170,22 @@ namespace QIRC.Commands
                     BotController.SendMessage(client, "Please enter a valid AccessLevel!", message.User, message.Source);
                     return;
                 }
-                if (alias.Count(al => al.name == id) == 0)
+                if (AliasData.Query.Count(a => a.Name == id) == 0)
                 {
                     BotController.SendMessage(client, "This alias doesn't exist! You can add it using the -create attribute.", message.User, message.Source);
                     return;
                 }
-                Int32 index = alias.IndexOf(alias.Find(al => al.name == id));
-                _Alias a = alias[index];
-                if (!BotController.CheckPermission(a.level, message.level))
+                AliasData al = AliasData.Query.First(a => a.Name == id);
+                if (!BotController.CheckPermission(al.Level, message.level))
                 {
-                    BotController.SendMessage(client, "You don't have the permission to edit this alias! Only " + a.level + " can edit this alias! You are " + message.level + ".", message.User, message.Source);
+                    BotController.SendMessage(client, "You don't have the permission to edit this alias! Only " + al.Level + " can edit this alias! You are " + message.level + ".", message.User, message.Source);
                     return;
                 }
-                a.level = level;
-                alias[index] = a;
-                PluginManager.commands.RemoveWhere(al => al.GetName() == id);
-                PluginManager.commands.Add(CreateAlias(a));
-                BotController.SendMessage(client, "Updated the access level for \"" + Settings.Read<String>("control") + alias[index].name + "\"", message.User, message.Source);
+                al.Level = level;
+                BotController.Database.Update(al);
+                PluginManager.commands.RemoveWhere(a => a.GetName() == id);
+                PluginManager.commands.Add(CreateAlias(al));
+                BotController.SendMessage(client, "Updated the access level for \"" + Settings.Read<String>("control") + al.Name + "\"", message.User, message.Source);
                 return;
             }
 
@@ -210,23 +194,22 @@ namespace QIRC.Commands
             {
                 String text = message.Message;
                 String id = StripParam("example", ref text);
-                if (alias.Count(a => a.name == id) == 0)
+                if (AliasData.Query.Count(a => a.Name == id) == 0)
                 {
                     BotController.SendMessage(client, "This alias doesn't exist! You can add it using the -create attribute.", message.User, message.Source);
                     return;
                 }
-                Int32 index = alias.IndexOf(alias.Find(a => a.name == id));
-                _Alias al = alias[index];
-                if (!BotController.CheckPermission(al.level, message.level))
+                AliasData al = AliasData.Query.First(a => a.Name == id);
+                if (!BotController.CheckPermission(al.Level, message.level))
                 {
-                    BotController.SendMessage(client, "You don't have the permission to edit this alias! Only " + al.level + " can edit this alias! You are " + message.level + ".", message.User, message.Source);
+                    BotController.SendMessage(client, "You don't have the permission to edit this alias! Only " + al.Level + " can edit this alias! You are " + message.level + ".", message.User, message.Source);
                     return;
                 }
-                al.example = Settings.Read<String>("control") + al.name + " " + text.Trim();
-                alias[index] = al;
+                al.Example = Settings.Read<String>("control") + al.Name + " " + text.Trim();
+                BotController.Database.Update(al);
                 PluginManager.commands.RemoveWhere(a => a.GetName() == id);
                 PluginManager.commands.Add(CreateAlias(al));
-                BotController.SendMessage(client, "Updated the example for \"" + Settings.Read<String>("control") + alias[index].name + "\"", message.User, message.Source);
+                BotController.SendMessage(client, "Updated the example for \"" + Settings.Read<String>("control") + al.Name + "\"", message.User, message.Source);
                 return;
             }
         }
@@ -235,7 +218,7 @@ namespace QIRC.Commands
         /// Transforms an Alias into a C# class using Reflection.Emit
         /// </summary>
         /// Editors note: I never want to see the IL of this method.
-        public static IrcCommand CreateAlias(_Alias alias)
+        public static IrcCommand CreateAlias(AliasData alias)
         {
             String id = BitConverter.ToString(SHA1.Create().ComputeHash(BitConverter.GetBytes(alias.GetHashCode())));
             id = id.Replace("-", "")
@@ -280,33 +263,33 @@ namespace QIRC.Commands
     {
         public override AccessLevel GetAccessLevel()
         {
-            return AccessLevel." + Enum.GetName(typeof(AccessLevel), alias.level) + @";
+            return AccessLevel." + Enum.GetName(typeof(AccessLevel), alias.Level) + @";
         }
 
         public override String GetName()
         {
-            return " + "\"" + alias.name + "\"" + @";
+            return " + "\"" + alias.Name + "\"" + @";
         }
 
         public override String GetDescription()
         {
-            return " + "\"" + alias.description + "\"" + @";
+            return " + "\"" + alias.Description + "\"" + @";
         }
 
         public override Boolean IsSerious()
         {
-            return " + alias.serious.ToString().ToLower() + @";
+            return " + alias.Serious.ToString().ToLower() + @";
         }
 
         public override String GetExample()
         {
-            return " + "\"" + alias.example + "\"" + @";
+            return " + "\"" + alias.Example + "\"" + @";
         }
 
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
-            String regex = @" + "\"" + alias.regex + "\"" + @";
-            String command = " + "\"" + alias.command.Replace(@"\", @"\\").Replace("\"", @"\" + "\"") + "\"" + @";
+            String regex = @" + "\"" + alias.Regex + "\"" + @";
+            String command = " + "\"" + alias.Command.Replace(@"\", @"\\").Replace("\"", @"\" + "\"") + "\"" + @";
             if (regex == " + "\"\"" + @")
                 message.Message = command;
             else
@@ -318,7 +301,7 @@ namespace QIRC.Commands
                         return;
                     Match match = regex_.Match(message.Message);
                     List<Group> groups = match.Groups.Cast<Group>().ToList();
-                    message.Message = String.Format(command, groups.Where(g => g.Success && groups.IndexOf(g) != 0).Select(g => g.Value.Trim()" + (alias.escape ? ".Replace(\"\\\"\", \"\\\\\\\"\"" + ")" : "") + @").ToArray());
+                    message.Message = String.Format(command, groups.Where(g => g.Success && groups.IndexOf(g) != 0).Select(g => g.Value.Trim()" + (alias.Escape ? ".Replace(\"\\\"\", \"\\\\\\\"\"" + ")" : "") + @").ToArray());
                 }
                 catch
                 {
@@ -339,31 +322,12 @@ namespace QIRC.Commands
         /// </summary>
         public override void OnLoad()
         {
-            // Create the list
-            if (Alias.alias == null)
-                Alias.alias = new SerializeableList<Alias._Alias>("alias");
-
             // Create them
-            foreach (Alias._Alias alias in Alias.alias)
+            foreach (AliasData alias in AliasData.Query)
             {
-                IrcCommand command = Alias.CreateAlias(alias);
+                IrcCommand command = CreateAlias(alias);
                 PluginManager.commands.Add(command);
             }
-        }
-
-        /// <summary>
-        /// Internal representation of an alias
-        /// </summary>
-        public struct _Alias
-        {
-            public String name;
-            public String description;
-            public AccessLevel level;
-            public Boolean serious;
-            public String example;
-            public String command;
-            public String regex;
-            public Boolean escape;
         }
     }
 }

@@ -9,6 +9,7 @@ using ChatSharp.Events;
 using QIRC.IRC;
 using QIRC.Plugins;
 using System;
+using QIRC.Serialization;
 
 namespace QIRC.Logger
 {
@@ -50,7 +51,7 @@ namespace QIRC.Logger
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
             Logging.Log(String.Format("[{1}] <{0}> {2}", msg.User, msg.Source, msg.Message), Logging.Level.INFO);
-            BotController.messages.Add(msg);
+            ProtoIrcMessage.Query.Connection.Insert(msg);
         }
 
         /// <summary>
@@ -60,7 +61,7 @@ namespace QIRC.Logger
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
             Logging.Log(String.Format("[{1}] <{0}> {2}", msg.User, "Private", msg.Message), Logging.Level.INFO);
-            BotController.messages.Add(msg);
+            ProtoIrcMessage.Query.Connection.Insert(msg);
         }
 
         /// <summary>
@@ -70,7 +71,7 @@ namespace QIRC.Logger
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
             Logging.Log($"Notice from {msg.User.Split('!')[0]}: {msg.Message}", Logging.Level.WARNING);
-            BotController.messages.Add(msg);
+            ProtoIrcMessage.Query.Connection.Insert(msg);
         }
 
         /// <summary>
@@ -145,7 +146,7 @@ namespace QIRC.Logger
         public override void OnMessageSent(IrcClient client, ProtoIrcMessage message)
         {
             Logging.Log(String.Format("[{1}] <{0}> {2}", message.User, message.IsChannelMessage ? message.Source : "Private", message.Message), Logging.Level.INFO);
-            BotController.messages.Add(message);
+            ProtoIrcMessage.Query.Connection.Insert(message);
         }
     }
 }

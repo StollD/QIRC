@@ -71,7 +71,7 @@ namespace QIRC.Commands
         /// </summary>
         public override String[] GetParameters()
         {
-            return new String[]
+            return new []
             {
                 "reset", "Clears the state of the C# shell.",
                 "persistent", "Saves an expression into the class body.",
@@ -96,11 +96,6 @@ namespace QIRC.Commands
         protected static Evaluator evaluator { get; set; }
 
         /// <summary>
-        /// All persistent expressions
-        /// </summary>
-        protected static SerializeableList<String> persistent { get; set; }
-
-        /// <summary>
         /// The last message we got
         /// </summary>
         internal static ProtoIrcMessage lastMsg { get; set; }
@@ -123,16 +118,12 @@ namespace QIRC.Commands
                 worker = new BackgroundWorker();
             worker.WorkerSupportsCancellation = true;
 
-            // Load the list
-            if (persistent == null)
-                persistent = new SerializeableList<String>("csharp_persistent");
-
             // Reset the evaluator
             if (StartsWithParam("reset", message.Message))
             {
                 evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) BotController.SendMessage(BotController.client, s, msg.User, msg.Source, true); })));
                 Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, true);
-                foreach (String s in persistent)
+                foreach (String s in CSharpData.Query.Select(c => c.Expression))
                     Evaluate(client, s, message.User, message.Source, BotController.CheckPermission(AccessLevel.ADMIN, message.level), true);
                 BotController.SendMessage(client, "Cleared the C# Evaluator.", message.User, message.Source);
                 return;
@@ -145,8 +136,8 @@ namespace QIRC.Commands
                 {
                     String content = "Using: \r\n" + evaluator.GetUsing().Replace("\r\n", " \r\n") + "\n";
                     content += "Variables: \r\n" + evaluator.GetVars().Replace("\r\n", " \r\n") + "\n\n";
-                    for (Int32 i = 0; i < persistent.Count; i++)
-                        content += "[" + i + "] " + persistent[i] + "\n";
+                    for (Int32 i = 0; i < CSharpData.Query.Count(); i++)
+                        content += "[" + i + "] " + CSharpData.Query.ElementAt(i).Expression + "\n";
                     String response = JObject.Parse(new WebClient().UploadString("http://hastebin.com/documents", content))["key"].ToString();
                     BotController.SendMessage(client, "State: http://hastebin.com/" + response, message.User, message.User, true);
                 }
@@ -154,8 +145,8 @@ namespace QIRC.Commands
                 {
                     BotController.SendMessage(client, "Using: " + evaluator.GetUsing().Replace("\r\n", " "), message.User, message.User, true);
                     BotController.SendMessage(client, "Variables: " + evaluator.GetVars().Replace("\r\n", ";"), message.User, message.User, true);
-                    for (Int32 i = 0; i < persistent.Count; i++)
-                        BotController.SendMessage(client, "[" + i + "] " + persistent[i], message.User, message.User, true);
+                    for (Int32 i = 0; i < CSharpData.Query.Count(); i++)
+                        BotController.SendMessage(client, "[" + i + "] " + CSharpData.Query.ElementAt(i).Expression, message.User, message.User, true);
                 }
                 if (message.IsChannelMessage) BotController.SendMessage(client, "I sent you the current state of the evaluator.", message.User, message.Source);
                 return;
@@ -169,9 +160,9 @@ namespace QIRC.Commands
                 Int32 index = 0;
                 if (!Int32.TryParse(nr, out index))
                     BotController.SendMessage(client, "Please enter a valid index!", message.User, message.Source);
-                if (!(persistent.Count > index))
+                if (!(CSharpData.Query.Count() > index))
                     BotController.SendMessage(client, "Please enter a valid index!", message.User, message.Source);
-                persistent.RemoveAt(index);
+                CSharpData.Query.Delete(e => e.Index == index);
                 return;
             }
 
@@ -180,7 +171,7 @@ namespace QIRC.Commands
             {
                 String text = message.Message;
                 StripParam("persistent", ref text);
-                persistent.Add(text.Trim());
+                CSharpData.Query.Insert(text.Trim());
                 message.Message = text.Trim();
             }
 
@@ -204,7 +195,7 @@ namespace QIRC.Commands
             {
                 evaluator = new Evaluator(new CompilerContext(new CompilerSettings(), new DelegateReportPrinter((state, msg) => { foreach (String s in state.Split('\n')) BotController.SendMessage(BotController.client, s, msg.User, msg.Source, true); })));
                 Evaluate(client, "using System; using System.Linq; using System.Collections.Generic; using System.Collections;", message.User, message.Source, BotController.CheckPermission(AccessLevel.ADMIN, message.level), true);
-                foreach (String s in persistent)
+                foreach (String s in CSharpData.Query.Select(e => e.Expression))
                     Evaluate(client, s, message.User, message.Source, true);
             }
 

@@ -62,22 +62,21 @@ namespace QIRC.Commands
             return Settings.Read<String>("control") + GetName() + " QIRC ThomasKerman/QIRC";
         }
 
-        public static SerializeableList<KeyValuePair<String, String>> alias { get; set; }
-
         /// <summary>
         /// Here we run the command and evaluate the parameters
         /// </summary>
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
-            if (alias == null)
-                alias = new SerializeableList<KeyValuePair<String, String>>("repoalias");
-            if (!message.IsChannelMessage)
-                return;
-            if (alias.Count(r => r.Key == message.Source) == 0)
-                alias.Add(new KeyValuePair<String, String>(message.Message.Split(' ')[0].Trim(), message.Message.Split(' ')[1].Trim()));
+            String[] split = message.Message.Split(' ');
+            if (RepoAlias.Query.Count(r => r.Alias == split[0]) == 0)
+                RepoAlias.Query.Insert(split[0], split[1]);
             else
-                alias[alias.IndexOf(alias.First(r => r.Key == message.Message.Split(' ')[0].Trim()))] = new KeyValuePair<String, String>(message.Message.Split(' ')[0].Trim(), message.Message.Split(' ')[1].Trim());
-            BotController.SendMessage(client, "Set alias for https://github.com/" + message.Message.Split(' ')[1].Trim() + "/ to " + message.Message.Split(' ')[0].Trim(), message.User, message.Source);
+            {
+                RepoAlias alias = RepoAlias.Query.First(r => r.Alias == split[0]);
+                alias.Repository = split[1];
+                BotController.Database.Update(alias);
+            }
+            BotController.SendMessage(client, "Set alias for https://github.com/" + split[1].Trim() + "/ to " + split[0].Trim(), message.User, message.Source);
         }
     }
 }
