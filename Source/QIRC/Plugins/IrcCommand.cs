@@ -39,8 +39,8 @@ namespace QIRC.Plugins
         /// <returns></returns>
         protected Boolean StartsWithParam(String param, String message)
         {
-            String escaped = Regex.Replace(message, @"\\(?<!\\\\)(-([^:= ]*)(?:[:=](?:([^ ""]+)|""([^""]*)""))?)", "");
-            MatchCollection matches = Regex.Matches(escaped, @"-([^:= ]+)(?:[:=](?:([^ ""]+)|""([^""]*)""))?");
+            String escaped = Regex.Replace(message, "\\\\(?<!\\\\\\\\)(-([^:= ]*)(?:[:=](?:([^ \"]+)|\"([^\"]*)\"))?)", "");
+            MatchCollection matches = Regex.Matches(escaped, "-([^:= ]+)(?:[:=](?:([^ \"]+)|\"([^\"]*)\"))?");
             return matches.OfType<Match>().Any(m => String.Equals(m.Groups[1].Value.Trim(), param, StringComparison.InvariantCultureIgnoreCase));
         }
 
@@ -52,16 +52,19 @@ namespace QIRC.Plugins
         /// <returns></returns>
         protected String StripParam(String param, ref String message)
         {
-            String escaped = Regex.Replace(message, @"\\(?<!\\\\)(-([^:= ]*)(?:[:=](?:([^ ""]+)|""([^""]*)""))?)", "");
-            MatchCollection matches = Regex.Matches(escaped, @"-([^:= ]+)(?:[:=](?:([^ ""]+)|""([^""]*)""))?");
+            String escaped = Regex.Replace(message, "\\\\(?<!\\\\\\\\)(-([^:= ]*)(?:[:=](?:([^ \"]+)|\"([^\"]*)\"))?)", "");
+            MatchCollection matches = Regex.Matches(escaped, "-([^:= ]+)(?:[:=](?:([^ \"]+)|\"([^\"]*)\"))?");
             Match firstMatch = matches.OfType<Match>().FirstOrDefault(m => String.Equals(m.Groups[1].Value.Trim(), param, StringComparison.InvariantCultureIgnoreCase));
             if (firstMatch == null)
                 return "";
 
             String value = "";
-            if (firstMatch.Groups.Count > 2)
+            if (firstMatch.Groups.Count == 4 && String.IsNullOrWhiteSpace(firstMatch.Groups[3].Value))
                 value = firstMatch.Groups[2].Value;
+            else if (firstMatch.Groups.Count == 4)
+                value = firstMatch.Groups[3].Value;
             message = Regex.Replace(message, @"(" + firstMatch.Value + ")?", "");
+            message = Regex.Replace(message, "\\\\(?<!\\\\\\\\)-", "-");
             return value;
         }
 
