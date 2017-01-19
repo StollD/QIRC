@@ -37,7 +37,8 @@ namespace QIRC.Commands
                     String id = match.Groups[5].Value;
                     if (match.Groups[1].Success)
                     {
-                        String repo = RepoAlias.Query.Count(r => r.Alias == match.Groups[1].Value) > 0 ? RepoAlias.Query.First(r => r.Alias == match.Groups[1].Value).Repository : match.Groups[1].Value;
+                        String temp = String.Copy(match.Groups[1].Value);
+                        String repo = RepoAlias.Query.Count(r => r.Alias == temp) > 0 ? RepoAlias.Query.First(r => r.Alias == temp).Repository : temp;
                         String info = GetInfoIssue(repo, id);
                         if (!String.IsNullOrWhiteSpace(info))
                             BotController.SendMessage(client, info, message.User, message.Source, true);
@@ -58,7 +59,8 @@ namespace QIRC.Commands
                     Console.WriteLine(id);
                     if (match.Groups[1].Success)
                     {
-                        String repo = RepoAlias.Query.Count(r => r.Alias == match.Groups[1].Value) > 0 ? RepoAlias.Query.First(r => r.Alias == match.Groups[1].Value).Repository : match.Groups[1].Value;
+                        String temp = String.Copy(match.Groups[1].Value);
+                        String repo = RepoAlias.Query.Count(r => r.Alias == temp) > 0 ? RepoAlias.Query.First(r => r.Alias == temp).Repository : temp;
                         String info = GetInfoCommit(repo, id);
                         if (!String.IsNullOrWhiteSpace(info))
                             BotController.SendMessage(client, info, message.User, message.Source, true);
