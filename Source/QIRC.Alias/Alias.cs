@@ -125,7 +125,7 @@ namespace QIRC.Commands
                 }
                 else
                 {
-                    String regex = StripParam("structure", ref text);
+                    String regex = StripParam("structure", ref text, true);
                     Boolean escape = StartsWithParam("escape", text);
                     if (escape)
                         StripParam("escape", ref text);

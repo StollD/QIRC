@@ -50,7 +50,7 @@ namespace QIRC.Plugins
         /// <param name="param">The parameter.</param>
         /// <param name="message">The message.</param>
         /// <returns></returns>
-        protected String StripParam(String param, ref String message)
+        protected String StripParam(String param, ref String message, Boolean escape = false)
         {
             String escaped = Regex.Replace(message, "\\\\(?<!\\\\\\\\)(-([^:= ]*)(?:[:=](?:([^ \"]+)|\"([^\"]*)\"))?)", "");
             MatchCollection matches = Regex.Matches(escaped, "-([^:= ]+)(?:[:=](?:([^ \"]+)|\"([^\"]*)\"))?");
@@ -63,7 +63,7 @@ namespace QIRC.Plugins
                 value = firstMatch.Groups[2].Value;
             else if (firstMatch.Groups.Count == 4)
                 value = firstMatch.Groups[3].Value;
-            message = Regex.Replace(message, @"(" + firstMatch.Value + ")?", "");
+            message = Regex.Replace(message, @"(" + (escape ? Regex.Escape(firstMatch.Value) : firstMatch.Value) + ")?", "");
             message = Regex.Replace(message, "\\\\(?<!\\\\\\\\)-", "-");
             return value;
         }
