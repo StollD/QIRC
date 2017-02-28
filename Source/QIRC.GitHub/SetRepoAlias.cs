@@ -68,11 +68,13 @@ namespace QIRC.Commands
         public override void RunCommand(IrcClient client, ProtoIrcMessage message)
         {
             String[] split = message.Message.Split(' ');
-            if (RepoAlias.Query.Count(r => r.Alias == split[0]) == 0)
-                RepoAlias.Query.Insert(split[0], split[1]);
+            String split0 = split[0];
+            String split1 = split[1];
+            if (RepoAlias.Query.Count(r => r.Alias == split0) == 0)
+                RepoAlias.Query.Insert(split0, split1);
             else
             {
-                RepoAlias alias = RepoAlias.Query.First(r => r.Alias == split[0]);
+                RepoAlias alias = RepoAlias.Query.First(r => r.Alias == split0);
                 alias.Repository = split[1];
                 BotController.Database.Update(alias);
             }
