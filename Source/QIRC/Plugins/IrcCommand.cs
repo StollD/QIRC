@@ -64,7 +64,8 @@ namespace QIRC.Plugins
             else if (firstMatch.Groups.Count == 4)
                 value = firstMatch.Groups[3].Value;
             message = Regex.Replace(message, @"(" + (escape ? Regex.Escape(firstMatch.Value) : firstMatch.Value) + ")?", "");
-            message = Regex.Replace(message, "\\\\(?<!\\\\\\\\)-", "-").Trim();
+            message = Regex.Replace(message, "\\\\(?<!\\\\\\\\)-", "-");
+            message = message.Trim();
             return value.Trim();
         }
 
