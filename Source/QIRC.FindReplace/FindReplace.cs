@@ -56,7 +56,7 @@ namespace QIRC.Addons
                 new_msg.Message = "/me" + new_msg.Message.Remove(0, "ACTION".Length - 1);
 
             // Regex options
-            RegexOptions options = flags.Contains('i') || flags.Contains('I') ? RegexOptions.IgnoreCase : RegexOptions.None;
+            RegexOptions options = RegexOptions.IgnoreCase;
             Regex rFind = new Regex(find, options);
 
             // Replace stuff
