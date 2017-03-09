@@ -12,6 +12,9 @@ using QIRC.Plugins;
 using QIRC.Serialization;
 using System;
 using System.Linq;
+using System.Net;
+using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace QIRC.Commands
 {
@@ -158,7 +161,17 @@ namespace QIRC.Commands
                 {
                     // Announce it
                     if (message.IsChannelMessage) BotController.SendMessage(client, "I will send you a list of my acronyms!", message.User, message.Source);
-                    BotController.SendMessage(client, "Here is a list of all my acronyms: " + String.Join(", ", AcronymData.Query.Select(s => s.Short).ToArray()), message.User, message.User, true);
+                    String content = "";
+                    foreach (AcronymData data in AcronymData.Query)
+                    {
+                        content += "[" + data.Short + "] => " + data.Explanation + "\n";
+                    }
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.Encoding = Encoding.UTF8;
+                        String response = JObject.Parse(wc.UploadString("https://hastebin.com/documents", "POST", content))["key"].ToString();
+                        BotController.SendMessage(client, "Here is a list of all my acronyms:  https://hastebin.com/" + response, message.User, message.User, true);
+                    }
                 }
                 else
                 {

@@ -16,6 +16,7 @@ using System.Threading;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text;
 using Mono.CSharp;
 using Newtonsoft.Json.Linq;
 
@@ -133,25 +134,15 @@ namespace QIRC.Commands
             // Debugs the evaluator state
             if (StartsWithParam("state", message.Message))
             {
-                if (Settings.Read<CSharpSettings>("csharp").useHastebin)
+                String content = "Using: \r\n" + evaluator.GetUsing().Replace("\r\n", " \r\n") + "\n";
+                content += "Variables: \r\n" + evaluator.GetVars().Replace("\r\n", " \r\n") + "\n\n";
+                for (Int32 i = 0; i < CSharpData.Query.Count(); i++)
+                    content += "[" + i + "] " + CSharpData.Query.ElementAt(i).Expression + "\n";
+                using (WebClient wc = new WebClient())
                 {
-                    String content = "Using: \r\n" + evaluator.GetUsing().Replace("\r\n", " \r\n") + "\n";
-                    content += "Variables: \r\n" + evaluator.GetVars().Replace("\r\n", " \r\n") + "\n\n";
-                    for (Int32 i = 0; i < CSharpData.Query.Count(); i++)
-                        content += "[" + i + "] " + CSharpData.Query.ElementAt(i).Expression + "\n";
-                    using (WebClient wc = new WebClient())
-                    {
-                        wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
-                        String response = JObject.Parse(wc.UploadString("http://hastebin.com/documents", "POST", content))["key"].ToString();
-                        BotController.SendMessage(client, "State: http://hastebin.com/" + response, message.User, message.User, true);
-                    }
-                }
-                else
-                {
-                    BotController.SendMessage(client, "Using: " + evaluator.GetUsing().Replace("\r\n", " "), message.User, message.User, true);
-                    BotController.SendMessage(client, "Variables: " + evaluator.GetVars().Replace("\r\n", ";"), message.User, message.User, true);
-                    for (Int32 i = 0; i < CSharpData.Query.Count(); i++)
-                        BotController.SendMessage(client, "[" + i + "] " + CSharpData.Query.ElementAt(i).Expression, message.User, message.User, true);
+                    wc.Encoding = Encoding.UTF8;
+                    String response = JObject.Parse(wc.UploadString("https://hastebin.com/documents", "POST", content))["key"].ToString();
+                    BotController.SendMessage(client, "State: https://hastebin.com/" + response, message.User, message.User, true);
                 }
                 if (message.IsChannelMessage) BotController.SendMessage(client, "I sent you the current state of the evaluator.", message.User, message.Source);
                 return;
@@ -218,18 +209,6 @@ namespace QIRC.Commands
             }
             else
                 BotController.SendMessage(client, "There is already an evaluation going on. Please wait until it terminates.", message.User, message.Source);
-        }
-
-
-        /// <summary>
-        /// Adds the C# Settings to the config
-        /// </summary>
-        /// IrcClient Functions
-        public override void OnLoad()
-        {
-            SettingsFile file = null;
-            Settings.GetFile("settings", ref file);
-            file.Add("csharp", new CSharpSettings());
         }
 
         /// <summary>
