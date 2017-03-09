@@ -158,7 +158,7 @@ namespace QIRC.Commands
                 {
                     // Announce it
                     if (message.IsChannelMessage) BotController.SendMessage(client, "I will send you a list of my acronyms!", message.User, message.Source);
-                    BotController.SendMessage(client, "Here is a list of all my acronyms: " + String.Join(", ", AcronymData.Query.Select(s => s.Short)), message.User, message.User, true);
+                    BotController.SendMessage(client, "Here is a list of all my acronyms: " + String.Join(", ", AcronymData.Query.Select(s => s.Short).ToArray()), message.User, message.User, true);
                 }
                 else
                 {

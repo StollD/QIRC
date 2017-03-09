@@ -139,8 +139,12 @@ namespace QIRC.Commands
                     content += "Variables: \r\n" + evaluator.GetVars().Replace("\r\n", " \r\n") + "\n\n";
                     for (Int32 i = 0; i < CSharpData.Query.Count(); i++)
                         content += "[" + i + "] " + CSharpData.Query.ElementAt(i).Expression + "\n";
-                    String response = JObject.Parse(new WebClient().UploadString("http://hastebin.com/documents", content))["key"].ToString();
-                    BotController.SendMessage(client, "State: http://hastebin.com/" + response, message.User, message.User, true);
+                    using (WebClient wc = new WebClient())
+                    {
+                        wc.Headers[HttpRequestHeader.ContentType] = "application/x-www-form-urlencoded";
+                        String response = JObject.Parse(wc.UploadString("http://hastebin.com/documents", "POST", content))["key"].ToString();
+                        BotController.SendMessage(client, "State: http://hastebin.com/" + response, message.User, message.User, true);
+                    }
                 }
                 else
                 {
