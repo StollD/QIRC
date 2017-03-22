@@ -296,7 +296,7 @@ namespace QIRC
         /// </summary>
         private static void UserKicked(Object sender, KickEventArgs e)
         {
-            if (e.Kicked.Nick == Settings.Read<String>("name"))
+            if (e.Kicked.Nick == Settings.Read<String>("name") && e.Kicker.Nick != "*status") // ZNC madness
                 LeaveChannel(e.Channel.Name);
             PluginManager.Invoke("UserKicked", client, e);
         }
