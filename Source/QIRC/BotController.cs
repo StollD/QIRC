@@ -9,13 +9,15 @@ using ChatSharp.Events;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-using QIRC.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
+using log4net;
+using log4net.Config;
 using QIRC.Constants;
 using SQLite;
 
@@ -27,6 +29,11 @@ namespace QIRC
     /// </summary>
     public class BotController
     {
+        /// <summary>
+        /// Logging
+        /// </summary>
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// The connection to the IRC Server. It handles the protocol
         /// implementation for us. Also, it gives us delegates for events.
@@ -60,6 +67,9 @@ namespace QIRC
         /// <param name="args">Commandline arguments</param>
         public static void Main(String[] args)
         {
+            // Init log4net
+            XmlConfigurator.Configure();
+
             // We are alive
             isAlive = true;
 
@@ -81,15 +91,7 @@ namespace QIRC
             // Command line handler goes here
             while (isAlive)
             {
-                Console.Write("> ");
-                String input = Console.ReadLine();
-                HandleCommand(new ProtoIrcMessage()
-                {
-                    IsChannelMessage = false,
-                    Message = input,
-                    Source = Settings.Read<String>("name"),
-                    User = Settings.Read<String>("name")
-                }, client, true);
+                Thread.Sleep(1000);
             }
         }
 
@@ -461,7 +463,7 @@ namespace QIRC
                                 catch (Exception e)
                                 {
                                     SendMessage(client, e.Message, message.User, message.Source);
-                                    Logging.Log(e, Logging.Level.ERROR);
+                                    log.Error(e.Message, e);
                                 }
                             }
                             else
@@ -473,7 +475,7 @@ namespace QIRC
                 catch (Exception e)
                 {
                     SendMessage(client, "ChatSharp broke. Please contact your local doctor.", message.User, message.Source);
-                    Logging.Log(e, Logging.Level.ERROR);
+                    log.Error(e.Message, e);
                 }
 
                 // Run actions that should get executed after the WhoIs

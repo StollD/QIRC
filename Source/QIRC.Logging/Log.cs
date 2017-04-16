@@ -9,7 +9,8 @@ using ChatSharp.Events;
 using QIRC.IRC;
 using QIRC.Plugins;
 using System;
-using QIRC.Serialization;
+using System.Reflection;
+using log4net;
 
 namespace QIRC.Logger
 {
@@ -19,13 +20,18 @@ namespace QIRC.Logger
     /// The initialization for that is here.
     /// </summary>
     public class Log : IrcPlugin
-    {        
+    {
+        /// <summary>
+        /// Logging
+        /// </summary>
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// Initial Logging
         /// </summary>
         public override void OnAwake()
         {
-            Logging.Log(".NET Bot for Internet Relay Chat (IRC) - 2016", Logging.Level.SPECIAL);
+            log.Info(".NET Bot for Internet Relay Chat (IRC) - 2016");
         }
 
         /// <summary>
@@ -33,7 +39,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnConnect(String host, Int32 port, String nick, Boolean useSSL)
         {
-            Logging.Log($"Connecting to IRC: {host}:{port} as user {nick}. {(useSSL ? "Using SSL." : "")}", Logging.Level.INFO);
+            log.Info($"Connecting to IRC: {host}:{port} as user {nick}. {(useSSL ? "Using SSL." : "")}");
         }
 
         /// <summary>
@@ -41,7 +47,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnConnectionComplete(IrcClient client)
         {
-            Logging.Log($"Connection established! Network name: {client.ServerInfo.NetworkName}", Logging.Level.SPECIAL);
+            log.Info($"Connection established! Network name: {client.ServerInfo.NetworkName}");
         }
 
         /// <summary>
@@ -50,7 +56,7 @@ namespace QIRC.Logger
         public override void OnChannelMessageRecieved(IrcClient client, PrivateMessageEventArgs e)
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
-            Logging.Log(String.Format("[{1}] <{0}> {2}", msg.User, msg.Source, msg.Message), Logging.Level.INFO);
+            log.Info($"[{msg.Source}] <{msg.User}> {msg.Message}");
             ProtoIrcMessage.Query.Connection.Insert(msg);
         }
 
@@ -60,7 +66,7 @@ namespace QIRC.Logger
         public override void OnUserMessageRecieved(IrcClient client, PrivateMessageEventArgs e)
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
-            Logging.Log(String.Format("[{1}] <{0}> {2}", msg.User, "Private", msg.Message), Logging.Level.INFO);
+            log.Info(String.Format("[{1}] <{0}> {2}", msg.User, "Private", msg.Message));
             ProtoIrcMessage.Query.Connection.Insert(msg);
         }
 
@@ -70,7 +76,7 @@ namespace QIRC.Logger
         public override void OnNoticeRecieved(IrcClient client, IrcNoticeEventArgs e)
         {
             ProtoIrcMessage msg = new ProtoIrcMessage(e);
-            Logging.Log($"Notice from {msg.User.Split('!')[0]}: {msg.Message}", Logging.Level.WARNING);
+            log.Info($"Notice from {msg.User.Split('!')[0]}: {msg.Message}");
             ProtoIrcMessage.Query.Connection.Insert(msg);
         }
 
@@ -79,7 +85,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnNickChanged(IrcClient client, NickChangedEventArgs e)
         {
-            Logging.Log($"{e.OldNick} has changed his Nick to {e.NewNick}", Logging.Level.INFO);
+            log.Info($"{e.OldNick} has changed his Nick to {e.NewNick}");
         }
 
         /// <summary>
@@ -87,7 +93,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnMOTDRecieved(IrcClient client, ServerMOTDEventArgs e)
         {
-            Logging.Log("Recieved Message of the Day", Logging.Level.INFO);
+            log.Info("Recieved Message of the Day");
         }
 
         /// <summary>
@@ -95,7 +101,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnNetworkError(IrcClient client, SocketErrorEventArgs e)
         {
-            Logging.Log($"Network Error! Reason: {e.SocketError}", Logging.Level.ERROR);
+            log.Info($"Network Error! Reason: {e.SocketError}");
         }
 
         /// <summary>
@@ -103,7 +109,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnNickInUse(IrcClient client, ErronousNickEventArgs e)
         {
-            Logging.Log($"Someone has tried to change his nick to {e.InvalidNick}! This is invalid. New Nick: {e.NewNick}", Logging.Level.WARNING);
+            log.Info($"Someone has tried to change his nick to {e.InvalidNick}! This is invalid. New Nick: {e.NewNick}");
         }
 
         /// <summary>
@@ -111,7 +117,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnUserJoinedChannel(IrcClient client, ChannelUserEventArgs e)
         {
-            Logging.Log($"{e.User.Nick} has joined {e.Channel.Name}", Logging.Level.WARNING);
+            log.Info($"{e.User.Nick} has joined {e.Channel.Name}");
         }
 
         /// <summary>
@@ -119,7 +125,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnUserKicked(IrcClient client, KickEventArgs e)
         {
-            Logging.Log($"{e.Kicked.Nick} got kicked from {e.Channel.Name} by {e.Kicker.Nick}. Reason: {e.Reason}", Logging.Level.WARNING);
+            log.Info($"{e.Kicked.Nick} got kicked from {e.Channel.Name} by {e.Kicker.Nick}. Reason: {e.Reason}");
         }
 
         /// <summary>
@@ -127,7 +133,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnUserPartedChannel(IrcClient client, ChannelUserEventArgs e)
         {
-            Logging.Log($"{e.User.Nick} has parted {e.Channel.Name}", Logging.Level.WARNING);
+            log.Info($"{e.User.Nick} has parted {e.Channel.Name}");
         }
 
         /// <summary>
@@ -135,7 +141,7 @@ namespace QIRC.Logger
         /// </summary>
         public override void OnUserQuit(IrcClient client, UserEventArgs e)
         {
-            Logging.Log($"{e.User.Nick} has quit.", Logging.Level.ERROR);
+            log.Info($"{e.User.Nick} has quit.");
         }
 
         /// <summary>
@@ -145,7 +151,7 @@ namespace QIRC.Logger
         /// <param name="message"></param>
         public override void OnMessageSent(IrcClient client, ProtoIrcMessage message)
         {
-            Logging.Log(String.Format("[{1}] <{0}> {2}", message.User, message.IsChannelMessage ? message.Source : "Private", message.Message), Logging.Level.INFO);
+            log.Info($"[{(message.IsChannelMessage ? message.Source : "Private")}] <{message.User}> {message.Message}");
             ProtoIrcMessage.Query.Connection.Insert(message);
         }
     }
