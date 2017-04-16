@@ -99,7 +99,6 @@
     <Compile Include="IRC\ProtoIrcAdmin.cs" />
     <Compile Include="IRC\ProtoIrcMessage.cs" />
     <Compile Include="IRC\ProtoIrcChannel.cs" />
-    <Compile Include="Logging.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="Constants\Paths.cs" />
     <Compile Include="Formatter.cs" />
@@ -124,6 +123,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
