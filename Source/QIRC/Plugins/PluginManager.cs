@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using log4net;
 
 namespace QIRC.Plugins
 {
@@ -17,6 +18,11 @@ namespace QIRC.Plugins
     /// </summary>
     public class PluginManager
     {
+        /// <summary>
+        /// Logging
+        /// </summary>
+        private static readonly ILog log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+
         /// <summary>
         /// All loaded <see cref="IrcPlugin"/>
         /// </summary>
@@ -80,13 +86,7 @@ namespace QIRC.Plugins
             }
             catch (Exception e)
             {
-                Logging.Log(e.Message, Logging.Level.ERROR);
-                Logging.Log(e.StackTrace, Logging.Level.INFO);
-                if (e.InnerException != null)
-                {
-                    Logging.Log("   Inner Exception: " + e.InnerException.Message, Logging.Level.ERROR);
-                    Logging.Log("   Inner Exception: " + e.InnerException.StackTrace, Logging.Level.INFO);
-                }
+                log.Error(e.Message, e);
             }
         }
 
