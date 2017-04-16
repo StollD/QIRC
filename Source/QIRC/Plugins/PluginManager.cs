@@ -39,8 +39,7 @@ namespace QIRC.Plugins
         {
             if (!path.Exists())
                 throw new ArgumentException("The path \"" + path + "\" doesn't exist!", nameof(path));
-            Byte[] buffer = File.ReadAllBytes(path);
-            Assembly assembly = AppDomain.CurrentDomain.Load(buffer);
+            Assembly assembly = Assembly.LoadFrom(path);
             assemblies.Add(assembly);
             foreach (Type type in assembly.GetTypes())
             {
