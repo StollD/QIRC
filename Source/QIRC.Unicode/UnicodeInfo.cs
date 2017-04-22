@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Unicode;
 
 namespace QIRC.Commands
@@ -93,12 +94,19 @@ namespace QIRC.Commands
             }
 
             // Output
+            Int32 maxChars = Settings.Read<UnicodeConfig>("Unicode").maxChars;
+            if (maxChars <= characters.Count)
+            {
+                BotController.SendMessage(client, "Too many characters! (Maximum: " + maxChars + ")", message.User, message.Source);
+                return;
+            }
             for (Int32 i = 0; i < characters.Count; i++)
             {
                 String number = characters[i].CodePoint.ToString("X");
                 while (number.Length < 4) number = "0" + number;
                 String reply = $"U+{number} {characters[i].Name} ({UnicodeInfo.GetDisplayText(characters[i])})";
                 BotController.SendMessage(client, reply, message.User, message.Source, true);
+                Thread.Sleep(200);
             }
         }
 
@@ -117,6 +125,16 @@ namespace QIRC.Commands
             {
                 yield return en.GetTextElement();
             }
+        }
+        
+        /// <summary>
+        /// Adds the Settings to the config
+        /// </summary>
+        public override void OnLoad()
+        {
+            SettingsFile file = null;
+            Settings.GetFile("settings", ref file);
+            file.Add("Unicode", new UnicodeConfig());
         }
     }
 }
