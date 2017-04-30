@@ -52,8 +52,8 @@ namespace QIRC.Addons
             Console.WriteLine(new String(flags));
             if (new_msg == null)
                 return;
-            if (new_msg.Message.StartsWith("ACTION"))
-                new_msg.Message = "/me " + new_msg.Message.Remove(0, "ACTION".Length);
+            if (new_msg.Message.StartsWith("␁ACTION"))
+                new_msg.Message = new_msg.Message.Replace("␁", "").Replace("ACTION", "/me ");
 
             // Regex options
             RegexOptions options = RegexOptions.IgnoreCase;
