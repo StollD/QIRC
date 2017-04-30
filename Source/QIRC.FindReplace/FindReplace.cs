@@ -53,7 +53,7 @@ namespace QIRC.Addons
             if (new_msg == null)
                 return;
             if (new_msg.Message.StartsWith("ACTION"))
-                new_msg.Message = "/me" + new_msg.Message.Remove(0, "ACTION".Length - 1);
+                new_msg.Message = "/me " + new_msg.Message.Remove(0, "ACTION".Length);
 
             // Regex options
             RegexOptions options = RegexOptions.IgnoreCase;
