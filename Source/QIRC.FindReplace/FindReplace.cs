@@ -53,7 +53,7 @@ namespace QIRC.Addons
             if (new_msg == null)
                 return;
             if (new_msg.Message.StartsWith("\x01" + "ACTION"))
-                new_msg.Message = new_msg.Message.Replace("\x01", "").Replace("ACTION", "/me ");
+                new_msg.Message = new_msg.Message.Replace("\x01", "").Replace("ACTION", "/me");
 
             // Regex options
             RegexOptions options = RegexOptions.IgnoreCase;
