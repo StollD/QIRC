@@ -4,15 +4,15 @@
  * QIRC is licensed under the MIT License
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using ChatSharp;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace QIRC.Commands
+namespace QIRC.Help
 {
     /// <summary>
     /// This is the implementation for the help command. It displays every available command

@@ -7,8 +7,8 @@
     <ProjectGuid>{B59A1371-7892-4CD3-999C-2280BBE7609D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QIRC.FindReplace</RootNamespace>
-    <AssemblyName>QIRC.FindReplace</AssemblyName>
+    <RootNamespace>QIRC.Substitute</RootNamespace>
+    <AssemblyName>QIRC.Substitute</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -60,7 +60,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FindReplace.cs" />
+    <Compile Include="Substitution.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

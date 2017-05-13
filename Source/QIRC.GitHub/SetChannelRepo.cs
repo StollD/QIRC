@@ -4,16 +4,14 @@
  * QIRC is licensed under the MIT License
  */
 
+using System;
 using ChatSharp;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
 using QIRC.Serialization;
-using System;
-using System.Linq;
-using System.Collections.Generic;
 
-namespace QIRC.Commands
+namespace QIRC.GitHub
 {
     /// <summary>
     /// This is the implementation for the github tool suite. The command can set the default repository

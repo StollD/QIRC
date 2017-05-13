@@ -5,8 +5,6 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using ChatSharp;
@@ -14,9 +12,8 @@ using ChatSharp.Events;
 using Newtonsoft.Json.Linq;
 using QIRC.IRC;
 using QIRC.Plugins;
-using QIRC.Serialization;
 
-namespace QIRC.Commands
+namespace QIRC.GitHub
 {
     /// <summary>
     /// The IrcPlugin Implementation
@@ -45,7 +42,7 @@ namespace QIRC.Commands
                     }
                     else
                     {
-                        String info = GetInfoIssue(ChannelRepo.Query.FirstOrDefault(r => r.Channel == message.Source).Repository, id);
+                        String info = GetInfoIssue(ChannelRepo.Query.FirstOrDefault(r => r.Channel == message.Source)?.Repository, id);
                         if (!String.IsNullOrWhiteSpace(info))
                             BotController.SendMessage(client, info, message.User, message.Source, true);
                     }
@@ -56,7 +53,6 @@ namespace QIRC.Commands
                 foreach (Match match in Regex.Matches(message.Message, sha1URL, RegexOptions.IgnoreCase))
                 {
                     String id = match.Groups[4].Value;
-                    Console.WriteLine(id);
                     if (match.Groups[1].Success)
                     {
                         String temp = String.Copy(match.Groups[1].Value);
@@ -67,8 +63,7 @@ namespace QIRC.Commands
                     }
                     else
                     {
-                        String info = GetInfoCommit(ChannelRepo.Query.FirstOrDefault(r => r.Channel == message.Source).Repository, id);
-                        Console.WriteLine(info);
+                        String info = GetInfoCommit(ChannelRepo.Query.FirstOrDefault(r => r.Channel == message.Source)?.Repository, id);
                         if (!String.IsNullOrWhiteSpace(info))
                             BotController.SendMessage(client, info, message.User, message.Source, true);
                     }
@@ -119,7 +114,6 @@ namespace QIRC.Commands
             }
             catch (Exception exception)
             {
-                Console.Write(exception.Message);
                 return "";
             }
         }

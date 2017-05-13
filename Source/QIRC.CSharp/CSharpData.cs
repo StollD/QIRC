@@ -5,11 +5,10 @@
  */
 
 using System;
-using QIRC.Configuration;
 using QIRC.Serialization;
 using SQLite;
 
-namespace QIRC.Commands
+namespace QIRC.CSharp
 {
     /// <summary>
     /// A C# Expression

@@ -5,11 +5,10 @@
  */
 
 using System;
-using System.IO.IsolatedStorage;
 using QIRC.Serialization;
 using SQLite;
 
-namespace QIRC.Commands
+namespace QIRC.Tell
 {
     /// <summary>
     /// An object that represents a message that was left in the bot

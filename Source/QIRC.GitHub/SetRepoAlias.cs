@@ -5,15 +5,13 @@
  */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using ChatSharp;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
 using QIRC.Serialization;
 
-namespace QIRC.Commands
+namespace QIRC.GitHub
 {
     /// <summary>
     /// This is the implementation for the github tool suite. The command can set the default repository

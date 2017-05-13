@@ -10,7 +10,7 @@ using System.Text;
 using Mono.CSharp;
 using QIRC.IRC;
 
-namespace QIRC.Commands
+namespace QIRC.CSharp
 {
     /// <summary>
     /// A dynamic ReportPrinter

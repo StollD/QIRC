@@ -3,20 +3,20 @@
  * Copyright (c) ThomasKerman 2016
  * QIRC is licensed under the MIT License
  */
- 
+
+using System;
+using System.CodeDom.Compiler;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
 using ChatSharp;
+using Microsoft.CSharp;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
 using QIRC.Serialization;
-using System;
-using System.Collections.Generic;
-using System.CodeDom.Compiler;
-using System.Linq;
-using System.Security.Cryptography;
-using Microsoft.CSharp;
 
-namespace QIRC.Commands
+namespace QIRC.Alias
 {
     /// <summary>
     /// This command creates an alias command for another command
@@ -28,7 +28,7 @@ namespace QIRC.Commands
         /// </summary>
         public override AccessLevel GetAccessLevel()
         {
-            return AccessLevel.NORMAL;
+            return AccessLevel.ADMIN;
         }
 
         /// <summary>

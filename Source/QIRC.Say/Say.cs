@@ -4,13 +4,13 @@
  * QIRC is licensed under the MIT License
  */
 
+using System;
 using ChatSharp;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-using System;
 
-namespace QIRC.Commands
+namespace QIRC.Say
 {
     /// <summary>
     /// This is the implementation for the say command. The bot will grab the words

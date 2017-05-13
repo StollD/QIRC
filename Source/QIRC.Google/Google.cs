@@ -4,16 +4,16 @@
  * QIRC is licensed under the MIT License
  */
 
+using System;
+using System.Collections.Generic;
+using System.Net;
 using ChatSharp;
 using Newtonsoft.Json;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-using System;
-using System.Collections.Generic;
-using System.Net;
 
-namespace QIRC.Commands
+namespace QIRC.Google
 {
     /// <summary>
     /// This is the implementation for the google command. It takes a search parameter and queries
@@ -143,7 +143,7 @@ namespace QIRC.Commands
             public String apiKey = "";
         }
 
-        /// Google API Classes
+        // Google API Classes
         public struct GoogleResults
         {
             public GoogleSearchInformation searchInformation;

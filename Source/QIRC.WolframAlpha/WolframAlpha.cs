@@ -4,16 +4,16 @@
  * QIRC is licensed under the MIT License
  */
 
-using ChatSharp;
-using QIRC.Configuration;
-using QIRC.IRC;
-using QIRC.Plugins;
 using System;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Xml;
+using ChatSharp;
+using QIRC.Configuration;
+using QIRC.IRC;
+using QIRC.Plugins;
 
-namespace QIRC.Commands
+namespace QIRC.WolframAlpha
 {
     /// <summary>
     /// This is the implementation for the wolfram command. It takes a search parameter and queries

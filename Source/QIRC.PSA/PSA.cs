@@ -3,14 +3,14 @@
  * Copyright (c) ThomasKerman 2016
  * QIRC is licensed under the MIT License
  */
- 
+
+using System;
 using ChatSharp;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-using System;
 
-namespace QIRC.Commands
+namespace QIRC.PSA
 {
     /// <summary>
     /// This is the implementation for the psa command. The bot will post the given message

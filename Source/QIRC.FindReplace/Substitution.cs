@@ -4,21 +4,22 @@
  * QIRC is licensed under the MIT License
  */
 
-using ChatSharp;
-using ChatSharp.Events;
-using QIRC.IRC;
-using QIRC.Plugins;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using ChatSharp;
+using ChatSharp.Events;
+using QIRC.Configuration;
+using QIRC.IRC;
+using QIRC.Plugins;
 
-namespace QIRC.Addons
+namespace QIRC.Substitute
 {
     /// <summary>
     /// This is the implementation for the s/text/replacement module. Search the messages of the user
     /// for the given text (regex) and replace it with the given replacement.
     /// </summary>
-    public class FindReplace : IrcPlugin
+    public class Substitution : IrcPlugin
     {
         /// <summary>
         /// The regular expression that is used to detect the syntax (Copyright goes to the Willie/Sopel Devs)
@@ -40,16 +41,24 @@ namespace QIRC.Addons
             // Get the values from the message
             Match match = Regex.Match(message.Message, regex, RegexOptions.IgnoreCase);
             String nick = match.Groups[1].Success ? match.Groups[1].Value : message.User;
-            Console.WriteLine(nick);
             if (!client.Users.Contains(nick))
                 return;
             String find = match.Groups[2].Value.Replace(@"\/", "/");
             String repl = match.Groups[3].Value.Replace(@"\/", "/");
 
             // Find the message to edit
-            ProtoIrcMessage new_msg = ProtoIrcMessage.Query.LastOrDefault(m => m.User == nick && Regex.IsMatch(m.Message, find, RegexOptions.IgnoreCase) && !Regex.IsMatch(m.Message, regex, RegexOptions.IgnoreCase));
+            ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderBy(m => m.Time).ToArray();
+            ProtoIrcMessage new_msg = null;
+            for (Int32 i = 0; i < messages.Length; i++)
+            {
+                ProtoIrcMessage m = messages[i];
+                if (m.User == nick && Regex.IsMatch(m.Message, find, RegexOptions.IgnoreCase) && !Regex.IsMatch(m.Message, regex, RegexOptions.IgnoreCase))
+                {
+                    new_msg = m;
+                    break;
+                }
+            }
             Char[] flags = match.Groups[4].Success ? match.Groups[4].Value.ToCharArray() : new Char[0];
-            Console.WriteLine(new String(flags));
             if (new_msg == null)
                 return;
             if (new_msg.Message.StartsWith("\x01" + "ACTION"))

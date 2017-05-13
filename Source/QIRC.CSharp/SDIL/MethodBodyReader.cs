@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Threading;
 
-namespace SDILReader
+namespace QIRC.CSharp.SDIL
 {
     public class MethodBodyReader
     {
-        public List<SDILReader.ILInstruction> instructions = null;
+        public List<ILInstruction> instructions = null;
         protected Byte[] il = null;
         private MethodInfo mi = null;
 

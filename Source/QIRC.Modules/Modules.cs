@@ -4,14 +4,14 @@
  * QIRC is licensed under the MIT License
  */
 
+using System;
+using System.Linq;
 using ChatSharp;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-using System;
-using System.Linq;
 
-namespace QIRC.Commands
+namespace QIRC.Modules
 {
     /// <summary>
     /// This is the implementation for the modules command. The bot will load / unload

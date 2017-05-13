@@ -4,15 +4,15 @@
  * QIRC is licensed under the MIT License
  */
 
+using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 using ChatSharp;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-using System;
-using System.Linq;
-using System.Text.RegularExpressions;
 
-namespace QIRC.Commands
+namespace QIRC.Seen
 {
     /// <summary>
     /// This is the implementation for the seen command. The bot will store the latest message of
@@ -83,28 +83,46 @@ namespace QIRC.Commands
                 String text = message.Message;
                 String target = StripParam("channel", ref text);
                 String wildcard = "^" + Regex.Escape(text.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.ToList().Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && p.Source == target && (!BotController.GetChannel(p.Source).secret || message.Source == p.Source)).ToArray();
-                if (messages.Length == 0)
+                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderBy(m => m.Time).ToArray();
+                ProtoIrcMessage lastMsg = null;
+                for (Int32 i = 0; i < messages.Length; i++)
+                {
+                    ProtoIrcMessage p = messages[i];
+                    if (Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && p.Source == target && (!BotController.GetChannel(p.Source).secret || message.Source == p.Source))
+                    {
+                        lastMsg = p;
+                        break;
+                    }
+                }
+                if (lastMsg == null)
                 {
                     // User is MIA
                     BotController.SendMessage(client, "I haven't seen the user [b]" + text.Trim() + "[/b] in the channel [b]" + target + "[/b] yet.", message.User, message.Source);
                     return;
                 }
-                ProtoIrcMessage lastMsg = messages.OrderBy(p => p.Time.Ticks).Last();
                 BotController.SendMessage(client, "I last saw [b]" + lastMsg.User + "[/b] on [b][" + lastMsg.Time.ToString("dd.MM.yyyy HH:mm:ss") + "][/b] in [b]" + target + "[/b] saying: \"" + lastMsg.Message + "\"", message.User, message.Source);
             }
             else
             {
                 // Create a wildcard
                 String wildcard = "^" + Regex.Escape(message.Message.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.ToList().Where(p => Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && (!BotController.GetChannel(p.Source).secret || message.Source == p.Source)).ToArray();
-                if (messages.Length == 0)
+                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderBy(m => m.Time).ToArray();
+                ProtoIrcMessage lastMsg = null;
+                for (Int32 i = 0; i < messages.Length; i++)
+                {
+                    ProtoIrcMessage p = messages[i];
+                    if (Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && (!BotController.GetChannel(p.Source).secret || message.Source == p.Source))
+                    {
+                        lastMsg = p;
+                        break;
+                    }
+                }
+                if (lastMsg == null)
                 {
                     // User is MIA
                     BotController.SendMessage(client, "I haven't seen the user [b]" + message.Message.Trim() + "[/b] yet.", message.User, message.Source);
                     return;
                 }
-                ProtoIrcMessage lastMsg = messages.OrderBy(p => p.Time.Ticks).Last();
                 BotController.SendMessage(client, "I last saw [b]" + lastMsg.User + "[/b] on [b][" + lastMsg.Time.ToString("dd.MM.yyyy HH:mm:ss") + "][/b] in [b]" + lastMsg.Source + "[/b] saying: \"" + lastMsg.Message + "\"", message.User, message.Source);
             }
         }

@@ -4,18 +4,17 @@
  * QIRC is licensed under the MIT License
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using ChatSharp;
 using ChatSharp.Events;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
-using QIRC.Serialization;
-using System;
-using System.Text.RegularExpressions;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace QIRC.Commands
+namespace QIRC.Tell
 {
     /// <summary>
     /// This is the implementation for the tell command. The bot will store messages for users and deliver

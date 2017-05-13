@@ -5,11 +5,10 @@
  */
 
 using System;
-using QIRC.Configuration;
 using QIRC.Serialization;
 using SQLite;
 
-namespace QIRC.Commands
+namespace QIRC.GitHub
 {
     /// <summary>
     /// An alias for a github repository

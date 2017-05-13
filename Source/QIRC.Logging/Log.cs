@@ -4,15 +4,15 @@
  * QIRC is licensed under the MIT License
  */
 
-using ChatSharp;
-using ChatSharp.Events;
-using QIRC.IRC;
-using QIRC.Plugins;
 using System;
 using System.Reflection;
+using ChatSharp;
+using ChatSharp.Events;
 using log4net;
+using QIRC.IRC;
+using QIRC.Plugins;
 
-namespace QIRC.Logger
+namespace QIRC.Logging
 {
     /// <summary>
     /// This is the main logging module. In QIRC, almost nothing is hardcoded, 

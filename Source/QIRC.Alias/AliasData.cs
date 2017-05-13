@@ -9,7 +9,7 @@ using QIRC.Configuration;
 using QIRC.Serialization;
 using SQLite;
 
-namespace QIRC.Commands
+namespace QIRC.Alias
 {
     /// <summary>
     /// Contains all data for one command alias

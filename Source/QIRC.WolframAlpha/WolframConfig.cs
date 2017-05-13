@@ -6,7 +6,7 @@
 
 using System;
 
-namespace QIRC.Commands
+namespace QIRC.WolframAlpha
 {
     /// <summary>
     /// The config for the Wolfram Query

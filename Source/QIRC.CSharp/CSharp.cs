@@ -4,23 +4,24 @@
  * QIRC is licensed under the MIT License
  */
 
-using ChatSharp;
-using QIRC.Configuration;
-using QIRC.IRC;
-using QIRC.Plugins;
-using QIRC.Serialization;
 using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Threading;
 using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
+using ChatSharp;
 using Mono.CSharp;
 using Newtonsoft.Json.Linq;
+using QIRC.Configuration;
+using QIRC.CSharp.SDIL;
+using QIRC.IRC;
+using QIRC.Plugins;
+using QIRC.Serialization;
 
-namespace QIRC.Commands
+namespace QIRC.CSharp
 {
     /// <summary>
     /// This is the implementation for the csharp command. It will take C# code, compile
@@ -224,7 +225,7 @@ namespace QIRC.Commands
                 CompiledMethod method = evaluator.Compile(input);
                 if (method == null)
                     return "";
-                SDILReader.MethodBodyReader reader = new SDILReader.MethodBodyReader(method.Method);
+                MethodBodyReader reader = new MethodBodyReader(method.Method);
                 String il = reader.GetBodyCode();
                 if ((il.Contains("System.IO") ||
                     il.Contains("System.Xml") ||

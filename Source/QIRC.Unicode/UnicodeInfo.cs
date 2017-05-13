@@ -4,10 +4,6 @@
  * QIRC is licensed under the MIT License
  */
 
-using ChatSharp;
-using QIRC.Configuration;
-using QIRC.IRC;
-using QIRC.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,8 +11,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Unicode;
+using ChatSharp;
+using QIRC.Configuration;
+using QIRC.IRC;
+using QIRC.Plugins;
 
-namespace QIRC.Commands
+namespace QIRC.Unicode
 {
     /// <summary>
     /// The Unicode command. Takes a sequence of characters or numbers and posts info for them

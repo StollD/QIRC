@@ -3,20 +3,19 @@
  * Copyright (c) ThomasKerman 2016
  * QIRC is licensed under the MIT License
  */
- 
+
+using System;
+using System.Net;
+using System.Text;
 using ChatSharp;
 using ChatSharp.Events;
+using Newtonsoft.Json.Linq;
 using QIRC.Configuration;
 using QIRC.IRC;
 using QIRC.Plugins;
 using QIRC.Serialization;
-using System;
-using System.Linq;
-using System.Net;
-using System.Text;
-using Newtonsoft.Json.Linq;
 
-namespace QIRC.Commands
+namespace QIRC.Acronyms
 {
     /// <summary>
     /// This is the implementation for the acronym command. It grabs questions from the

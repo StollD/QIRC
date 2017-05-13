@@ -4,12 +4,12 @@
  * QIRC is licensed under the MIT License
  */
 
+using System;
 using ChatSharp;
 using QIRC.Configuration;
 using QIRC.Plugins;
-using System;
 
-namespace QIRC.Addons
+namespace QIRC.NickServ
 {
     /// <summary>
     /// This is the IrcPlugin that loads information about NickServ and 

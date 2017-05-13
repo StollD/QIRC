@@ -8,7 +8,7 @@ using System;
 using QIRC.Serialization;
 using SQLite;
 
-namespace QIRC.Commands
+namespace QIRC.Acronyms
 {
     /// <summary>
     /// Stores the data for one acronym

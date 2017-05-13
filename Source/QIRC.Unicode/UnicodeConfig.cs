@@ -6,7 +6,7 @@
 
 using System;
 
-namespace QIRC.Commands
+namespace QIRC.Unicode
 {
     /// <summary>
     /// The config for the Unicode display
