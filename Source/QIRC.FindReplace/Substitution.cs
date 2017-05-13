@@ -43,16 +43,16 @@ namespace QIRC.Substitute
             String nick = match.Groups[1].Success ? match.Groups[1].Value : message.User;
             if (!client.Users.Contains(nick))
                 return;
-            String find = match.Groups[2].Value.Replace(@"\/", "/");
+            Regex find = new Regex(match.Groups[2].Value.Replace(@"\/", "/"), RegexOptions.IgnoreCase | RegexOptions.Compiled);
             String repl = match.Groups[3].Value.Replace(@"\/", "/");
 
             // Find the message to edit
-            ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderBy(m => m.Time).ToArray();
+            ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderByDescending(m => m.Time).ToArray();
             ProtoIrcMessage new_msg = null;
             for (Int32 i = 0; i < messages.Length; i++)
             {
                 ProtoIrcMessage m = messages[i];
-                if (m.User == nick && Regex.IsMatch(m.Message, find, RegexOptions.IgnoreCase) && !Regex.IsMatch(m.Message, regex, RegexOptions.IgnoreCase))
+                if (m.User == nick && find.IsMatch(m.Message) && !Regex.IsMatch(m.Message, regex, RegexOptions.IgnoreCase))
                 {
                     new_msg = m;
                     break;
@@ -66,10 +66,9 @@ namespace QIRC.Substitute
 
             // Regex options
             RegexOptions options = RegexOptions.IgnoreCase;
-            Regex rFind = new Regex(find, options);
 
             // Replace stuff
-            new_msg.Message = flags.Contains('g') || flags.Contains('G') ? Regex.Replace(new_msg.Message, find, repl, options) : rFind.Replace(new_msg.Message, repl, 1);
+            new_msg.Message = flags.Contains('g') || flags.Contains('G') ? find.Replace(new_msg.Message, repl) : find.Replace(new_msg.Message, repl, 1);
 
             // Send the message back
             if (nick == message.User)

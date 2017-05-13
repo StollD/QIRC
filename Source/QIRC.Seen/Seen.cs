@@ -82,13 +82,13 @@ namespace QIRC.Seen
                 // Create a wildcard
                 String text = message.Message;
                 String target = StripParam("channel", ref text);
-                String wildcard = "^" + Regex.Escape(text.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderBy(m => m.Time).ToArray();
+                Regex wildcard = new Regex("^" + Regex.Escape(text.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderByDescending(m => m.Time).ToArray();
                 ProtoIrcMessage lastMsg = null;
                 for (Int32 i = 0; i < messages.Length; i++)
                 {
                     ProtoIrcMessage p = messages[i];
-                    if (Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && p.Source == target && (!BotController.GetChannel(p.Source).secret || message.Source == p.Source))
+                    if (wildcard.IsMatch(p.User) && p.IsChannelMessage && p.Source == target && (!BotController.GetChannel(p.Source).secret || message.Source == p.Source))
                     {
                         lastMsg = p;
                         break;
@@ -105,13 +105,13 @@ namespace QIRC.Seen
             else
             {
                 // Create a wildcard
-                String wildcard = "^" + Regex.Escape(message.Message.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$";
-                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderBy(m => m.Time).ToArray();
+                Regex wildcard = new Regex("^" + Regex.Escape(message.Message.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderByDescending(m => m.Time).ToArray();
                 ProtoIrcMessage lastMsg = null;
                 for (Int32 i = 0; i < messages.Length; i++)
                 {
                     ProtoIrcMessage p = messages[i];
-                    if (Regex.IsMatch(p.User, wildcard, RegexOptions.IgnoreCase) && p.IsChannelMessage && (!BotController.GetChannel(p.Source).secret || message.Source == p.Source))
+                    if (wildcard.IsMatch(p.User) && p.IsChannelMessage && (!BotController.GetChannel(p.Source).secret || message.Source == p.Source))
                     {
                         lastMsg = p;
                         break;
