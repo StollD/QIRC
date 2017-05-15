@@ -192,6 +192,7 @@ namespace QIRC.Configuration
                     "control", "!",
                     "saveInterval", 10,
                     "maxMessages", 4,
+                    "messageQueryLimit", 100,
                     "stateChannel", ""
                 ),
                 new SettingsFile("connection",

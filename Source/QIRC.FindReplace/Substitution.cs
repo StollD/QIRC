@@ -47,7 +47,7 @@ namespace QIRC.Substitute
             String repl = match.Groups[3].Value.Replace(@"\/", "/");
 
             // Find the message to edit
-            ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderByDescending(m => m.Time).ToArray();
+            ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderByDescending(m => m.Time).Take(Settings.Read<Int32>("messageQueryLimit")).ToArray();
             ProtoIrcMessage new_msg = null;
             for (Int32 i = 0; i < messages.Length; i++)
             {

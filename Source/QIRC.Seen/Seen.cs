@@ -83,7 +83,7 @@ namespace QIRC.Seen
                 String text = message.Message;
                 String target = StripParam("channel", ref text);
                 Regex wildcard = new Regex("^" + Regex.Escape(text.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderByDescending(m => m.Time).ToArray();
+                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderByDescending(m => m.Time).Take(Settings.Read<Int32>("messageQueryLimit")).ToArray();
                 ProtoIrcMessage lastMsg = null;
                 for (Int32 i = 0; i < messages.Length; i++)
                 {
@@ -106,7 +106,7 @@ namespace QIRC.Seen
             {
                 // Create a wildcard
                 Regex wildcard = new Regex("^" + Regex.Escape(message.Message.Trim()).Replace(@"\*", ".*").Replace(@"\?", ".") + "$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderByDescending(m => m.Time).ToArray();
+                ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderByDescending(m => m.Time).Take(Settings.Read<Int32>("messageQueryLimit")).ToArray();
                 ProtoIrcMessage lastMsg = null;
                 for (Int32 i = 0; i < messages.Length; i++)
                 {
