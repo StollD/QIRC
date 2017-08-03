@@ -53,7 +53,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.Tell", "Source\QIRC.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.CSharp", "Source\QIRC.CSharp\QIRC.CSharp.csproj", "{A619812B-E793-4A3F-B244-45D05BFB8D08}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.Substitution", "Source\QIRC.FindReplace\QIRC.Substitution.csproj", "{B59A1371-7892-4CD3-999C-2280BBE7609D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.Substitution", "Source\QIRC.Substitution\QIRC.Substitution.csproj", "{B59A1371-7892-4CD3-999C-2280BBE7609D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QIRC.GitHub", "Source\QIRC.GitHub\QIRC.GitHub.csproj", "{7FF76F13-1745-418E-A01D-0801D2BBB9B6}"
 EndProject
