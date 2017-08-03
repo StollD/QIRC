@@ -33,6 +33,7 @@ namespace QIRC.Substitute
         {
             // Create a new message 
             ProtoIrcMessage message = new ProtoIrcMessage(e);
+            String source = message.Source;
 
             // If there is no match, we have nothing to do
             if (!Regex.IsMatch(message.Message, regex, RegexOptions.IgnoreCase))
@@ -47,7 +48,7 @@ namespace QIRC.Substitute
             String repl = match.Groups[3].Value.Replace(@"\/", "/");
 
             // Find the message to edit
-            ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderByDescending(m => m.Time).Take(Settings.Read<Int32>("messageQueryLimit")).ToArray();
+            ProtoIrcMessage[] messages = ProtoIrcMessage.Query.OrderByDescending(m => m.Time).Where(p => p.Source == source).Take(Settings.Read<Int32>("messageQueryLimit")).ToArray();
             ProtoIrcMessage new_msg = null;
             for (Int32 i = 0; i < messages.Length; i++)
             {
@@ -73,7 +74,7 @@ namespace QIRC.Substitute
             // Send the message back
             if (nick == message.User)
                 BotController.SendMessage(client, nick + " [b]meant[/b] to say: " + new_msg.Message, message.User, message.Source, true);
-            else if (!client.Channels[message.Source].Users.Contains("Kountdown"))
+            else //if (!client.Channels[message.Source].Users.Contains("Kountdown"))
                 BotController.SendMessage(client, message.User + " thinks " + nick + " [b]meant[/b] to say: " + new_msg.Message, message.User, message.Source, true);
         }
     }
